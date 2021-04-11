@@ -6,7 +6,7 @@
 /*   By: sadarnau <sadarnau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/11 13:05:37 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/11 16:13:28 by sadarnau         ###   ########.fr       */
+/*   Updated: 2021/04/11 16:49:01 by sadarnau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,22 +142,21 @@ int main()
 
 	int in_socket;
 	unsigned int addrlen = sizeof(address);
-	unsigned int valread;
 
 	while(1)
 	{
 		std::cout << "I'm waiting for something to come up...\n\n";
 		in_socket = accept(fd_serv, (struct sockaddr *)&address, (socklen_t*)&addrlen);  // to pprotect
 
-        char buff[10000];
-        valread = read( in_socket , buff, 10000);  // to protect
-        std::cout << "Request :\n\n" << buff << std::endl;
-	
+		char buff[10000];
+		read( in_socket , buff, 10000);  // to protect
+		std::cout << "Request :\n\n" << buff << std::endl;
+
 		std::string	res = response();
 
-        write(in_socket, res.c_str() , res.length());	//to protect
+		write(in_socket, res.c_str() , res.length());	//to protect
 		std::cout << "Message delivered...\n\n";
-        close(in_socket);
+		close(in_socket);
 	}
 	close(fd_serv);
 	
