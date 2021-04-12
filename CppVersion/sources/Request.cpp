@@ -12,6 +12,8 @@
 
 
 #include "Request.hpp"
+#include <vector>
+#include <string>
 
 Request::Request( void )
 {
@@ -42,6 +44,12 @@ Request & Request::operator=( Request const & rhs)
 	this->in_socket = rhs.in_socket;
 
 	return ( *this );
+}
+
+void	Request::parseRequest(std::string req)
+{
+	(void)req;
+
 }
 
 void	Request::printRequest( void )

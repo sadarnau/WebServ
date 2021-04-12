@@ -32,6 +32,7 @@ public:
 	~Request( void );								//destructor
 	Request & operator=( Request const & rhs );		//overload operator =
 
+	void	parseRequest(std::string req);
 	void	printRequest( void );
 	int		getInSock( void );
 };
