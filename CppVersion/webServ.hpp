@@ -6,7 +6,7 @@
 /*   By: sadarnau <sadarnau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/11 16:27:17 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/11 17:05:27 by sadarnau         ###   ########.fr       */
+/*   Updated: 2021/04/12 14:01:37 by sadarnau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ public:
 
 	void	initialization( void );
 	void	fillAddress( void );
-	void	handeRequest( void );
+	void	handleRequest( void );
 	int		getInSocket( void );
 	int		getFd( void );
 };

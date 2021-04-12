@@ -6,7 +6,7 @@
 /*   By: sadarnau <sadarnau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/11 16:25:25 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/11 17:05:15 by sadarnau         ###   ########.fr       */
+/*   Updated: 2021/04/12 14:31:56 by sadarnau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,15 @@ Request::~Request( void )
 
 Request & Request::operator=( Request const & rhs)
 {
-    // this->??? = rhs.???;
-	(void)rhs;
+    this->buff = rhs.buff;
+	this->in_socket = rhs.in_socket;
+
 	return ( *this );
 }
 
 void	Request::printRequest( void )
 {
-	std::cout << "Request :\n\n" << this->buff << std::endl;
+	std::cout << "\n----------\nRequest :\n\n" << this->buff << "\n-----------\n\n";
 
 	return ;
 }

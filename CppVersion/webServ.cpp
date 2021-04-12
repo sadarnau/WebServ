@@ -6,7 +6,7 @@
 /*   By: sadarnau <sadarnau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/11 16:27:17 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/11 17:06:35 by sadarnau         ###   ########.fr       */
+/*   Updated: 2021/04/12 14:34:18 by sadarnau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,19 +65,22 @@ void	webServ::fillAddress( void )
 	return ;
 }
 
-void	webServ::handeRequest( void )
+void	webServ::handleRequest( void )
 {
 	int in_sock;
 
 	unsigned int addrlen = sizeof(address);
-	in_sock = accept(this->fd, (struct sockaddr *)&this->address, (socklen_t*)&addrlen);;
+	in_sock = accept(this->fd, (struct sockaddr *)&this->address, (socklen_t*)&addrlen);
 	
-	char buff[10000];				// GNL maybe better ?
-	read( in_sock , buff, 10000);	// to protect
+	char buff[1000];				// GNL maybe better ?
+	int ret = read( in_sock , buff, 1000);	// to protect
+	
+	buff[ret] = 0;
 
 	Request inRequest(in_sock, buff);
+	this->inRequest = inRequest;
 	
-	inRequest.printRequest();
+	this->inRequest.printRequest();
 }
 
 int		webServ::getInSocket( void )
