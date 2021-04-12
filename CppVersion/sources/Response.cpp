@@ -6,7 +6,7 @@
 /*   By: sadarnau <sadarnau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/11 16:25:31 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/11 17:27:29 by sadarnau         ###   ########.fr       */
+/*   Updated: 2021/04/12 15:05:34 by sadarnau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ Response & Response::operator=( Response const & rhs)
 
 void	Response::fillResponse( void )
 {
-	std::ifstream f("index.html"); // open index.html
-	std::string content;
+	std::ifstream 	f("index.html"); // open index.html
+	std::string		content;
 
 	// Check if the file can be open and if so put it in content
 

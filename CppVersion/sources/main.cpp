@@ -6,7 +6,7 @@
 /*   By: sadarnau <sadarnau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/11 16:57:03 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/12 14:33:30 by sadarnau         ###   ########.fr       */
+/*   Updated: 2021/04/12 16:15:11 by sadarnau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,27 +15,27 @@
 
 int main()
 {
-    webServ		webserv;
-    Response	response;
+	webServ		webserv;
+	Response	response;
 
-    webserv.initialization();
+	webserv.initialization();
 
 	while(1)
 	{
 		std::cout << "I'm waiting for something to come up...\n\n";
 
-        webserv.handleRequest();
+		webserv.handleRequest();
 
 		response.fillResponse();
 
 		//printing the header on the terminal
-		std::cout << "\n---------\n" << "Response:\n\n" << response.getResponse() << "\n\n-------\n\n";
+		std::cout << "\n---------\n" << "Response:\n\n" << response.getResponse() << "\n-------\n\n";
 
 		write(webserv.getInSocket(), response.getResponse().c_str() , response.getResponse().length());	//to protect
 		std::cout << "Message delivered...\n\n";
 		close(webserv.getInSocket());
 	}
 	close(webserv.getFd());
-	
+
 	return 0;
 }

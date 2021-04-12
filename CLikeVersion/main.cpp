@@ -6,7 +6,7 @@
 /*   By: sadarnau <sadarnau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/11 13:05:37 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/11 16:49:01 by sadarnau         ###   ########.fr       */
+/*   Updated: 2021/04/12 15:10:42 by sadarnau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 
 /*
 
-		Functions to fill the header
+	----------------Functions to fill the header------------------
 
 std::string	setStatus( std::string res )
 {
