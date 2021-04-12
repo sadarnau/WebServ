@@ -11,7 +11,7 @@ NAME =			webserv
 SRC =			$(SRC_NAME)
 SRC_PATH =		sources/
 
-SRC_NAME =		main.cpp Request.cpp Response.cpp webServ.cpp
+SRC_NAME =		main.cpp Request.cpp Response.cpp webServ.cpp Config.cpp
 
 # HEADER
 HEAD_PATH =		includes/
@@ -24,7 +24,7 @@ OBJS =			$(SRC:%.cpp=$(OBJS_PATH)%.o)
 CLANG =			clang++
 
 # Compilation flags
-CLANGFLAGS =	-Werror -Wall -Wextra
+CLANGFLAGS =	-Werror -Wall -Wextra -std=c++98
 
 all:			$(OBJS)
 				@$(CLANG) $(CLANGFLAGS) $(OBJS) -o $(NAME)
