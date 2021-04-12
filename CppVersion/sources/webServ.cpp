@@ -79,8 +79,6 @@ void	webServ::handleRequest( void )
 
 	Request inRequest(in_sock, buff);
 	this->inRequest = inRequest;
-	
-	this->inRequest.printRequest();
 }
 
 int		webServ::getInSocket( void )
