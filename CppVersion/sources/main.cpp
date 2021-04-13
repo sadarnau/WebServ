@@ -10,13 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "webServ.hpp"
+#include "Webserv.hpp"
 #include "Response.hpp"
 #include "Config.hpp"
 
 int main()
 {
-	webServ		webserv;
+	Webserv		webserv;
 	Response	response;
 
 	webserv.initialization();

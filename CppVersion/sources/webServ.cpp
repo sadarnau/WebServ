@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   webServ.cpp                                        :+:      :+:    :+:   */
+/*   Webserv.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,37 +11,37 @@
 /* ************************************************************************** */
 
 
-#include "WebServ.hpp"
+#include "Webserv.hpp"
 
-WebServ::WebServ( void )
+Webserv::Webserv( void )
 {
 	return ;
 }
 
-// WebServ::WebServ( std::string name )
+// Webserv::Webserv( std::string name )
 // {
 // 	return ;
 // }
 
-WebServ::WebServ( WebServ const & src )
+Webserv::Webserv( Webserv const & src )
 {
 	*this = src;
 	return ;
 }
 
-WebServ::~WebServ( void )
+Webserv::~Webserv( void )
 {
 	return ;
 }
 
-WebServ & WebServ::operator=( WebServ const & rhs)
+Webserv & Webserv::operator=( Webserv const & rhs)
 {
     // this->??? = rhs.???;
 	(void)rhs;
 	return ( *this );
 }
 
-void	WebServ::initialization( void )
+void	Webserv::initialization( void )
 {
 	this->fd = socket(AF_INET, SOCK_STREAM, 0); // to pprotect
 	
@@ -54,7 +54,7 @@ void	WebServ::initialization( void )
 	return ;
 }
 
-void	WebServ::fillAddress( void )
+void	Webserv::fillAddress( void )
 {
 	this->address.sin_family = AF_INET;
 	this->address.sin_addr.s_addr = INADDR_ANY; //htonl ??
@@ -65,7 +65,7 @@ void	WebServ::fillAddress( void )
 	return ;
 }
 
-void	WebServ::handleRequest( void )
+void	Webserv::handleRequest( void )
 {
 	int in_sock;
 
@@ -81,12 +81,12 @@ void	WebServ::handleRequest( void )
 	this->inRequest = inRequest;
 }
 
-int		WebServ::getInSocket( void )
+int		Webserv::getInSocket( void )
 {
 	return (this->inRequest.getInSock());
 }
 
-int		WebServ::getFd( void )
+int		Webserv::getFd( void )
 {
 	return (this->fd);
 }

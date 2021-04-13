@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   webServ.hpp                                        :+:      :+:    :+:   */
+/*   Webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -22,7 +22,7 @@
 # include <cstring>
 # include <netinet/in.h>     //sockaddr struct
 
-class webServ
+class Webserv
 {
 private:
 
@@ -32,11 +32,11 @@ private:
 
 public:
 
-	webServ( void );						 		//default constructor
-	// webServ( std::string name );					//constructor
-	webServ( webServ const & src);  				//copy
-	~webServ( void );								//destructor
-	webServ & operator=( webServ const & rhs );		//overload operator =
+	Webserv( void );						 		//default constructor
+	// Webserv( std::string name );					//constructor
+	Webserv( Webserv const & src);  				//copy
+	~Webserv( void );								//destructor
+	Webserv & operator=( Webserv const & rhs );		//overload operator =
 
 	void	initialization( void );
 	void	fillAddress( void );
