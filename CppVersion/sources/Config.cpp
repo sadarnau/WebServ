@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadarnau <sadarnau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/12 16:21:54 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/12 18:15:51 by sadarnau         ###   ########.fr       */
+/*   Updated: 2021/04/13 11:20:38 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	Config::checkFile( std::string fileName )
 	if (n == std::string::npos)
 		throw (std::exception()); //exeption a faire, pas de .conf
 	
-	this->f.open(fileName); // open index.html
+	this->f.open(fileName.c_str()); // open index.html
 
 	if (!f.good())
 		throw (std::exception()); //exeption a faire, probleme a l'ouverture
