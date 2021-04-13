@@ -6,7 +6,7 @@
 /*   By: tpalhol <tpalhol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/11 16:25:25 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/13 19:18:57 by tpalhol          ###   ########.fr       */
+/*   Updated: 2021/04/13 19:22:19 by tpalhol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ void	Request::parseRequest(std::string req)
     std::string				key;
 	std::istringstream		stream_req(req);
 
-	//apparently getline process last line 2 times (should be corrected with use of GNL)
 	while (std::getline(stream_req, line))
     {
 		std::stringstream	ss(line);
