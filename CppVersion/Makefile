@@ -1,3 +1,7 @@
+######################
+###    VARIABLES
+######################
+
 # COLORS
 _RED		=	\e[1;31m
 _GREEN		=	\e[1;32m
@@ -8,10 +12,9 @@ _END		=	\e[1;0m
 NAME =			webserv
 
 # SOURCES
-SRC =			$(SRC_NAME)
 SRC_PATH =		sources/
-
-SRC_NAME =		main.cpp Request.cpp Response.cpp webServ.cpp Config.cpp
+SRC =			main.cpp Request.cpp Response.cpp webServ.cpp Config.cpp 
+SRC_C =			get_next_line.c get_next_line_utils.c
 
 # HEADER
 HEAD_PATH =		includes/
@@ -19,38 +22,52 @@ HEAD_PATH =		includes/
 # All .o (object file)
 OBJS_PATH =		objs/
 OBJS =			$(SRC:%.cpp=$(OBJS_PATH)%.o)
+OBJS_C =		$(SRC_C:%.c=$(OBJS_PATH)%.o)
 
 # Compilation
 CLANG =			clang++
+GCC =			gcc
 
 # Compilation flags
 CLANGFLAGS =	-Werror -Wall -Wextra -std=c++98
+GCCFLAGS =		-Werror -Wall -Wextra
 
-all:			$(OBJS)
-				@$(CLANG) $(CLANGFLAGS) $(OBJS) -o $(NAME)
-				@printf "\033[2K\r$(_GREEN)All done!$(_END)\n"
+
+######################
+###    RULES
+######################
+
+all:			$(OBJS) $(OBJS_C)
+				@$(CLANG) $(CLANGFLAGS) $(OBJS) $(OBJS_C) -o $(NAME)
+				@printf "$(_GREEN)All done!$(_END)\n"
 				
-$(NAME):	all
+$(NAME):		all
 
-# Getting .o from .c rule
+# Getting .o from .cpp rule
 $(OBJS_PATH)%.o: $(SRC_PATH)%.cpp
-				@printf "\033[2K\r $(_YELLOW)Compiling $< $(_END)⌛"
+				@printf "$(_YELLOW)Compiling $< $(_END)⌛\n"
 				@$(CLANG) $(CLANGFLAGS) -I $(HEAD_PATH) -c $< -o $@
 
+# Getting .o from .c rule
+$(OBJS_PATH)%.o: $(SRC_PATH)%.c
+				@printf "$(_YELLOW)Compiling $< $(_END)⌛\n"
+				@$(GCC) $(GCCFLAGS) -I $(HEAD_PATH) -c $< -o $@
+
 $(OBJS):		$(OBJS_PATH)
+$(OBJS_C):		$(OBJS_PATH)
 
 $(OBJS_PATH):
-				@echo "\033[1;32mCreating webserv :\n\033[m"
+				@printf "$(_GREEN)Creating obj/ dir$(_END)\n"
 				@mkdir $(OBJS_PATH)
 
 fclean:
 				@rm -rf $(OBJS_PATH)
 				@rm -rf $(NAME)
-				@echo "\033[1;31mDeleting our webserv </3\033[m"
+				@printf "$(_RED)Deleting our webserv </3\n$(_END)"
 
 clean:
 				@rm -rf $(OBJS_PATH)
-				@echo "\033[1;31mDeleting all object files </3\033[m"
+				@printf "$(_RED)Deleting all object files </3\n$(_END)"
 
 re:				fclean all
 
