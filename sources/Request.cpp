@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tpalhol <tpalhol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/11 16:25:25 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/13 11:24:23 by user42           ###   ########.fr       */
+/*   Updated: 2021/04/13 19:18:57 by tpalhol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,9 @@ void	Request::parseRequest(std::string req)
 		std::stringstream	ss(line);
 		ss >> key >> value;										// set the variables
 
+		if(ss.fail())											// if value extraction failed, break while loop
+			break;
+			
 		if (this->isRequestMethod(key))							// handle method line
 		{
 			this->method = key;
