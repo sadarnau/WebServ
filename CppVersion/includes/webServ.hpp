@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadarnau <sadarnau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/11 16:27:17 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/12 14:01:37 by sadarnau         ###   ########.fr       */
+/*   Updated: 2021/04/13 11:17:34 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <unistd.h>		//read function	
 # include <string>
 # include <iostream>
+# include <cwchar>
+# include <cstring>
 # include <netinet/in.h>     //sockaddr struct
 
 class webServ
