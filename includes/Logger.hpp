@@ -16,7 +16,8 @@ class Logger {
 		enum Priority {
             DEBUG,
             INFO,
-            ERROR
+            ERROR,
+			NONE
         };
 	private:
         Logger();

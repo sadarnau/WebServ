@@ -27,26 +27,20 @@ void
 Logger::Write(Priority priority, const std::string &col, const std::string &message, bool _isWriteStdout) {
 	Log._fileStream.open("./log/log.txt", std::ofstream::app);
 	if (priority >= Log._minPriority) {
-		std::string output;
-		output.clear();
+		std::ostringstream oss;
+		
 		if (priority == DEBUG)
-			output.append(BLU);
+			oss << BLU;
 		else if (priority == INFO)
-			output.append(YEL);
+			oss << YEL;
 		else if (priority == ERROR)
-			output.append(RED);
-		output.append(_priorityNames[priority]);
-		output.append("[");
-		output.append(getTimeHMS());
-		output.append("]: ");
-		output.append(col);
-		output.append(message);
-		output.append(RESET);
+			oss << RED;
+		oss << _priorityNames[priority] << "[" << getTimeHMS() << "]: " << col << message << RESET ;
 
 		std::ostream& stream1 = Log._fileStream;
-		stream1 << output;
+		stream1 << oss.str();
 		if (_isWriteStdout)
-			std::cout << output;
+			std::cout << oss.str();
 	}
 	if (Log._fileStream.is_open())
         Log._fileStream.close();
