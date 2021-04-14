@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadarnau <sadarnau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/11 16:25:31 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/11 17:26:22 by sadarnau         ###   ########.fr       */
+/*   Updated: 2021/04/14 14:33:38 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <iostream>
 # include <sstream>
 # include <fstream>
+# include "Logger.hpp"
 
 
 class Response

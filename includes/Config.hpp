@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadarnau <sadarnau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/12 16:21:54 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/12 18:09:24 by sadarnau         ###   ########.fr       */
+/*   Updated: 2021/04/14 14:34:06 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <sstream>
 # include <map>
 # include <iostream>
+# include "Logger.hpp"
 
 class Config
 {

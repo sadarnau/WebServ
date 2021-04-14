@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpalhol <tpalhol@student.42.fr>            +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/11 16:25:25 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/13 19:22:19 by tpalhol          ###   ########.fr       */
+/*   Updated: 2021/04/14 14:39:31 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,30 +107,30 @@ void	Request::parseRequest(std::string req)
 
 void	Request::printRequest( void )
 {
-	std::cout << YEL; // set color
-	std::cout << "\n----------\nREQUEST OBJECT :\n\n" ;
-	std::cout << std::setw(20) << "request->method" << " : " << this->method << std::endl;
-	std::cout << std::setw(20) << "request->target " << " : " << this->target << std::endl << std::endl;
+	std::ostringstream oss;
+	oss << "\n----------\nREQUEST OBJECT :\n\n" ;
+	oss << std::setw(20) << "request->method" << " : " << this->method << std::endl;
+	oss << std::setw(20) << "request->target " << " : " << this->target << std::endl << std::endl;
 
-	std::cout << "Content of request->headers :" << std::endl << std::endl; 
-	std::cout << std::setw(20) << "KEY" << " : " << "VALUE" << std::endl << std::endl;
+	oss << "Content of request->headers :" << std::endl << std::endl; 
+	oss << std::setw(20) << "KEY" << " : " << "VALUE" << std::endl << std::endl;
 	for (std::map<std::string, std::string>::const_iterator it = this->headers.begin(); it != this->headers.end(); ++it)
 	{
-		std::cout << std::setw(20) << it->first << " : " << it->second << std::endl;
+		oss << std::setw(20) << it->first << " : " << it->second << std::endl;
 	}
 
 	//SKIPPED HEADERS
-	std::cout << std::endl << std::endl << "Skipped headers : ";
+	oss << std::endl << std::endl << "Skipped headers : ";
 	for (std::vector<std::string>::iterator it = this->skipped_headers.begin(); it != this->skipped_headers.end(); ++it)
-		std::cout << " " << *it;
-	std::cout << std::endl << std::endl;
+		oss << " " << *it;
+	oss << std::endl << std::endl;
 
 	// RAW REQUEST
-	std::cout << "Raw request :" << std::endl << std::endl;
-	std::cout << this->buff;
-	std::cout << "----------\n\n";
-	std::cout << RESET;
-
+	oss << "Raw request :" << std::endl << std::endl;
+	oss << this->buff;
+	oss << "----------\n\n";
+	oss << RESET;
+	Logger::Write(Logger::DEBUG, std::string(BLU), oss.str(), true);
 	return ;
 }
 

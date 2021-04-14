@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/11 16:27:17 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/13 11:17:34 by user42           ###   ########.fr       */
+/*   Updated: 2021/04/14 11:25:12 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # define WEBSERV_HPP
 
 # include "Request.hpp"
+# include "Logger.hpp"
 # include <unistd.h>		//read function	
 # include <string>
 # include <iostream>

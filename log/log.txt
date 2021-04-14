@@ -1,0 +1,4 @@
+--------LOG----------
+[0;33mINFO [14:43:24]: [0;32mI'm waiting for something to come up...
+
+[0m

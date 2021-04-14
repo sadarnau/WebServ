@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpalhol <tpalhol@student.42.fr>            +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/11 16:25:26 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/13 18:32:53 by tpalhol          ###   ########.fr       */
+/*   Updated: 2021/04/14 14:33:56 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <sstream>
 # include <colors.hpp>
 # include <iomanip>
+# include "Logger.hpp"
 
 class Request
 {
