@@ -2,30 +2,31 @@
 
 Logger Logger::Log;
 
-Logger::Logger(void) {}
+Logger::Logger(void)
+{
+}
 
-Logger::~Logger(void) {
+Logger::~Logger(void)
+{
 	Log.Stop();
 }
 
-const std::string Logger::_priorityNames[] = {
-	"DEBUG",
-	"INFO ",
-	"ERROR"
-};
+const std::string Logger::_priorityNames[] = { "DEBUG", "INFO ", "ERROR" };
 
-void
-Logger::Start(Priority minPriority) {
+void Logger::Start(Priority minPriority)
+{
 	Log._minPriority = minPriority;
 	Log._fileStream.open("./log/log.txt", std::ofstream::out);
 	Log._fileStream << "--------LOG----------\n";
+
 	if (Log._fileStream.is_open())
         Log._fileStream.close();
 }
 
-void
-Logger::Write(Priority priority, const std::string &col, const std::string &message, bool _isWriteStdout) {
+void Logger::Write(Priority priority, const std::string &col, const std::string &message, bool _isWriteStdout)
+{
 	Log._fileStream.open("./log/log.txt", std::ofstream::app);
+
 	if (priority >= Log._minPriority) {
 		std::ostringstream oss;
 		
@@ -42,20 +43,20 @@ Logger::Write(Priority priority, const std::string &col, const std::string &mess
 		if (_isWriteStdout)
 			std::cout << oss.str();
 	}
+
 	if (Log._fileStream.is_open())
         Log._fileStream.close();
 }
 
-void
-Logger::Error(const std::string &message) {
+void Logger::Error(const std::string &message)
+{
 	if (errno != 0)
 		Logger::Write(Logger::ERROR, std::string(RED), message + " -> (" + std::string(strerror(errno)) + ")", true);
 	else
 		Logger::Write(Logger::ERROR, std::string(RED), message, true);
 }
 
-void
-Logger::Stop(void)
+void Logger::Stop(void)
 {
     if (Log._fileStream.is_open())
         Log._fileStream.close();

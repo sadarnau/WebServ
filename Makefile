@@ -32,6 +32,8 @@ GCC =			gcc
 CLANGFLAGS =	-Werror -Wall -Wextra -std=c++98
 GCCFLAGS =		-Werror -Wall -Wextra
 
+# LOGS
+LOG_PATH =		log/log.txt
 
 ######################
 ###    RULES
@@ -63,6 +65,7 @@ $(OBJS_PATH):
 fclean:
 				@rm -rf $(OBJS_PATH)
 				@rm -rf $(NAME)
+				@rm -rf $(LOG_PATH)
 				@printf "$(_RED)Deleting our webserv </3\n$(_END)"
 
 clean:

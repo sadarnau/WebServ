@@ -1,16 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Request.hpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/11 16:25:26 by sadarnau          #+#    #+#             */
-/*   Updated: 2021/04/14 14:33:56 by user42           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-
 #ifndef REQUEST_HPP
 # define REQUEST_HPP
 
@@ -27,18 +14,18 @@ class Request
 {
 private:
 
-	int			in_socket;
-	std::string	buff;
+	int			_inSocket;
+	std::string	_buff;
 
-	std::string method;
-	std::string target;
-	std::map<std::string, std::string> headers;
-	std::vector<std::string> skipped_headers;
+	std::string _method;
+	std::string _target;
+	std::map<std::string, std::string> _headers;
+	std::vector<std::string> _skippedHeaders;
 
 public:
 
 	Request( void );								//default constructor
-	Request( int in_sock, char *buff );					//constructor
+	Request( int inSock, char *buff );					//constructor
 	Request( Request const & src);  				//copy
 	~Request( void );								//destructor
 	Request & operator=( Request const & rhs );		//overload operator =
