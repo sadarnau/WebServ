@@ -66,7 +66,7 @@ void	Config::createMap( void )
 				locationConfig();
 		else if ((line.find("error_page")) != std::string::npos )
 			errorPageConfig( line );
-		else if (line.size() == 0)
+		else if (line.empty())
 			;
 		else if (!line.compare("}"))
 			break ;

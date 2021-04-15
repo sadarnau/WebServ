@@ -55,8 +55,7 @@ $(OBJS_PATH)%.o: $(SRC_PATH)%.c
 				@printf "$(_YELLOW)Compiling $< $(_END)⌛\n"
 				@$(GCC) $(GCCFLAGS) -I $(HEAD_PATH) -c $< -o $@
 
-$(OBJS):		$(OBJS_PATH)
-$(OBJS_C):		$(OBJS_PATH)
+$(OBJS):		| $(OBJS_PATH)
 
 $(OBJS_PATH):
 				@printf "$(_GREEN)Creating obj/ dir$(_END)\n"
