@@ -30,7 +30,7 @@ Response & Response::operator=( Response const & rhs)
 
 void	Response::fillResponse( void )
 {
-	std::ifstream 	f("index.html"); // open index.html
+	std::ifstream 	f("files/index.html"); // open index.html
 	std::string		content;
 
 	// Check if the file can be open and if so put it in content

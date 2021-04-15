@@ -76,7 +76,7 @@ void	Request::parseRequest(std::string req)
 
 		if(ss.fail())											// if value extraction failed, break while loop
 			break;
-			
+
 		if (this->isRequestMethod(key))							// handle method line
 		{
 			this->_method = key;

@@ -30,11 +30,13 @@ Webserv & Webserv::operator=( Webserv const & rhs)
 
 void	Webserv::initialization( void )
 {
+	this->config.parseFile("files/test.conf");
+
 	this->fd = socket(AF_INET, SOCK_STREAM, 0); // to pprotect
 	
 	this->fillAddress();
 
-	bind(this->fd, (struct sockaddr *)&this->address, sizeof(this->address));  // to pprotect
+	bind(this->fd, (struct sockaddr *)&this->address, sizeof(this->address));  // to protect
 
 	listen(this->fd, 5); // 5 = number of max connections
 	
@@ -43,9 +45,14 @@ void	Webserv::initialization( void )
 
 void	Webserv::fillAddress( void )
 {
+	std::map<std::string, std::string> configMap = this->config.getMap();
+	
+	std::string port = configMap["listen"].substr(configMap["listen"].find(":") + 1 , configMap["listen"].size());
+	std::string	IPaddr = configMap["listen"].substr(0, configMap["listen"].find(":"));
+
 	this->address.sin_family = AF_INET;
-	this->address.sin_addr.s_addr = INADDR_ANY; //htonl ??
-	this->address.sin_port = htons(8080);
+	this->address.sin_addr.s_addr = inet_addr(IPaddr.c_str()); //htonl ??
+	this->address.sin_port = htons(std::stoi(port));
 
 	memset(this->address.sin_zero, 0, sizeof(this->address.sin_zero));  // to pprotect
 

@@ -3,7 +3,9 @@
 
 # include "Request.hpp"
 # include "Logger.hpp"
-# include <unistd.h>		//read function	
+# include "Config.hpp"
+# include <unistd.h>		//read function
+# include <arpa/inet.h>		//inet_addr function
 # include <string>
 # include <iostream>
 # include <cwchar>
@@ -17,6 +19,7 @@ private:
 	int					fd;
 	struct sockaddr_in	address;
 	Request				inRequest;
+	Config				config;
 
 public:
 

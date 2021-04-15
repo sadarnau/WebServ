@@ -7,8 +7,13 @@ int main()
 {
 	Webserv		webserv;
 	Response	response;
+	Config		config;
+
+	// config.parseFile("test.conf");
+	// return 0;
 
 	webserv.initialization();
+
 	Logger::Start(Logger::DEBUG);
 	while(1)
 	{

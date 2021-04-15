@@ -23,9 +23,13 @@ public:
 	~Config( void );							//destructor
 	Config & operator=( Config const & rhs );	//overload operator =
 
-	void	parseFile( std::string fileName );
-	void	checkFile( std::string fileName );
-	void	createMap( void );
+	void								parseFile( std::string fileName );
+	void								checkFile( std::string fileName );
+	void								createMap( void );
+	void								locationConfig( void );
+	void								errorPageConfig( std::string line );
+	void								parseConf( std::string line );
+	std::map<std::string, std::string>	getMap( void );
 };
 
 // template<typename K, typename V>
