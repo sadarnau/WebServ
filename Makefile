@@ -14,7 +14,6 @@ NAME =			webserv
 # SOURCES
 SRC_PATH =		sources/
 SRC =			main.cpp Request.cpp Response.cpp Webserv.cpp Config.cpp Logger.cpp Utils.cpp
-SRC_C =			get_next_line.c get_next_line_utils.c
 
 # HEADER
 HEAD_PATH =		includes/
@@ -22,15 +21,12 @@ HEAD_PATH =		includes/
 # All .o (object file)
 OBJS_PATH =		objs/
 OBJS =			$(SRC:%.cpp=$(OBJS_PATH)%.o)
-OBJS_C =		$(SRC_C:%.c=$(OBJS_PATH)%.o)
 
 # Compilation
 CLANG =			clang++
-GCC =			gcc
 
 # Compilation flags
 CLANGFLAGS =	-Werror -Wall -Wextra -std=c++98
-GCCFLAGS =		-Werror -Wall -Wextra
 
 # LOGS
 LOG_PATH =		log/log.txt
@@ -39,8 +35,8 @@ LOG_PATH =		log/log.txt
 ###    RULES
 ######################
 
-all:			$(OBJS) $(OBJS_C)
-				@$(CLANG) $(CLANGFLAGS) $(OBJS) $(OBJS_C) -o $(NAME)
+all:			$(OBJS)
+				@$(CLANG) $(CLANGFLAGS) $(OBJS) -o $(NAME)
 				@printf "$(_GREEN)All done!$(_END)\n"
 				
 $(NAME):		all
@@ -49,11 +45,6 @@ $(NAME):		all
 $(OBJS_PATH)%.o: $(SRC_PATH)%.cpp
 				@printf "$(_YELLOW)Compiling $< $(_END)⌛\n"
 				@$(CLANG) $(CLANGFLAGS) -I $(HEAD_PATH) -c $< -o $@
-
-# Getting .o from .c rule
-$(OBJS_PATH)%.o: $(SRC_PATH)%.c
-				@printf "$(_YELLOW)Compiling $< $(_END)⌛\n"
-				@$(GCC) $(GCCFLAGS) -I $(HEAD_PATH) -c $< -o $@
 
 $(OBJS):		| $(OBJS_PATH)
 
