@@ -28,9 +28,9 @@ Webserv & Webserv::operator=( Webserv const & rhs)
 	return ( *this );
 }
 
-void	Webserv::initialization( void )
+void	Webserv::initialization( std::string fileName )
 {
-	this->config.parseFile("files/test.conf");
+	this->config.parseFile(fileName);
 
 	this->fd = socket(AF_INET, SOCK_STREAM, 0); // to pprotect
 	

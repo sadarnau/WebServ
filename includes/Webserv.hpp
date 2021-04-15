@@ -29,7 +29,7 @@ public:
 	~Webserv( void );								//destructor
 	Webserv & operator=( Webserv const & rhs );		//overload operator =
 
-	void	initialization( void );
+	void	initialization( std::string fileName );
 	void	fillAddress( void );
 	void	handleRequest( void );
 	int		getInSocket( void );

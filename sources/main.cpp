@@ -3,18 +3,23 @@
 #include "Config.hpp"
 #include "Logger.hpp"
 
-int main()
+int main(int ac, char *av[])
 {
 	Webserv		webserv;
 	Response	response;
-	Config		config;
 
-	// config.parseFile("test.conf");
-	// return 0;
-
-	webserv.initialization();
+	if (ac > 2)
+	{
+		Logger::Write(Logger::ERROR, std::string(RED), "Only wo args plllllz\n\n", true);
+		return 1;
+	}
+	else if (ac == 2)
+		webserv.initialization(av[1]);
+	else
+		webserv.initialization("files/default.conf");
 
 	Logger::Start(Logger::DEBUG);
+
 	while(1)
 	{
 		Logger::Write(Logger::INFO, std::string(GRN), "I'm waiting for something to come up...\n\n", true);
