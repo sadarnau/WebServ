@@ -1,14 +1,14 @@
 #include "Response.hpp"
 
-Response::Response( void )
+Response::Response(Config *conf, Request *req, int socket)
 {
-	return ;
-}
+	this->_conf = conf;
+	this->_req = req;
+	this->_socket = socket;
 
-// Response::Response( std::string name )
-// {
-// 	return ;
-// }
+	_httpVersion = "HTTP/1.1";
+
+}
 
 Response::Response( Response const & src )
 {
@@ -23,12 +23,32 @@ Response::~Response( void )
 
 Response & Response::operator=( Response const & rhs)
 {
-    // this->??? = rhs.???;
 	(void)rhs;
 	return ( *this );
 }
 
-void	Response::fillResponse( void )
+void	Response::buildResponse()
+{
+	std::string		requestMethod = this->_req->getMethod();
+
+	if (requestMethod == "GET")
+		this->processGet();
+	else if (requestMethod == "POST")
+		this->processPost();
+
+}
+
+void	Response::buildHeader()
+{
+
+}
+
+void	Response::buildBody()
+{
+
+}
+
+void	Response::processGet()
 {
 	std::ifstream 	f("files/index.html"); // open index.html
 	std::string		content;
@@ -52,12 +72,23 @@ void	Response::fillResponse( void )
 	oss << "Content-Length: " << content.size() << "\r\n";	oss << "\r\n";
 	oss << content;
 
-	this->response = oss.str();
+	this->_response = oss.str();
 	
 	return ;
 }
 
-std::string	Response::getResponse( void )
+void	Response::processPost()
 {
-	return(this->response);
+
+}
+
+void	Response::send()
+{
+	write(this->_socket, this->_response.c_str() , this->_response.length());	//to protect
+}
+
+
+std::string Response::getResponse()
+{
+	return (this->_response);
 }

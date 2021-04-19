@@ -127,3 +127,8 @@ int		Request::getInSock( void )
 {
 	return (this->_inSocket);
 }
+
+std::string		Request::getMethod()
+{
+	return (this->_method);
+}

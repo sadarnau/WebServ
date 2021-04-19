@@ -4,6 +4,7 @@
 # include "Request.hpp"
 # include "Logger.hpp"
 # include "Config.hpp"
+# include "Response.hpp"
 # include <unistd.h>		//read function
 # include <arpa/inet.h>		//inet_addr function
 # include <string>
