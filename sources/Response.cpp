@@ -90,7 +90,7 @@ void	Response::processGet()
 		this->_responseCode = 400;
 		this->_responseCodeMessage = "";
 		this->_contentType = "text/html";
-		std::ifstream error_page("files/default_error_pages/404.html");
+		std::ifstream error_page("files/default_error_pages/custom_404.html");
 		std::string str((std::istreambuf_iterator<char>(error_page)), std::istreambuf_iterator<char>());
 		this->_body = str;
 		std::cout << "Error opening the index file...\n";
