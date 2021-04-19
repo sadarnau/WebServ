@@ -17,8 +17,11 @@ private:
 
 	std::string _httpVersion;
 	int			_responseCode;
+	std::string	_responseCodeMessage;
+
+	std::string	_contentType;
 	std::map<std::string, std::string> _headers;
-	
+
 	std::string	_header;
 	std::string	_body;
 	std::string	_response;

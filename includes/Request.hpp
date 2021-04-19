@@ -37,6 +37,7 @@ public:
 
 	int		getInSock( void );
 	std::string		getMethod();
+	std::string		getTarget();
 };
 
 #endif
