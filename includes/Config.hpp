@@ -29,7 +29,6 @@ public:
 	void								createMap( void );
 	void								locationConfig( void );
 	void								putInLocMap( std::string line );
-	void								errorPageConfig( std::string line );
 	void								parseConf( std::string line );
 	std::map<std::string, std::string>	getMap( void );
 };

@@ -106,6 +106,23 @@ void	Response::processPost()
 
 }
 
+void	Response::generateErrorPage(int errorCode, std::string errorMessage)
+{
+	std::string		errorTemplate;
+
+	errorTemplate = "files/default_error_pages/template.html"; //change to error conf value
+	std::ifstream 	errorF(errorTemplate.c_str()); // open index.html
+	
+	if (errorF.good())
+	{
+		std::string		errorBody((std::istreambuf_iterator<char>(errorF)), std::istreambuf_iterator<char>());
+	}
+	else
+	{
+		std::cout << "Could not load error template" << std::endl;
+	}
+}
+
 void	Response::send()
 {
 	write(this->_socket, this->_response.c_str() , this->_response.length());	//to protect
