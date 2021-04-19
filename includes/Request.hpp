@@ -34,7 +34,9 @@ public:
 	bool	isRequestMethod(std::string key);
 	void	parseRequest(std::string req);
 	void	printRequest( void );
+
 	int		getInSock( void );
+	std::string		getMethod();
 };
 
 #endif

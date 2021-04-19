@@ -61,18 +61,25 @@ void	Webserv::fillAddress( void )
 
 void	Webserv::handleRequest( void )
 {
-	int in_sock;
+	int socket;
 
 	unsigned int addrlen = sizeof(address);
-	in_sock = accept(this->fd, (struct sockaddr *)&this->address, (socklen_t*)&addrlen);
+	socket = accept(this->fd, (struct sockaddr *)&this->address, (socklen_t*)&addrlen);
 	
 	char buff[1000];				// GNL maybe better ?
-	int ret = read( in_sock , buff, 1000);	// to protect
+	int ret = read( socket , buff, 1000);	// to protect
 	
 	buff[ret] = 0;
 
-	Request inRequest(in_sock, buff);
-	this->inRequest = inRequest;
+	Request request(socket, buff);
+
+	Response	response(&this->config, &request, socket);	
+	response.buildResponse();
+	response.send();
+	
+	//printing the response on the terminal
+	Logger::Write(Logger::DEBUG, std::string(BLU), "\n---------\nResponse:\n\n" + response.getResponse() + "\n-------\n\n", true);
+	Logger::Write(Logger::INFO, std::string(GRN), "Message delivered...\n\n", true);
 }
 
 int		Webserv::getInSocket( void )

@@ -8,23 +8,38 @@
 # include "Logger.hpp"
 # include "Webserv.hpp"
 
-
 class Response
 {
 private:
+	Config		*_conf;
+	Request		*_req;
+	int			_socket;
 
-	std::string	response;
+	std::string _httpVersion;
+	int			_responseCode;
+	std::map<std::string, std::string> _headers;
+	
+	std::string	_header;
+	std::string	_body;
+	std::string	_response;
 
 public:
-
-	Response( void );								//default constructor
+	Response(Config *conf, Request *req, int socket);								//default constructor
 	// Response( std::string name );					//constructor
 	Response( Response const & src);  				//copy
 	~Response( void );								//destructor
 	Response & operator=( Response const & rhs );	//overload operator =
 
-	void		fillResponse( void );
-	std::string	getResponse( void );
+	void	buildResponse();
+	void	buildHeader();
+	void	buildBody();
+	void	processGet();
+	void	processPost();
+	void	send();
+
+	std::string getResponse();
+
+	void	checkPath();
 };
 
 #endif

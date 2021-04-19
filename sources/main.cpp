@@ -6,7 +6,6 @@
 int main(int ac, char *av[])
 {
 	Webserv		webserv;
-	Response	response;
 
 	Logger::Start(Logger::DEBUG);
 
@@ -23,16 +22,7 @@ int main(int ac, char *av[])
 	while(1)
 	{
 		Logger::Write(Logger::INFO, std::string(GRN), "I'm waiting for something to come up...\n\n", true);
-
 		webserv.handleRequest();
-
-		response.fillResponse();
-
-		//printing the header on the terminal
-		Logger::Write(Logger::DEBUG, std::string(BLU), "\n---------\nResponse:\n\n" + response.getResponse() + "\n-------\n\n", true);
-
-		write(webserv.getInSocket(), response.getResponse().c_str() , response.getResponse().length());	//to protect
-		Logger::Write(Logger::INFO, std::string(GRN), "Message delivered...\n\n", true);
 		close(webserv.getInSocket());
 	}
 	close(webserv.getFd());
