@@ -84,3 +84,8 @@ int		Webserv::getFd( void )
 {
 	return (this->fd);
 }
+
+std::map<std::string, std::string>	Webserv::getMap( void )
+{
+	return (this->config.getMap());
+}

@@ -32,6 +32,10 @@ void	Config::parseFile( std::string fileName )
 {
 	checkFile(fileName);
 	createMap();
+
+	// for (std::map<std::string, std::string>::const_iterator it = this->fileMap.begin(); it != this->fileMap.end(); ++it)
+	// 	std::cout << std::setw(20) << it->first << " : " << it->second << std::endl;
+
 	return ;
 }
 
@@ -97,10 +101,13 @@ void	Config::parseConf( std::string line )
     std::string	key;
 
 	std::stringstream ss(line);
-	ss >> key >> value;										// set the variables  
-	if(ss.fail())											// if value extraction failed, break while loop
+	ss >> key >> value;											// set the variables  
+	if(ss.fail())												// if value extraction failed, break while loop
 		return ;
-	this->fileMap[key] = value.substr(0, value.size() - 1);	//-1 to take off the ';'
+	if (value[value.size() - 1] == ';')
+		this->fileMap[key] = value.substr(0, value.size() - 1);	//-1 to take off the ';'
+	else
+		throw (std::exception());								//Create an exeption, conf file not good
 
 	return ;
 }

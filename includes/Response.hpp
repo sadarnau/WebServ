@@ -6,6 +6,7 @@
 # include <sstream>
 # include <fstream>
 # include "Logger.hpp"
+# include "Webserv.hpp"
 
 
 class Response

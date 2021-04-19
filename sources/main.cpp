@@ -8,6 +8,8 @@ int main(int ac, char *av[])
 	Webserv		webserv;
 	Response	response;
 
+	Logger::Start(Logger::DEBUG);
+
 	if (ac > 2)
 	{
 		Logger::Write(Logger::ERROR, std::string(RED), "Only wo args plllllz\n\n", true);
@@ -18,8 +20,6 @@ int main(int ac, char *av[])
 	else
 		webserv.initialization("files/default.conf");
 
-	Logger::Start(Logger::DEBUG);
-
 	while(1)
 	{
 		Logger::Write(Logger::INFO, std::string(GRN), "I'm waiting for something to come up...\n\n", true);
@@ -27,6 +27,7 @@ int main(int ac, char *av[])
 		webserv.handleRequest();
 
 		response.fillResponse();
+
 		//printing the header on the terminal
 		Logger::Write(Logger::DEBUG, std::string(BLU), "\n---------\nResponse:\n\n" + response.getResponse() + "\n-------\n\n", true);
 

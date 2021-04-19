@@ -34,6 +34,7 @@ public:
 	void	handleRequest( void );
 	int		getInSocket( void );
 	int		getFd( void );
+	std::map<std::string, std::string>	getMap( void );
 };
 
 #endif
