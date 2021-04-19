@@ -29,11 +29,11 @@ public:
 	~Webserv( void );								//destructor
 	Webserv & operator=( Webserv const & rhs );		//overload operator =
 
-	void	initialization( std::string fileName );
-	void	fillAddress( void );
-	void	handleRequest( void );
-	int		getInSocket( void );
-	int		getFd( void );
+	void								initialization( std::string fileName );
+	void								fillAddress( void );
+	void								handleRequest( void );
+	int									getInSocket( void );
+	int									getFd( void );
 	std::map<std::string, std::string>	getMap( void );
 };
 

@@ -32,12 +32,4 @@ public:
 	std::map<std::string, std::string>	getMap( void );
 };
 
-// template<typename K, typename V>
-// void print_map(std::map<K, V> const &m)
-// {
-// 	for (auto it = m.cbegin(); it != m.cend(); ++it) {
-// 		std::cout << "{" << (*it).first << ": " << (*it).second << "}\n";
-// 	}
-// };
-
 #endif

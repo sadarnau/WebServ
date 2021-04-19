@@ -83,7 +83,20 @@ void	Config::createMap( void )
 
 void	Config::locationConfig( void )
 {
-	//create a location class
+	
+	while (std::getline(this->f, line))
+	{
+  		if ((line.find("location {")) != std::string::npos )
+				locationConfig();
+		else if ((line.find("error_page")) != std::string::npos )
+			errorPageConfig( line );
+		else if (line.empty())
+			;
+		else if (!line.compare("}"))
+			break ;
+		else
+			parseConf( line );
+	}
 
 	return ;
 }
