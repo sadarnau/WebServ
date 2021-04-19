@@ -23,7 +23,7 @@ int main(int ac, char *av[])
 	{
 		Logger::Write(Logger::INFO, std::string(GRN), "I'm waiting for something to come up...\n\n", true);
 		webserv.handleRequest();
-		close(webserv.getInSocket());
+		// close(webserv.getInSocket());
 	}
 	close(webserv.getFd());
 

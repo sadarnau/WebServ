@@ -76,7 +76,7 @@ void	Webserv::handleRequest( void )
 	Response	response(&this->config, &request, socket);	
 	response.buildResponse();
 	response.send();
-	
+
 	//printing the response on the terminal
 	Logger::Write(Logger::DEBUG, std::string(BLU), "\n---------\nResponse:\n\n" + response.getResponse() + "\n-------\n\n", true);
 	Logger::Write(Logger::INFO, std::string(GRN), "Message delivered...\n\n", true);
