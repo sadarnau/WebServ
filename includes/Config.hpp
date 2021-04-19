@@ -14,6 +14,7 @@ private:
 
 	std::ifstream						f;		// open index.html
 	std::map<std::string, std::string>	fileMap;
+	std::map<std::string, std::string>	_locationMap;
 
 public:
 
@@ -27,6 +28,7 @@ public:
 	void								checkFile( std::string fileName );
 	void								createMap( void );
 	void								locationConfig( void );
+	void								putInLocMap( std::string line );
 	void								errorPageConfig( std::string line );
 	void								parseConf( std::string line );
 	std::map<std::string, std::string>	getMap( void );
