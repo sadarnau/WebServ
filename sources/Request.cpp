@@ -98,7 +98,6 @@ void	Request::createPath()
 	this->_absoluteTargetPath = currentdir + "/" + root + this->_target;
 }
 
-
 bool	Request::isValidHeader(std::string header)
 {
 	std::string listOfAcceptedHeaders[18] = {"Accept-Charsets", "Accept-Language", "Allow", "Authorization", "Content-Language",
