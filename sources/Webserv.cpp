@@ -115,7 +115,7 @@ void	Webserv::handleRequest( int socket )
 	
 	buff[ret] = 0;
 
-	Request request(socket, buff);
+	Request		request(&this->config, socket, buff);
 
 	Response	response(&this->config, &request, socket);	
 	response.buildResponse();

@@ -63,26 +63,34 @@ void	Response::buildBody()
 
 void	Response::processGet()
 {
-	std::string		target;
+
 	std::string		content;
 
 	std::string		root = "files/www";			// Change to config->location->root
 	std::string		auto_index= "on";			// Change to config->location->auto_index
 	std::string 	index_page = "index.html";	// Change to index in conf 
-	target = root + this->_req->getTarget();
-	//Test if path a dir 
 
-	if (this->isDirectoryRequest())
-		return ;
-
-	if (this->_req->getTarget() == "/")
-		target = root + "/" + index_page;     // Change to default index in conf
-	else
-		target = root + this->_req->getTarget();
+	std::string 	target;
+	// Directory Request
+	if (this->isDirectory())
+	{
+		if(!isIndexPagePresent() && auto_index == "on" && this->autoIndexRequest())  //autoIndexRequest return true on success
+			return ;
+		else if (isIndexPagePresent())
+		{
+			if (this->_req->getRelativeTargetPath().back() != '/')
+				target = this->_req->getRelativeTargetPath() + "/" + index_page;     // Change to default index in conf
+			else
+				target = this->_req->getRelativeTargetPath() += index_page;
+		}
+	}
+	else{
+		target = this->_req->getRelativeTargetPath();
+	}
 
 	// Check if the file can be open and cerate response
-
-	std::ifstream 	f(target.c_str()); // open index.html
+	std::cout << target << std::endl;
+	std::ifstream 	f(target.c_str()); // open file
 	if (f.good())
 	{
 		this->setHeaders(200, "OK", "text/html");
@@ -116,29 +124,38 @@ bool		Response::isIndexPagePresent()
 {
 	std::string 	index_page = "index.html";	// Change to index in conf 
 	std::string		target;
-	std::string		root = "files/www";			// Change to config->location->root
 
-	if (this->_req->getTarget().back() != '/')
-		target = root + "/" + index_page;     // Change to default index in conf
+	if (index_page.empty())						//If no index in conf file
+		return false;
+
+	if (this->_req->getRelativeTargetPath().back() != '/')
+		target =  this->_req->getRelativeTargetPath() + "/" + index_page; 
 	else
-		target = root + index_page;
+		target = this->_req->getRelativeTargetPath() + index_page;
 
-	std::ifstream 	f(target.c_str()); // open index.html
+	std::ifstream 	f(target.c_str());
 	return (f.good());
 
 }
 
-bool		Response::isDirectoryRequest()
+bool		Response::isDirectory()
+{
+	DIR *directory;
+	if ((directory = opendir(this->_req->getRelativeTargetPath().c_str())))
+		return true;
+	return false;
+}
+
+bool		Response::autoIndexRequest()
 {
 	std::string		root;
 	std::string		auto_index;
 	auto_index = "on";						// Change to config->location->auto_index
 	root = "files/www";	
 
-	std::string target = root + this->_req->getTarget();
 	DIR *directory;
 	struct dirent *dircontent;
-	if ((directory = opendir(target.c_str())) && auto_index == "on")
+	if ((directory = opendir(this->_req->getRelativeTargetPath().c_str())))
 	{
 		setHeaders(200, "OK", "text/html");
 

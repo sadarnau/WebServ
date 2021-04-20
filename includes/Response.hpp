@@ -39,10 +39,12 @@ public:
 	void			buildBody();
 	void			processGet();
 	void			processPost();
+	bool			autoIndexRequest();
+
 	void			send();
 
-	bool				isIndexPagePresent();
-	bool				isDirectoryRequest();
+	bool			isIndexPagePresent();
+	bool			isDirectory();
 
 	void			setHeaders(int responseCode, std::string responseCodeMessage, std::string contentType);
 	std::string		getResponse();

@@ -5,11 +5,13 @@ Request::Request( void )
 	return ;
 }
 
-Request::Request( int inSock, char *buff ) : _inSocket(inSock)
+Request::Request(Config *config, int inSock, char *buff ) : _inSocket(inSock)
 {
+	this->_config = config;
 	std::string	tmp(buff);	//convert char* to std::string
 	this->_buff = tmp;
 	this->parseRequest(this->_buff);
+	this->createPath();
 	this->printRequest();
 	return ;
 }
@@ -62,6 +64,28 @@ bool	Request::isRequestMethod(std::string key)
 	return (false);
 }
 
+void	Request::createPath()
+{
+	std::string mapRoot = this->_config->getMap()["root"]; //change with conf->location->root
+	std::string root;
+
+	//Remove '/' from root if exist (because target has already it)
+	if (mapRoot.back() == '/')
+		root = mapRoot.substr(0, mapRoot.size()-1);
+	else
+		root = mapRoot;
+
+	// Create relative path
+	this->_relativeTargetPath = root + this->_target;
+
+	//Create absolute path
+	char cwd[1000];
+	getcwd(cwd, sizeof(cwd));
+	std::string currentdir = cwd;
+	this->_absoluteTargetPath = currentdir + "/" + root + this->_target;
+
+}
+
 void	Request::parseRequest(std::string req)
 {
 	std::string				line;
@@ -80,7 +104,7 @@ void	Request::parseRequest(std::string req)
 		if (this->isRequestMethod(key))							// handle method line
 		{
 			this->_method = key;
-			this->_relativeTargetPath = value;
+			this->_target = value;
 		}
 		else													// handle anything else (= headers)
 		{
@@ -99,7 +123,8 @@ void	Request::printRequest( void )
 	
 	oss << "\n----------\nREQUEST OBJECT :\n\n" ;
 	oss << std::setw(20) << "request->method" << " : " << this->_method << std::endl;
-	oss << std::setw(20) << "request->target " << " : " << this->_relativeTargetPath << std::endl << std::endl;
+	oss << std::setw(20) << "request->relativeTargetPath " << " : " << this->_relativeTargetPath << std::endl << std::endl;
+	oss << std::setw(20) << "request->absoluteTargetPath " << " : " << this->_absoluteTargetPath << std::endl << std::endl;
 
 	oss << "Content of request->headers :" << std::endl << std::endl; 
 	oss << std::setw(20) << "KEY" << " : " << "VALUE" << std::endl << std::endl;
@@ -135,5 +160,15 @@ std::string		Request::getMethod()
 
 std::string		Request::getTarget()
 {
+	return (this->_target);
+}
+
+std::string		Request::getRelativeTargetPath()
+{
 	return (this->_relativeTargetPath);
+}
+
+std::string		Request::getAbsoluteTargetPath()
+{
+	return (this->_absoluteTargetPath);
 }
