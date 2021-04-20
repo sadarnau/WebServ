@@ -28,15 +28,16 @@ Webserv & Webserv::operator=( Webserv const & rhs)
 	return ( *this );
 }
 
-void	Webserv::initialization( std::string fileName ) //to do : return 1 in case of error else return 0
+int		Webserv::initialization( std::string fileName ) //to do : return 1 in case of error else return 0
 {
 	this->config.parseFile(fileName);
 
 	printMap(this->getMap());
+	
 	if ((this->fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
 		Logger::Write(Logger::ERROR, std::string(RED), "Error assigning the socket...\n", true);
-		exit(1);
+		return (1);
 	}
 
 	Logger::Write(Logger::INFO, std::string(GRN), "The socket has been created !\n", true);
@@ -46,40 +47,41 @@ void	Webserv::initialization( std::string fileName ) //to do : return 1 in case 
 	if ((bind(this->fd, (struct sockaddr *)&this->address, sizeof(this->address))) < 0)
 	{
 		Logger::Write(Logger::ERROR, std::string(RED), "Error bindind the socket...\n", true);
-		exit(1);
+		return (1);
 	}
 
-	Logger::Write(Logger::INFO, std::string(GRN), "The socket has been binded !\n", true);
+	std::string	ret = "The socket has been binded on : " + this->_IPaddr + ':' + this->_port + " !\n";
+	Logger::Write(Logger::INFO, std::string(GRN), ret, true);
 
-	if ((listen(this->fd, 5)) < 0) // 5 = number of max connections
+	if ((listen(this->fd, 5)) < 0) 			// 5 = number of max connections
 	{
 		Logger::Write(Logger::ERROR, std::string(RED), "Error listening the socket...\n", true);
-		exit(1);
+		return (1);
 	}
 
-	Logger::Write(Logger::INFO, std::string(GRN), "Listening the socket !\n", true); //better to IP::PORT
+	Logger::Write(Logger::INFO, std::string(GRN), "Listening the socket !\n", true);
 
-	FD_ZERO(&this->_master_fd);	//create a master file descriptor set and initialize it to zero
+	FD_ZERO(&this->_master_fd);				//create a master file descriptor set and initialize it to zero
 
-	FD_SET(this->fd, &this->_master_fd);	//adding our first fd socket, the listening one.
+	FD_SET(this->fd, &this->_master_fd);	//adding our first fd socket, the server one.
 	
 	this->_maxFd = this->fd;
 
-	return ;
+	return (0);
 }
 
 void	Webserv::fillAddress( void )
 {
 	std::map<std::string, std::string> configMap = this->config.getMap();
 	
-	std::string port = configMap["listen"].substr(configMap["listen"].find(":") + 1 , configMap["listen"].size());
-	std::string	IPaddr = configMap["listen"].substr(0, configMap["listen"].find(":"));
+	this->_port = configMap["listen"].substr(configMap["listen"].find(":") + 1 , configMap["listen"].size());
+	this->_IPaddr = configMap["listen"].substr(0, configMap["listen"].find(":"));
 
 	this->address.sin_family = AF_INET;
-	this->address.sin_addr.s_addr = inet_addr(IPaddr.c_str()); //htonl ??
-	this->address.sin_port = htons(std::stoi(port));
+	this->address.sin_addr.s_addr = inet_addr(this->_IPaddr.c_str());	//htonl ??
+	this->address.sin_port = htons(std::stoi(this->_port));
 
-	memset(this->address.sin_zero, 0, sizeof(this->address.sin_zero));  // to pprotect
+	memset(this->address.sin_zero, 0, sizeof(this->address.sin_zero));	// to pprotect
 
 	return ;
 }
@@ -105,9 +107,11 @@ void	Webserv::acceptConexion( void )
 
 void	Webserv::handleRequest( int socket )
 {
-
-	char buff[1024];				// GNL maybe better ?
-	int ret = read( socket , buff, 1000);	// to protect
+	// consider socket like a stream, the request can be send in multiple packets (for big request)
+	// so this version is KO
+	
+	char buff[1024];						// GNL maybe better ?
+	int ret = read( socket , buff, 1024);	// to protect
 	
 	buff[ret] = 0;
 
@@ -117,7 +121,6 @@ void	Webserv::handleRequest( int socket )
 	response.buildResponse();
 	response.send();
 
-	//printing the response on the terminal
 	Logger::Write(Logger::DEBUG, std::string(BLU), "\n---------\nResponse:\n\n" + response.getResponse() + "\n-------\n\n", true);
 	Logger::Write(Logger::INFO, std::string(GRN), "Message delivered...\n\n", true);
 }

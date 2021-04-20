@@ -17,9 +17,13 @@ int main(int ac, char *av[])
 		return 1;
 	}
 	else if (ac == 2)
-		webserv.initialization(av[1]);		//to do : -1 in case of error
+	{
+		if (webserv.initialization(av[1]))
+			return (1);
+	}
 	else
-		webserv.initialization("files/default.conf");	//same same
+		if (webserv.initialization("files/default.conf"))
+			return (1);
 
 	fd_set	copyMasterSet = webserv.getMasterSet();
 

@@ -25,6 +25,9 @@ private:
 	Config				config;
 	fd_set				_master_fd;
 	int					_maxFd;
+	std::string			_port;
+	std::string			_IPaddr;
+
 public:
 
 	Webserv( void );						 		//default constructor
@@ -33,7 +36,7 @@ public:
 	~Webserv( void );								//destructor
 	Webserv & operator=( Webserv const & rhs );		//overload operator =
 
-	void								initialization( std::string fileName );
+	int									initialization( std::string fileName );
 	void								fillAddress( void );
 	void								acceptConexion( void );
 	void								handleRequest( int socket );
@@ -42,8 +45,8 @@ public:
 	int									getMaxFd( void );
 	fd_set								getMasterSet( void );
 	std::map<std::string, std::string>	getMap( void );
-	struct sockaddr_in			&		getAddr( void );
-	Config						&		getConfig( void );
+	struct sockaddr_in					&getAddr( void );
+	Config								&getConfig( void );
 	std::vector<int>					getFdList( void );
 
 };
