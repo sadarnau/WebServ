@@ -18,7 +18,8 @@ private:
 	std::string	_buff;
 
 	std::string _method;
-	std::string _target;
+	std::string _relativeTargetPath;
+	std::string _absoluteTargetPath;
 	std::map<std::string, std::string> _headers;
 	std::vector<std::string> _skippedHeaders;
 

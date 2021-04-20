@@ -80,7 +80,7 @@ void	Request::parseRequest(std::string req)
 		if (this->isRequestMethod(key))							// handle method line
 		{
 			this->_method = key;
-			this->_target = value;
+			this->_relativeTargetPath = value;
 		}
 		else													// handle anything else (= headers)
 		{
@@ -99,7 +99,7 @@ void	Request::printRequest( void )
 	
 	oss << "\n----------\nREQUEST OBJECT :\n\n" ;
 	oss << std::setw(20) << "request->method" << " : " << this->_method << std::endl;
-	oss << std::setw(20) << "request->target " << " : " << this->_target << std::endl << std::endl;
+	oss << std::setw(20) << "request->target " << " : " << this->_relativeTargetPath << std::endl << std::endl;
 
 	oss << "Content of request->headers :" << std::endl << std::endl; 
 	oss << std::setw(20) << "KEY" << " : " << "VALUE" << std::endl << std::endl;
@@ -135,5 +135,5 @@ std::string		Request::getMethod()
 
 std::string		Request::getTarget()
 {
-	return (this->_target);
+	return (this->_relativeTargetPath);
 }

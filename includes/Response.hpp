@@ -5,6 +5,8 @@
 # include <iostream>
 # include <sstream>
 # include <fstream>
+# include <sys/types.h>
+# include <dirent.h>
 # include "Logger.hpp"
 # include "Webserv.hpp"
 
@@ -37,9 +39,12 @@ public:
 	void			buildBody();
 	void			processGet();
 	void			processPost();
-	void			generateErrorPage(int errorCode, std::string errorMessage);
 	void			send();
 
+	bool				isIndexPagePresent();
+	bool				isDirectoryRequest();
+
+	void			setHeaders(int responseCode, std::string responseCodeMessage, std::string contentType);
 	std::string		getResponse();
 
 	void			checkPath();
