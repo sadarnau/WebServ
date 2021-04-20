@@ -1,5 +1,8 @@
 #include "Request.hpp"
 
+////////////////////
+// COPLIEN'S
+////////////////////
 Request::Request( void )
 {
 	return ;
@@ -35,57 +38,10 @@ Request & Request::operator=( Request const & rhs)
 	return ( *this );
 }
 
-bool	Request::isValidHeader(std::string header)
-{
-	std::string listOfAcceptedHeaders[18] = {"Accept-Charsets", "Accept-Language", "Allow", "Authorization", "Content-Language",
-												"Content-Length", "Content-Location", "Content-Type", "Date", "Host", "Last-Modified",
-												"Location", "Referer", "Retry-After", "Server", "Transfer-Encoding", "User-Agent",
-												"WWW-Authenticate"};
-	std::vector<std::string> acceptedHeaders;
-	acceptedHeaders.assign(listOfAcceptedHeaders, listOfAcceptedHeaders + 18);
 
-	for (std::vector<std::string>::iterator it = acceptedHeaders.begin(); it != acceptedHeaders.end(); ++it)
-		if (header == *it)
-			return (true);
-
-	return (false);
-}
-
-bool	Request::isRequestMethod(std::string key)
-{
-	std::string listOfAcceptedMethods[8] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE"}; // see https://tools.ietf.org/html/rfc7231 - RFC 7231
-	std::vector<std::string> acceptedMethods;
-	acceptedMethods.assign(listOfAcceptedMethods, listOfAcceptedMethods + 8);
-
-	for (std::vector<std::string>::iterator it = acceptedMethods.begin(); it != acceptedMethods.end(); ++it)
-		if (key == *it)
-			return (true);
-
-	return (false);
-}
-
-void	Request::createPath()
-{
-	std::string mapRoot = this->_config->getMap()["root"]; //change with conf->location->root
-	std::string root;
-
-	//Remove '/' from root if exist (because target has already it)
-	if (mapRoot.back() == '/')
-		root = mapRoot.substr(0, mapRoot.size()-1);
-	else
-		root = mapRoot;
-
-	// Create relative path
-	this->_relativeTargetPath = root + this->_target;
-
-	//Create absolute path
-	char cwd[1000];
-	getcwd(cwd, sizeof(cwd));
-	std::string currentdir = cwd;
-	this->_absoluteTargetPath = currentdir + "/" + root + this->_target;
-
-}
-
+////////////////////
+// PARSE
+////////////////////
 void	Request::parseRequest(std::string req)
 {
 	std::string				line;
@@ -115,6 +71,61 @@ void	Request::parseRequest(std::string req)
 				this->_skippedHeaders.push_back(key);
 		}
 	}
+}
+
+
+////////////////////
+// UTILS
+////////////////////
+void	Request::createPath()
+{
+	std::string mapRoot = this->_config->getMap()["root"]; //change with conf->location->root
+	std::string root;
+
+	//Remove '/' from root if exist (because target has already it)
+	if (mapRoot.back() == '/')
+		root = mapRoot.substr(0, mapRoot.size()-1);
+	else
+		root = mapRoot;
+
+	// Create relative path
+	this->_relativeTargetPath = root + this->_target;
+
+	//Create absolute path
+	char cwd[1000];
+	getcwd(cwd, sizeof(cwd));
+	std::string currentdir = cwd;
+	this->_absoluteTargetPath = currentdir + "/" + root + this->_target;
+}
+
+
+bool	Request::isValidHeader(std::string header)
+{
+	std::string listOfAcceptedHeaders[18] = {"Accept-Charsets", "Accept-Language", "Allow", "Authorization", "Content-Language",
+												"Content-Length", "Content-Location", "Content-Type", "Date", "Host", "Last-Modified",
+												"Location", "Referer", "Retry-After", "Server", "Transfer-Encoding", "User-Agent",
+												"WWW-Authenticate"};
+	std::vector<std::string> acceptedHeaders;
+	acceptedHeaders.assign(listOfAcceptedHeaders, listOfAcceptedHeaders + 18);
+
+	for (std::vector<std::string>::iterator it = acceptedHeaders.begin(); it != acceptedHeaders.end(); ++it)
+		if (header == *it)
+			return (true);
+
+	return (false);
+}
+
+bool	Request::isRequestMethod(std::string key)
+{
+	std::string listOfAcceptedMethods[8] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE"}; // see https://tools.ietf.org/html/rfc7231 - RFC 7231
+	std::vector<std::string> acceptedMethods;
+	acceptedMethods.assign(listOfAcceptedMethods, listOfAcceptedMethods + 8);
+
+	for (std::vector<std::string>::iterator it = acceptedMethods.begin(); it != acceptedMethods.end(); ++it)
+		if (key == *it)
+			return (true);
+
+	return (false);
 }
 
 void	Request::printRequest( void )
@@ -148,6 +159,10 @@ void	Request::printRequest( void )
 	return ;
 }
 
+
+////////////////////
+// GETTERS / SETTERS
+////////////////////
 int		Request::getInSock( void )
 {
 	return (this->_inSocket);

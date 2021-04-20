@@ -1,5 +1,8 @@
 #include "Response.hpp"
 
+////////////////////
+// Coplien's
+////////////////////
 Response::Response(Config *conf, Request *req, int socket)
 {
 	this->_conf = conf;
@@ -25,6 +28,15 @@ Response & Response::operator=( Response const & rhs)
 {
 	(void)rhs;
 	return ( *this );
+}
+
+
+////////////////////
+// METHODS
+////////////////////
+void	Response::send()
+{
+	write(this->_socket, this->_response.c_str() , this->_response.length());	//to protect
 }
 
 void	Response::buildResponse()
@@ -56,11 +68,10 @@ void	Response::buildHeader()
 	this->_header = header.str();
 }
 
-void	Response::buildBody()
-{
 
-}
-
+////////////////////
+// GET
+////////////////////
 void	Response::processGet()
 {
 
@@ -77,19 +88,15 @@ void	Response::processGet()
 		if(!isIndexPagePresent() && auto_index == "on" && this->autoIndexRequest())  //autoIndexRequest return true on success
 			return ;
 		else if (isIndexPagePresent())
-		{
-			if (this->_req->getRelativeTargetPath().back() != '/')
-				target = this->_req->getRelativeTargetPath() + "/" + index_page;     // Change to default index in conf
-			else
-				target = this->_req->getRelativeTargetPath() += index_page;
-		}
+			target = this->getIndexPath();
 	}
-	else{
+	else
 		target = this->_req->getRelativeTargetPath();
-	}
+
+	
+	//TO_DO : Here comes the block where you check the file ext and define content_type
 
 	// Check if the file can be open and cerate response
-	std::cout << target << std::endl;
 	std::ifstream 	f(target.c_str()); // open file
 	if (f.good())
 	{
@@ -106,74 +113,46 @@ void	Response::processGet()
 	}
 
 	f.close();
-	
-	return ;
 }
 
+
+////////////////////
+// POST
+////////////////////
 void	Response::processPost()
 {
 
 }
 
-void	Response::send()
-{
-	write(this->_socket, this->_response.c_str() , this->_response.length());	//to protect
-}
 
-bool		Response::isIndexPagePresent()
-{
-	std::string 	index_page = "index.html";	// Change to index in conf 
-	std::string		target;
-
-	if (index_page.empty())						//If no index in conf file
-		return false;
-
-	if (this->_req->getRelativeTargetPath().back() != '/')
-		target =  this->_req->getRelativeTargetPath() + "/" + index_page; 
-	else
-		target = this->_req->getRelativeTargetPath() + index_page;
-
-	std::ifstream 	f(target.c_str());
-	return (f.good());
-
-}
-
-bool		Response::isDirectory()
-{
-	DIR *directory;
-	if ((directory = opendir(this->_req->getRelativeTargetPath().c_str())))
-		return true;
-	return false;
-}
-
+////////////////////
+// AUTO INDEX
+////////////////////
 bool		Response::autoIndexRequest()
 {
-	std::string		root;
-	std::string		auto_index;
-	auto_index = "on";						// Change to config->location->auto_index
-	root = "files/www";	
+	std::string		auto_index = "on";						// Change to config->location->auto_index
 
 	DIR *directory;
 	struct dirent *dircontent;
+
 	if ((directory = opendir(this->_req->getRelativeTargetPath().c_str())))
 	{
 		setHeaders(200, "OK", "text/html");
 
-		std::ostringstream content;
 		std::ifstream content_start("files/default_pages/auto_index_start.html");
+		std::ostringstream content;
 		std::ifstream content_end("files/default_pages/auto_index_end.html");
 
 		content << std::string((std::istreambuf_iterator<char>(content_start)), std::istreambuf_iterator<char>());
 
 		content << "<h1>Directory : " << this->_req->getTarget() << "</h1>";
 		content << "<ul>" << std::endl;
+
 		while((dircontent = readdir(directory)))
 		{
 				content << "<li>" << "<a href='" << this->_req->getTarget();
 				if (this->_req->getTarget().back() != '/')			// this ensure folder path to have '/' when traget is not root
-				{
 					content << '/';
-				}
 				content << dircontent->d_name <<"'>";
 				content << dircontent->d_name << "</a>" << "</li>" << std::endl;
 		}
@@ -183,14 +162,53 @@ bool		Response::autoIndexRequest()
 		this->_body = content.str();
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+
+	return false;
 }
 
-// GETTERS / SETTERS
 
+////////////////////
+// UTILS
+////////////////////
+std::string	Response::getIndexPath()
+{
+	std::string 	index_page = "index.html";	// Change to index in conf 
+
+	if (this->_req->getRelativeTargetPath().back() != '/')
+		return(this->_req->getRelativeTargetPath() + "/" + index_page); 
+	else
+		return (this->_req->getRelativeTargetPath() + index_page);
+}
+
+bool		Response::isIndexPagePresent()
+{
+	std::string 	index_page = "index.html";	// Change to index in conf 
+
+	std::string		target;
+
+	if (index_page.empty())						//If no index in conf file
+		return false;
+
+	target = getIndexPath();
+
+	std::ifstream 	f(target.c_str());
+
+	return (f.good());
+}
+
+bool		Response::isDirectory()
+{
+	DIR *directory;
+
+	if ((directory = opendir(this->_req->getRelativeTargetPath().c_str())))
+		return true;
+	return false;
+}
+
+
+////////////////////
+// GETTERS / SETTERS
+////////////////////
 void	Response::setHeaders(int responseCode, std::string responseCodeMessage, std::string contentType)
 {
 	this->_responseCode = responseCode;

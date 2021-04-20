@@ -50,6 +50,8 @@ public:
 	std::string		getResponse();
 
 	void			checkPath();
+	std::string		getIndexPath();
+
 };
 
 #endif
