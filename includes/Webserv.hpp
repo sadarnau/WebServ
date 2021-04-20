@@ -11,17 +11,20 @@
 # include <iostream>
 # include <cwchar>
 # include <cstring>
-# include <netinet/in.h>     //sockaddr struct
+# include <netinet/in.h>	//sockaddr struct
+# include <sys/select.h>	//FD_ZERO
 
 class Webserv
 {
 private:
 
 	int					fd;
+	std::vector<int>	_fdList;
 	struct sockaddr_in	address;
 	Request				inRequest;
 	Config				config;
-
+	fd_set				_master_fd;
+	int					_maxFd;
 public:
 
 	Webserv( void );						 		//default constructor
@@ -32,10 +35,17 @@ public:
 
 	void								initialization( std::string fileName );
 	void								fillAddress( void );
-	void								handleRequest( void );
+	void								acceptConexion( void );
+	void								handleRequest( int socket );
 	int									getInSocket( void );
 	int									getFd( void );
+	int									getMaxFd( void );
+	fd_set								getMasterSet( void );
 	std::map<std::string, std::string>	getMap( void );
+	struct sockaddr_in			&		getAddr( void );
+	Config						&		getConfig( void );
+	std::vector<int>					getFdList( void );
+
 };
 
 #endif
