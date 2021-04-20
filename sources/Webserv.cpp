@@ -32,6 +32,7 @@ void	Webserv::initialization( std::string fileName )
 {
 	this->config.parseFile(fileName);
 
+	printMap(this->getMap());
 	this->fd = socket(AF_INET, SOCK_STREAM, 0); // to pprotect
 	
 	this->fillAddress();
