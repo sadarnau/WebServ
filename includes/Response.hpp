@@ -41,7 +41,7 @@ public:
 	void			processGet();
 	void			processPost();
 
-	bool			autoIndexRequest();
+	bool			autoIndexResponse();
 	bool			isIndexPagePresent();
 	bool			isDirectory();
 

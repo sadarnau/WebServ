@@ -85,7 +85,7 @@ void	Response::processGet()
 	// Directory Request
 	if (this->isDirectory())
 	{
-		if(!isIndexPagePresent() && auto_index == "on" && this->autoIndexRequest())  //autoIndexRequest return true on success
+		if(!isIndexPagePresent() && auto_index == "on" && this->autoIndexResponse())  //autoIndexRequest return true on success
 			return ;
 		else if (isIndexPagePresent())
 			target = this->getIndexPath();
@@ -128,7 +128,7 @@ void	Response::processPost()
 ////////////////////
 // AUTO INDEX
 ////////////////////
-bool		Response::autoIndexRequest()
+bool		Response::autoIndexResponse()
 {
 	std::string		auto_index = "on";						// Change to config->location->auto_index
 
