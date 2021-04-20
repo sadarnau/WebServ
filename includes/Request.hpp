@@ -31,17 +31,18 @@ public:
 
 	Request( void );								//default constructor
 	Request( Config *config, int inSock, char *buff );					//constructor
-	Request( Request const & src);  				//copy
+	Request( Request const & src );  				//copy
 	~Request( void );								//destructor
 	Request & operator=( Request const & rhs );		//overload operator =
 
-	bool	isValidHeader(std::string header);
-	bool	isRequestMethod(std::string key);
-	void	parseRequest(std::string req);
-	void	createPath();
-	void	printRequest( void );
+	void	parseRequest( std::string req );
 
-	int		getInSock( void );
+	void	createPath();
+	bool	isValidHeader( std::string header );
+	bool	isRequestMethod( std::string key );
+	void	printRequest();
+
+	int				getInSock();
 	std::string		getMethod();
 	std::string		getTarget();
 	std::string		getRelativeTargetPath();

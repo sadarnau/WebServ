@@ -216,7 +216,6 @@ void	Response::setHeaders(int responseCode, std::string responseCodeMessage, std
 	this->_contentType = contentType;
 }
 
-
 std::string Response::getResponse()
 {
 	return (this->_response);

@@ -34,22 +34,19 @@ public:
 	~Response( void );									//destructor
 	Response & operator=( Response const & rhs );		//overload operator =
 
-	void			buildResponse();
+	void			send();
 	void			buildHeader();
-	void			buildBody();
+	void			buildResponse();
+
 	void			processGet();
 	void			processPost();
+
 	bool			autoIndexRequest();
-
-	void			send();
-
 	bool			isIndexPagePresent();
 	bool			isDirectory();
 
-	void			setHeaders(int responseCode, std::string responseCodeMessage, std::string contentType);
+	void			setHeaders( int responseCode, std::string responseCodeMessage, std::string contentType );
 	std::string		getResponse();
-
-	void			checkPath();
 	std::string		getIndexPath();
 
 };
