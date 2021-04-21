@@ -47,6 +47,7 @@ public:
 	std::string		getTarget();
 	std::string		getRelativeTargetPath();
 	std::string		getAbsoluteTargetPath();
+	void			updateTarget(std::string target);
 };
 
 #endif

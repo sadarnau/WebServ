@@ -79,28 +79,26 @@ void	Response::processGet()
 
 	std::string		root = "files/www";			// Change to config->location->root
 	std::string		auto_index= "on";			// Change to config->location->auto_index
-	std::string 	index_page = "index.html";	// Change to index in conf 
+	std::string 	index_page = "/index.html";	// Change to index in conf 
 
 	std::string 	target;
 	// Directory Request
 	if (this->isDirectory())
 	{
-		if(!isIndexPagePresent() && auto_index == "on" && this->autoIndexResponse())  //autoIndexRequest return true on success
+		if(!this->isIndexPagePresent() && auto_index == "on" && this->autoIndexResponse())  //autoIndexRequest return true on success
 			return ;
-		else if (isIndexPagePresent())
-			target = this->getIndexPath();
+		else if (this->isIndexPagePresent())
+			this->_req->updateTarget(this->_req->getTarget() + index_page);
 	}
-	else
-		target = this->_req->getRelativeTargetPath();
-
 	
-	//TO_DO : Here comes the block where you check the file ext and define content_type
+	//Here comes the block where you check the file ext and define content_type
+	this->_contentType = this->getContentType(this->_req->getTarget());
 
-	// Check if the file can be open and cerate response
-	std::ifstream 	f(target.c_str()); // open file
+	// Check if the file can be open and create response
+	std::ifstream 	f(this->_req->getRelativeTargetPath().c_str()); // open file
 	if (f.good())
 	{
-		this->setHeaders(200, "OK", "text/html");
+		this->setHeaders(200, "OK", this->_contentType);
 		std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
 		this->_body = str;
 	}
@@ -205,8 +203,9 @@ bool		Response::isDirectory()
 	return false;
 }
 
-std::string	Response::getContentType()
+std::string	Response::getContentType(std::string target)
 {
+	//kudos to the guy who wrote those variables
 	std::string extension[67] = {"php", "aac", "abw", "arc", "avi", "azw", "bin", "bz", "bz2", "csh", "css", "csv", "doc", "docsx", "eot", "epub", "gif", "htm", "html", "ico",
 	"ics", "jar", "jpeg", "jpg", "js", "json", "mid", "midi", "mpeg", "mpkg", "odp", "ods", "odt", "oga", "ogv", "ogx", "otf", "png", "pdf", "ppt", "pptx", "rar", "rtf", "sh"
 	"svg", "swf", "tar", "tif", "tiff", "ts", "ttf", "vsd", "wav", "weba", "webm", "webp", "woff" ,"woff2", "xhtml", "xls", "xlsx","xml", "xul", "zip", "3gp", "3g2", "7z"};
@@ -216,6 +215,24 @@ std::string	Response::getContentType()
 	"audio/midi","audio/midi", "video/mpeg", "	application/vnd.apple.installer+xml", "application/vnd.oasis.opendocument.presentation", "application/vnd.oasis.opendocument.spreadsheet", "application/vnd.oasis.opendocument.text", "audio/ogg", "video/ogg", "application/ogg", "font/otf", "image/png", "application/pdf", "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation",
 	"application/x-rar-compressed", "application/rtf", "application/x-sh", "image/svg+xml", "application/x-shockwave-flash", "application/x-tar", "image/tiff", "image/tiff", "application/typescript", "font/ttf", "application/vnd.visio", "audio/x-wav", "audio/webm", "video/webm", "image/webp", "font/woff", "font/woff2", "application/xhtml+xml", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 	"application/xml", "application/vnd.mozilla.xul+xml", "application/zip", "video/3gpp", "video/3gpp2", "application/x-7z-compressed"};
+
+	int i = target.size() - 1;
+	while (i >= 0 && target[i] != '.')
+		i--;
+
+	std::string ext = target.substr(i + 1, target.size() - 1);
+
+	std::cout << ext << std::endl;
+
+	int j = 0;
+	while (j < 67)
+	{
+		if (extension[j] == ext)
+			return (content_type[j]);
+		j++;
+	}
+
+	return ("text/plain");
 }
 
 ////////////////////
