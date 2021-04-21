@@ -44,7 +44,8 @@ public:
 	bool			autoIndexResponse();
 	bool			isIndexPagePresent();
 	bool			isDirectory();
-
+	std::string		getContentType();
+	
 	void			setHeaders( int responseCode, std::string responseCodeMessage, std::string contentType );
 	std::string		getResponse();
 	std::string		getIndexPath();

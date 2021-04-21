@@ -1,0 +1,935 @@
+--------LOG----------
+[0;34mDEBUG[13:30:40]: [0;37mPrint map
+           autoindex:on
+client_max_body_size:100M
+               index:index.html
+              listen:127.0.0.1:8080
+                root:files/www/
+         server_name:domain2.com
+
+                ----------
+
+[0m[0;33mINFO [13:30:40]: [0;32mThe socket has been created !
+[0m[0;33mINFO [13:30:40]: [0;32mThe socket has been binded on : 127.0.0.1:8080 !
+[0m[0;33mINFO [13:30:40]: [0;32mListening the socket !
+[0m[0;33mINFO [13:30:40]: [0;32mI'm waiting for a request...
+
+[0m[0;33mINFO [13:30:56]: [0;32mNew connection !
+
+[0m[0;33mINFO [13:30:56]: [0;32mI'm waiting for a request...
+
+[0m[0;34mDEBUG[13:30:56]: [0;34m
+----------
+REQUEST OBJECT :
+
+     request->method : GET
+request->relativeTargetPath  : files/www/
+
+request->absoluteTargetPath  : /Users/tipi/Desktop/webserv/files/www/
+
+Content of request->headers :
+
+                 KEY : VALUE
+
+     Accept-Language : fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+                Host : localhost:8080
+          User-Agent : Mozilla/5.0
+
+
+Skipped headers :  Connection sec-ch-ua sec-ch-ua-mobile DNT Upgrade-Insecure-Requests Accept Sec-Fetch-Site Sec-Fetch-Mode Sec-Fetch-User Sec-Fetch-Dest Accept-Encoding Cookie
+
+Raw request :
+
+GET / HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99"
+sec-ch-ua-mobile: ?0
+DNT: 1
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+Cookie: wordpress_logged_in_cd9b744c619529c4988e0e94344eaf12=BrodIci%7C1619437109%7CCY2oqiavuQxM0yT7UOeQ3Kw51kTWiRwEMJLDDb2NioJ%7Cb5c58554f09d3937eb0573ee05b1042aa9a0ceb90038e323bea2d5c2de60acdd; wp-settings-time-1=1618228360
+
+----------
+
+[0m[0m[0;34mDEBUG[13:30:56]: [0;34m
+---------
+Response:
+
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 636
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Welcome to webserv;</title>
+</head>
+<body>
+	<div class="container">
+		<div class="welcome">
+			<h1>Welcome to webserv</h1>
+			<p>A simple http 1.1 server made by memartin, sadarnaud and tpalhol.</p>
+		</div>
+		<div class="links">
+			<h2>Go to :</h2>
+			<ul>
+				<li><a href="/test">/test : A folder with no index</a></li>
+				<li><a href="/test/sub">/test/sub : A folder with index.html</a></li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>
+-------
+
+[0m[0;33mINFO [13:30:56]: [0;32mMessage delivered...
+
+[0m[0;33mINFO [13:30:56]: [0;32mI'm waiting for a request...
+
+[0m[0;34mDEBUG[13:31:52]: [0;34m
+----------
+REQUEST OBJECT :
+
+     request->method : GET
+request->relativeTargetPath  : files/www/
+
+request->absoluteTargetPath  : /Users/tipi/Desktop/webserv/files/www/
+
+Content of request->headers :
+
+                 KEY : VALUE
+
+     Accept-Language : fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+                Host : localhost:8080
+          User-Agent : Mozilla/5.0
+
+
+Skipped headers :  Connection Cache-Control sec-ch-ua sec-ch-ua-mobile DNT Upgrade-Insecure-Requests Accept Sec-Fetch-Site Sec-Fetch-Mode Sec-Fetch-User Sec-Fetch-Dest Accept-Encoding Cookie
+
+Raw request :
+
+GET / HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+Cache-Control: max-age=0
+sec-ch-ua: "Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99"
+sec-ch-ua-mobile: ?0
+DNT: 1
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+Cookie: wordpress_logged_in_cd9b744c619529c4988e0e94344eaf12=BrodIci%7C1619437109%7CCY2oqiavuQxM0yT7UOeQ3Kw51kTWiRwEMJLDDb2NioJ%7Cb5c58554f09d3937eb0573ee05b1042aa9a0ceb90038e323bea2d5c2de60acdd; wp-settings-time-1=1618228360
+
+----------
+
+[0m[0m[0;34mDEBUG[13:31:52]: [0;34m
+---------
+Response:
+
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 678
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Welcome to webserv;</title>
+	<link href="style.css" rel="stylesheet">
+</head>
+<body>
+	<div class="container">
+		<div class="welcome">
+			<h1>Welcome to webserv</h1>
+			<p>A simple http 1.1 server made by memartin, sadarnaud and tpalhol.</p>
+		</div>
+		<div class="links">
+			<h2>Go to :</h2>
+			<ul>
+				<li><a href="/test">/test : A folder with no index</a></li>
+				<li><a href="/test/sub">/test/sub : A folder with index.html</a></li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>
+-------
+
+[0m[0;33mINFO [13:31:52]: [0;32mMessage delivered...
+
+[0m[0;33mINFO [13:31:52]: [0;32mI'm waiting for a request...
+
+[0m[0;34mDEBUG[13:31:52]: [0;34m
+----------
+REQUEST OBJECT :
+
+     request->method : GET
+request->relativeTargetPath  : files/www/style.css
+
+request->absoluteTargetPath  : /Users/tipi/Desktop/webserv/files/www/style.css
+
+Content of request->headers :
+
+                 KEY : VALUE
+
+     Accept-Language : fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+                Host : localhost:8080
+             Referer : http://localhost:8080/
+          User-Agent : Mozilla/5.0
+
+
+Skipped headers :  Connection sec-ch-ua DNT sec-ch-ua-mobile Accept Sec-Fetch-Site Sec-Fetch-Mode Sec-Fetch-Dest Accept-Encoding Cookie
+
+Raw request :
+
+GET /style.css HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99"
+DNT: 1
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36
+Accept: text/css,*/*;q=0.1
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: style
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+Cookie: wordpress_logged_in_cd9b744c619529c4988e0e94344eaf12=BrodIci%7C1619437109%7CCY2oqiavuQxM0yT7UOeQ3Kw51kTWiRwEMJLDDb2NioJ%7Cb5c58554f09d3937eb0573ee05b1042aa9a0ceb90038e323bea2d5c2de60acdd; wp-settings-time-1=1618228360
+
+----------
+
+[0m[0m[0;34mDEBUG[13:31:52]: [0;34m
+---------
+Response:
+
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 257
+
+body {
+    background-color: #1f1f1f;
+    color : #d8d8d8;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.container {
+    max-width: 1000px;
+    padding: 150px 200px 150px 200px;
+}
+h1 {
+    font-size: 3rem;
+    margin-top: 0;
+}
+a {
+    color : #00a0df;
+}
+-------
+
+[0m[0;33mINFO [13:31:52]: [0;32mMessage delivered...
+
+[0m[0;33mINFO [13:31:52]: [0;32mI'm waiting for a request...
+
+[0m[0;34mDEBUG[13:31:55]: [0;34m
+----------
+REQUEST OBJECT :
+
+     request->method : GET
+request->relativeTargetPath  : files/www/style.css
+
+request->absoluteTargetPath  : /Users/tipi/Desktop/webserv/files/www/style.css
+
+Content of request->headers :
+
+                 KEY : VALUE
+
+     Accept-Language : fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+                Host : localhost:8080
+             Referer : http://localhost:8080/
+          User-Agent : Mozilla/5.0
+
+
+Skipped headers :  Connection sec-ch-ua DNT sec-ch-ua-mobile Accept Sec-Fetch-Site Sec-Fetch-Mode Sec-Fetch-Dest Accept-Encoding Cookie
+
+Raw request :
+
+GET /style.css HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99"
+DNT: 1
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36
+Accept: text/css,*/*;q=0.1
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: style
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+Cookie: wordpress_logged_in_cd9b744c619529c4988e0e94344eaf12=BrodIci%7C1619437109%7CCY2oqiavuQxM0yT7UOeQ3Kw51kTWiRwEMJLDDb2NioJ%7Cb5c58554f09d3937eb0573ee05b1042aa9a0ceb90038e323bea2d5c2de60acdd; wp-settings-time-1=1618228360
+
+----------
+
+[0m[0m[0;34mDEBUG[13:31:55]: [0;34m
+---------
+Response:
+
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 257
+
+body {
+    background-color: #1f1f1f;
+    color : #d8d8d8;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.container {
+    max-width: 1000px;
+    padding: 150px 200px 150px 200px;
+}
+h1 {
+    font-size: 3rem;
+    margin-top: 0;
+}
+a {
+    color : #00a0df;
+}
+-------
+
+[0m[0;33mINFO [13:31:55]: [0;32mMessage delivered...
+
+[0m[0;33mINFO [13:31:55]: [0;32mI'm waiting for a request...
+
+[0m[0;34mDEBUG[13:32:01]: [0;34m
+----------
+REQUEST OBJECT :
+
+     request->method : GET
+request->relativeTargetPath  : files/www/
+
+request->absoluteTargetPath  : /Users/tipi/Desktop/webserv/files/www/
+
+Content of request->headers :
+
+                 KEY : VALUE
+
+     Accept-Language : fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+                Host : localhost:8080
+          User-Agent : Mozilla/5.0
+
+
+Skipped headers :  Connection Cache-Control sec-ch-ua sec-ch-ua-mobile DNT Upgrade-Insecure-Requests Accept Sec-Fetch-Site Sec-Fetch-Mode Sec-Fetch-User Sec-Fetch-Dest Accept-Encoding Cookie
+
+Raw request :
+
+GET / HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+Cache-Control: max-age=0
+sec-ch-ua: "Google Chrome";v="89", "Chromium";v="89", ";Not\"A\\Brand";v="99"
+sec-ch-ua-mobile: ?1
+DNT: 1
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Mobile Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+Cookie: wordpress_logged_in_cd9b744c619529c4988e0e94344eaf12=BrodIci%7C1619437109%7CCY2oqiavuQxM0yT7UOeQ3Kw51kTWiRwEMJLDDb2NioJ%7Cb5c58554f09d3937eb0573ee05b1042aa9a0ceb90038e323bea2d5c2de60acdd; wp-settings-time-1=1618228360
+
+----------
+
+[0m[0m[0;34mDEBUG[13:32:01]: [0;34m
+---------
+Response:
+
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 678
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Welcome to webserv;</title>
+	<link href="style.css" rel="stylesheet">
+</head>
+<body>
+	<div class="container">
+		<div class="welcome">
+			<h1>Welcome to webserv</h1>
+			<p>A simple http 1.1 server made by memartin, sadarnaud and tpalhol.</p>
+		</div>
+		<div class="links">
+			<h2>Go to :</h2>
+			<ul>
+				<li><a href="/test">/test : A folder with no index</a></li>
+				<li><a href="/test/sub">/test/sub : A folder with index.html</a></li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>
+-------
+
+[0m[0;33mINFO [13:32:01]: [0;32mMessage delivered...
+
+[0m[0;33mINFO [13:32:01]: [0;32mI'm waiting for a request...
+
+[0m[0;34mDEBUG[13:32:01]: [0;34m
+----------
+REQUEST OBJECT :
+
+     request->method : GET
+request->relativeTargetPath  : files/www/style.css
+
+request->absoluteTargetPath  : /Users/tipi/Desktop/webserv/files/www/style.css
+
+Content of request->headers :
+
+                 KEY : VALUE
+
+     Accept-Language : fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+                Host : localhost:8080
+             Referer : http://localhost:8080/
+          User-Agent : Mozilla/5.0
+
+
+Skipped headers :  Connection sec-ch-ua DNT sec-ch-ua-mobile Accept Sec-Fetch-Site Sec-Fetch-Mode Sec-Fetch-Dest Accept-Encoding Cookie
+
+Raw request :
+
+GET /style.css HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="89", "Chromium";v="89", ";Not\"A\\Brand";v="99"
+DNT: 1
+sec-ch-ua-mobile: ?1
+User-Agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Mobile Safari/537.36
+Accept: text/css,*/*;q=0.1
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: style
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+Cookie: wordpress_logged_in_cd9b744c619529c4988e0e94344eaf12=BrodIci%7C1619437109%7CCY2oqiavuQxM0yT7UOeQ3Kw51kTWiRwEMJLDDb2NioJ%7Cb5c58554f09d3937eb0573ee05b1042aa9a0ceb90038e323bea2d5c2de60acdd; wp-settings-time-1=1618228360
+
+----------
+
+[0m[0m[0;34mDEBUG[13:32:01]: [0;34m
+---------
+Response:
+
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 257
+
+body {
+    background-color: #1f1f1f;
+    color : #d8d8d8;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.container {
+    max-width: 1000px;
+    padding: 150px 200px 150px 200px;
+}
+h1 {
+    font-size: 3rem;
+    margin-top: 0;
+}
+a {
+    color : #00a0df;
+}
+-------
+
+[0m[0;33mINFO [13:32:01]: [0;32mMessage delivered...
+
+[0m[0;33mINFO [13:32:01]: [0;32mI'm waiting for a request...
+
+[0m[0;34mDEBUG[13:32:20]: [0;34m
+----------
+REQUEST OBJECT :
+
+     request->method : GET
+request->relativeTargetPath  : files/www/test
+
+request->absoluteTargetPath  : /Users/tipi/Desktop/webserv/files/www/test
+
+Content of request->headers :
+
+                 KEY : VALUE
+
+     Accept-Language : fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+                Host : localhost:8080
+             Referer : http://localhost:8080/
+          User-Agent : Mozilla/5.0
+
+
+Skipped headers :  Connection sec-ch-ua sec-ch-ua-mobile Upgrade-Insecure-Requests DNT Accept Sec-Fetch-Site Sec-Fetch-Mode Sec-Fetch-User Sec-Fetch-Dest Accept-Encoding Cookie
+
+Raw request :
+
+GET /test HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="89", "Chromium";v="89", ";Not\"A\\Brand";v="99"
+sec-ch-ua-mobile: ?1
+Upgrade-Insecure-Requests: 1
+DNT: 1
+User-Agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Mobile Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+Cookie: wordpress_logged_in_cd9b744c619529c4988e0e94344eaf12=BrodIci%7C1619437109%7CCY2oqiavuQxM0yT7UOeQ3Kw51kTWiRwEMJLDDb2NioJ%7Cb5c58554f09d3937eb0573ee05b1042aa9a0ceb90038e323bea2d5c2de60acdd; wp-settings-time-1=1618228360
+
+----------
+
+[0m[0m[0;34mDEBUG[13:32:20]: [0;34m
+---------
+Response:
+
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 911
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>folder</title>
+	<style>
+		body {
+			background-color: #1f1f1f;
+			color : #d8d8d8;
+			font-family: Arial, Helvetica, sans-serif;
+		}
+		.container {
+			max-width: 1000px;
+			padding: 150px 200px 150px 200px;
+		}
+		h1 {
+			font-size: 3rem;
+			margin-top: 0;
+		}
+		a {
+			color : #00a0df;
+		}
+
+	</style>
+</head>
+<body>
+	<div class="container">
+    
+<h1>Directory : /test</h1><ul>
+<li><a href='/test/.'>.</a></li>
+<li><a href='/test/..'>..</a></li>
+<li><a href='/test/not_index.html'>not_index.html</a></li>
+<li><a href='/test/sub'>sub</a></li>
+<li><a href='/test/file.html'>file.html</a></li>
+<li><a href='/test/definitely_not_index.html'>definitely_not_index.html</a></li>
+</ul>
+	</div>
+</body>
+</html>
+-------
+
+[0m[0;33mINFO [13:32:20]: [0;32mMessage delivered...
+
+[0m[0;33mINFO [13:32:20]: [0;32mI'm waiting for a request...
+
+[0m[0;34mDEBUG[13:32:22]: [0;34m
+----------
+REQUEST OBJECT :
+
+     request->method : GET
+request->relativeTargetPath  : files/www/
+
+request->absoluteTargetPath  : /Users/tipi/Desktop/webserv/files/www/
+
+Content of request->headers :
+
+                 KEY : VALUE
+
+     Accept-Language : fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+                Host : localhost:8080
+          User-Agent : Mozilla/5.0
+
+
+Skipped headers :  Connection Cache-Control sec-ch-ua sec-ch-ua-mobile DNT Upgrade-Insecure-Requests Accept Sec-Fetch-Site Sec-Fetch-Mode Sec-Fetch-User Sec-Fetch-Dest Accept-Encoding Cookie
+
+Raw request :
+
+GET / HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+Cache-Control: max-age=0
+sec-ch-ua: "Google Chrome";v="89", "Chromium";v="89", ";Not\"A\\Brand";v="99"
+sec-ch-ua-mobile: ?1
+DNT: 1
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Mobile Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+Cookie: wordpress_logged_in_cd9b744c619529c4988e0e94344eaf12=BrodIci%7C1619437109%7CCY2oqiavuQxM0yT7UOeQ3Kw51kTWiRwEMJLDDb2NioJ%7Cb5c58554f09d3937eb0573ee05b1042aa9a0ceb90038e323bea2d5c2de60acdd; wp-settings-time-1=1618228360
+
+----------
+
+[0m[0m[0;34mDEBUG[13:32:22]: [0;34m
+---------
+Response:
+
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 678
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Welcome to webserv;</title>
+	<link href="style.css" rel="stylesheet">
+</head>
+<body>
+	<div class="container">
+		<div class="welcome">
+			<h1>Welcome to webserv</h1>
+			<p>A simple http 1.1 server made by memartin, sadarnaud and tpalhol.</p>
+		</div>
+		<div class="links">
+			<h2>Go to :</h2>
+			<ul>
+				<li><a href="/test">/test : A folder with no index</a></li>
+				<li><a href="/test/sub">/test/sub : A folder with index.html</a></li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>
+-------
+
+[0m[0;33mINFO [13:32:22]: [0;32mMessage delivered...
+
+[0m[0;33mINFO [13:32:22]: [0;32mI'm waiting for a request...
+
+[0m[0;34mDEBUG[13:32:22]: [0;34m
+----------
+REQUEST OBJECT :
+
+     request->method : GET
+request->relativeTargetPath  : files/www/style.css
+
+request->absoluteTargetPath  : /Users/tipi/Desktop/webserv/files/www/style.css
+
+Content of request->headers :
+
+                 KEY : VALUE
+
+     Accept-Language : fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+                Host : localhost:8080
+             Referer : http://localhost:8080/
+          User-Agent : Mozilla/5.0
+
+
+Skipped headers :  Connection sec-ch-ua DNT sec-ch-ua-mobile Accept Sec-Fetch-Site Sec-Fetch-Mode Sec-Fetch-Dest Accept-Encoding Cookie
+
+Raw request :
+
+GET /style.css HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="89", "Chromium";v="89", ";Not\"A\\Brand";v="99"
+DNT: 1
+sec-ch-ua-mobile: ?1
+User-Agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Mobile Safari/537.36
+Accept: text/css,*/*;q=0.1
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: style
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+Cookie: wordpress_logged_in_cd9b744c619529c4988e0e94344eaf12=BrodIci%7C1619437109%7CCY2oqiavuQxM0yT7UOeQ3Kw51kTWiRwEMJLDDb2NioJ%7Cb5c58554f09d3937eb0573ee05b1042aa9a0ceb90038e323bea2d5c2de60acdd; wp-settings-time-1=1618228360
+
+----------
+
+[0m[0m[0;34mDEBUG[13:32:22]: [0;34m
+---------
+Response:
+
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 257
+
+body {
+    background-color: #1f1f1f;
+    color : #d8d8d8;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.container {
+    max-width: 1000px;
+    padding: 150px 200px 150px 200px;
+}
+h1 {
+    font-size: 3rem;
+    margin-top: 0;
+}
+a {
+    color : #00a0df;
+}
+-------
+
+[0m[0;33mINFO [13:32:22]: [0;32mMessage delivered...
+
+[0m[0;33mINFO [13:32:22]: [0;32mI'm waiting for a request...
+
+[0m[0;33mINFO [13:33:00]: [0;32mNew connection !
+
+[0m[0;33mINFO [13:33:00]: [0;32mI'm waiting for a request...
+
+[0m[0;34mDEBUG[13:33:00]: [0;34m
+----------
+REQUEST OBJECT :
+
+     request->method : GET
+request->relativeTargetPath  : files/www/
+
+request->absoluteTargetPath  : /Users/tipi/Desktop/webserv/files/www/
+
+Content of request->headers :
+
+                 KEY : VALUE
+
+     Accept-Language : fr-FR,fr;q=0.9
+                Host : localhost:8080
+          User-Agent : Mozilla/5.0
+
+
+Skipped headers :  Connection sec-ch-ua sec-ch-ua-mobile DNT Upgrade-Insecure-Requests Accept Sec-Fetch-Site Sec-Fetch-Mode Sec-Fetch-User Sec-Fetch-Dest Accept-Encoding
+
+Raw request :
+
+GET / HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99"
+sec-ch-ua-mobile: ?0
+DNT: 1
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: fr-FR,fr;q=0.9
+
+----------
+
+[0m[0m[0;34mDEBUG[13:33:00]: [0;34m
+---------
+Response:
+
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 678
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Welcome to webserv;</title>
+	<link href="style.css" rel="stylesheet">
+</head>
+<body>
+	<div class="container">
+		<div class="welcome">
+			<h1>Welcome to webserv</h1>
+			<p>A simple http 1.1 server made by memartin, sadarnaud and tpalhol.</p>
+		</div>
+		<div class="links">
+			<h2>Go to :</h2>
+			<ul>
+				<li><a href="/test">/test : A folder with no index</a></li>
+				<li><a href="/test/sub">/test/sub : A folder with index.html</a></li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>
+-------
+
+[0m[0;33mINFO [13:33:00]: [0;32mMessage delivered...
+
+[0m[0;33mINFO [13:33:00]: [0;32mI'm waiting for a request...
+
+[0m[0;34mDEBUG[13:33:00]: [0;34m
+----------
+REQUEST OBJECT :
+
+     request->method : GET
+request->relativeTargetPath  : files/www/style.css
+
+request->absoluteTargetPath  : /Users/tipi/Desktop/webserv/files/www/style.css
+
+Content of request->headers :
+
+                 KEY : VALUE
+
+     Accept-Language : fr-FR,fr;q=0.9
+                Host : localhost:8080
+             Referer : http://localhost:8080/
+          User-Agent : Mozilla/5.0
+
+
+Skipped headers :  Connection sec-ch-ua DNT sec-ch-ua-mobile Accept Sec-Fetch-Site Sec-Fetch-Mode Sec-Fetch-Dest Accept-Encoding
+
+Raw request :
+
+GET /style.css HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99"
+DNT: 1
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36
+Accept: text/css,*/*;q=0.1
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: style
+Referer: http://localhost:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: fr-FR,fr;q=0.9
+
+----------
+
+[0m[0m[0;34mDEBUG[13:33:00]: [0;34m
+---------
+Response:
+
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 257
+
+body {
+    background-color: #1f1f1f;
+    color : #d8d8d8;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.container {
+    max-width: 1000px;
+    padding: 150px 200px 150px 200px;
+}
+h1 {
+    font-size: 3rem;
+    margin-top: 0;
+}
+a {
+    color : #00a0df;
+}
+-------
+
+[0m[0;33mINFO [13:33:00]: [0;32mMessage delivered...
+
+[0m[0;33mINFO [13:33:00]: [0;32mI'm waiting for a request...
+
+[0m[0;34mDEBUG[13:41:44]: [0;34m
+----------
+REQUEST OBJECT :
+
+     request->method : 
+request->relativeTargetPath  : files/www
+
+request->absoluteTargetPath  : /Users/tipi/Desktop/webserv/files/www
+
+Content of request->headers :
+
+                 KEY : VALUE
+
+
+
+Skipped headers : 
+
+Raw request :
+
+----------
+
+[0m[0m[0;34mDEBUG[13:41:44]: [0;34m
+---------
+Response:
+
+HTTP/1.1 -535732997 
+Content-Type: 
+Content-Length: 0
+
+
+-------
+
+[0m[0;33mINFO [13:41:44]: [0;32mMessage delivered...
+
+[0m[0;33mINFO [13:41:44]: [0;32mI'm waiting for a request...
+
+[0m[0;34mDEBUG[13:41:44]: [0;34m
+----------
+REQUEST OBJECT :
+
+     request->method : 
+request->relativeTargetPath  : files/www
+
+request->absoluteTargetPath  : /Users/tipi/Desktop/webserv/files/www
+
+Content of request->headers :
+
+                 KEY : VALUE
+
+
+
+Skipped headers : 
+
+Raw request :
+
+T----------
+
+[0m[0m

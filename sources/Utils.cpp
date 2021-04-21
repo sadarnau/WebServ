@@ -55,3 +55,4 @@ void			printMap(std::map<std::string, std::string> m)
 	oss << '\n' << std::setw(28) << "----------\n\n";
 	Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
 }
+
