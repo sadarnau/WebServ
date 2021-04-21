@@ -79,7 +79,8 @@ void	Request::parseRequest(std::string req)
 ////////////////////
 void	Request::createPath()
 {
-	std::string mapRoot = this->_config->getMap()["root"]; //change with conf->location->root
+	// std::string mapRoot = this->_config->getMap()["root"]; //change with conf->location->root
+	std::string mapRoot = "files/www"; //change with conf->location->root
 	std::string root;
 
 	//Remove '/' from root if exist (because target has already it)
