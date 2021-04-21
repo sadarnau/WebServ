@@ -5,9 +5,18 @@
 #include <sys/select.h>
 #include <list>
 
+static int serverFd;
+
+void		handle_signal(int sig_num)
+{
+	Logger::Write(Logger::ERROR, std::string(RED), "You've just killed the server, an advice : CHANGE THE PORT TO MAKE IT QUICK\n\n", true);
+	if (sig_num == SIGINT)
+		close(serverFd);
+}
+
 int main(int ac, char *av[])
 {
-	Webserv		webserv;
+	Webserv	webserv;
 
 	Logger::Start(Logger::DEBUG);
 
@@ -26,9 +35,13 @@ int main(int ac, char *av[])
 			return (1);
 
 	fd_set	copyMasterSet = webserv.getMasterSet();
+	
+	serverFd = webserv.getFd();
 
 	while(1)
 	{
+		signal(SIGINT, handle_signal);
+
 		// We have to make a copy of the master fd set because select() will change bits
 		// of living fds  (( man 2 select ))
 		copyMasterSet = webserv.getMasterSet();
@@ -39,7 +52,7 @@ int main(int ac, char *av[])
 
 		if (nbSocket < 0)
 		{
-			Logger::Write(Logger::ERROR, std::string(RED), "Select has messed up everything...\n", true);
+			// Logger::Write(Logger::ERROR, std::string(RED), "Select has messed up everything...\n", true);
 			return (1);
 		}
 

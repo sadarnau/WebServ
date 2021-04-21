@@ -47,11 +47,11 @@ int		Webserv::initialization( std::string fileName ) //to do : return 1 in case 
 	if ((bind(this->fd, (struct sockaddr *)&this->address, sizeof(this->address))) < 0)
 	{
 		Logger::Write(Logger::ERROR, std::string(RED), "Error bindind the socket...\n", true);
+		close(this->fd);
 		return (1);
 	}
 
-	std::string	ret = "The socket has been binded on : " + this->_IPaddr + ':' + this->_port + " !\n";
-	Logger::Write(Logger::INFO, std::string(GRN), ret, true);
+	Logger::Write(Logger::INFO, std::string(GRN), "The socket has been binded on : " + this->_IPaddr + ':' + this->_port + " !\n", true);
 
 	if ((listen(this->fd, 5)) < 0) 			// 5 = number of max connections
 	{
