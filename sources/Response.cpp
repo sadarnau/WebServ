@@ -222,8 +222,6 @@ std::string	Response::getContentType(std::string target)
 
 	std::string ext = target.substr(i + 1, target.size() - 1);
 
-	std::cout << ext << std::endl;
-
 	int j = 0;
 	while (j < 67)
 	{
