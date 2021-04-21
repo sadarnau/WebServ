@@ -50,8 +50,8 @@ void Logger::Write(Priority priority, const std::string &col, const std::string 
 
 void Logger::Error(const std::string &message)
 {
-	if (errno != 0)
-		Logger::Write(Logger::ERROR, std::string(RED), message + " -> (" + std::string(strerror(errno)) + ")", true);
+	if (DISPLAY_ERRNO && errno != 0)
+		Logger::Write(Logger::ERROR, std::string(RED), message + "Errno -> (" + std::string(strerror(errno)) + ")\n", true);
 	else
 		Logger::Write(Logger::ERROR, std::string(RED), message, true);
 }

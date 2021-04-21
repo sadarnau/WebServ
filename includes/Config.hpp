@@ -6,6 +6,7 @@
 # include <sstream>
 # include <map>
 # include <iostream>
+# include <string>
 # include "Logger.hpp"
 
 class Config
@@ -13,8 +14,14 @@ class Config
 private:
 
 	std::ifstream						f;		// open index.html
-	std::map<std::string, std::string>	fileMap;
-	std::map<std::string, std::string>	_locationMap;
+	std::map<std::string, std::string>	_configMap;
+	std::vector<std::map<std::string, std::string> > _locationVector;
+	void								initConfigMap( void );
+	void								initLocationMap( std::map<std::string, std::string> & newLo, std::string path);
+	void								checkFile( std::string fileName );
+	bool								checkSemiColon( std::string str );
+	void								createServerMap( void );
+	void								newLocationConfig( std::string path );
 
 public:
 
@@ -25,12 +32,8 @@ public:
 	Config & operator=( Config const & rhs );	//overload operator =
 
 	void								parseFile( std::string fileName );
-	void								checkFile( std::string fileName );
-	void								createMap( void );
-	void								locationConfig( void );
-	void								putInLocMap( std::string line );
-	void								parseConf( std::string line );
-	std::map<std::string, std::string>	getMap( void );
+	std::map<std::string, std::string>	getConfigMap( void );
+	std::vector<std::map<std::string, std::string> >	getLocationVector( void );
 };
 
 #endif

@@ -10,6 +10,8 @@
 # include "Utils.hpp"
 # include "colors.hpp"
 
+# define DISPLAY_ERRNO 0
+
 
 class Logger {
 	public:

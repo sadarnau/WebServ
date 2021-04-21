@@ -13,5 +13,6 @@
 std::string 	getTimeHMS(void);
 void 			splitStringToVector(std::string line, std::vector<std::string> &split);
 void			printMap(std::map<std::string, std::string> m);
+void			printLocationMap(std::map<std::string, std::map<std::string, std::string> > m);
 
 #endif

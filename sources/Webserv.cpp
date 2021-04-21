@@ -32,7 +32,7 @@ void	Webserv::initialization( std::string fileName )
 {
 	this->config.parseFile(fileName);
 
-	printMap(this->getMap());
+	
 	this->fd = socket(AF_INET, SOCK_STREAM, 0); // to pprotect
 	
 	this->fillAddress();
@@ -46,7 +46,7 @@ void	Webserv::initialization( std::string fileName )
 
 void	Webserv::fillAddress( void )
 {
-	std::map<std::string, std::string> configMap = this->config.getMap();
+	std::map<std::string, std::string> configMap = this->config.getConfigMap();
 	
 	std::string port = configMap["listen"].substr(configMap["listen"].find(":") + 1 , configMap["listen"].size());
 	std::string	IPaddr = configMap["listen"].substr(0, configMap["listen"].find(":"));
@@ -95,5 +95,5 @@ int		Webserv::getFd( void )
 
 std::map<std::string, std::string>	Webserv::getMap( void )
 {
-	return (this->config.getMap());
+	return (this->config.getConfigMap());
 }
