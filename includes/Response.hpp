@@ -5,6 +5,8 @@
 # include <iostream>
 # include <sstream>
 # include <fstream>
+# include <sys/types.h>
+# include <dirent.h>
 # include "Logger.hpp"
 # include "Webserv.hpp"
 
@@ -32,17 +34,21 @@ public:
 	~Response( void );									//destructor
 	Response & operator=( Response const & rhs );		//overload operator =
 
-	void			buildResponse();
+	void			send();
 	void			buildHeader();
-	void			buildBody();
+	void			buildResponse();
+
 	void			processGet();
 	void			processPost();
-	void			generateErrorPage(int errorCode, std::string errorMessage);
-	void			send();
 
+	bool			autoIndexResponse();
+	bool			isIndexPagePresent();
+	bool			isDirectory();
+
+	void			setHeaders( int responseCode, std::string responseCodeMessage, std::string contentType );
 	std::string		getResponse();
+	std::string		getIndexPath();
 
-	void			checkPath();
 };
 
 #endif
