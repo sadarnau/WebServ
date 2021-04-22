@@ -9,7 +9,7 @@ static int serverFd;
 
 void		handle_signal(int sig_num)
 {
-	Logger::Write(Logger::ERROR, std::string(RED), "You've just killed the server, an advice : CHANGE THE PORT TO MAKE IT QUICK\n\n", true);
+	Logger::Write(Logger::INFO, std::string(GRN), "See you\n", true);
 	if (sig_num == SIGINT)
 		close(serverFd);
 }
@@ -22,7 +22,7 @@ int main(int ac, char *av[])
 
 	if (ac > 2)
 	{
-		Logger::Write(Logger::ERROR, std::string(RED), "Only wo args plllllz\n\n", true);
+		Logger::Write(Logger::ERROR, std::string(RED), "Only two args allowed\n\n", true);
 		return 1;
 	}
 	else if (ac == 2)

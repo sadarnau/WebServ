@@ -43,7 +43,7 @@ int		Webserv::initialization( std::string fileName ) //to do : return 1 in case 
 	Logger::Write(Logger::INFO, std::string(GRN), "The socket has been created !\n", true);
 	
 	this->fillAddress();
-
+int reusePort = 1; setsockopt(this->fd, SOL_SOCKET, SO_REUSEPORT, &reusePort, sizeof(reusePort));
 	if ((bind(this->fd, (struct sockaddr *)&this->address, sizeof(this->address))) < 0)
 	{
 		Logger::Write(Logger::ERROR, std::string(RED), "Error bindind the socket...\n", true);
