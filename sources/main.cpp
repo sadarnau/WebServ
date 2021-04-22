@@ -4,6 +4,7 @@
 #include "Logger.hpp"
 #include <sys/select.h>
 #include <list>
+#include <csignal>
 
 static int serverFd;
 

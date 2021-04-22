@@ -32,8 +32,6 @@ int		Webserv::initialization( std::string fileName ) //to do : return 1 in case 
 {
 	this->config.parseFile(fileName);
 
-	printMap(this->getMap());
-	
 	if ((this->fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
 		Logger::Write(Logger::ERROR, std::string(RED), "Error assigning the socket...\n", true);
