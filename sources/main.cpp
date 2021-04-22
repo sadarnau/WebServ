@@ -5,15 +5,24 @@
 #include <sys/select.h>
 #include <list>
 
+static int serverFd;
+
+void		handle_signal(int sig_num)
+{
+	Logger::Write(Logger::INFO, std::string(GRN), "See you\n", true);
+	if (sig_num == SIGINT)
+		close(serverFd);
+}
+
 int main(int ac, char *av[])
 {
-	Webserv		webserv;
+	Webserv	webserv;
 
 	Logger::Start(Logger::DEBUG);
 
 	if (ac > 2)
 	{
-		Logger::Write(Logger::ERROR, std::string(RED), "Only wo args plllllz\n\n", true);
+		Logger::Write(Logger::ERROR, std::string(RED), "Only two args allowed\n\n", true);
 		return 1;
 	}
 	else if (ac == 2)
@@ -26,9 +35,13 @@ int main(int ac, char *av[])
 			return (1);
 
 	fd_set	copyMasterSet = webserv.getMasterSet();
+	
+	serverFd = webserv.getFd();
 
 	while(1)
 	{
+		signal(SIGINT, handle_signal);
+
 		// We have to make a copy of the master fd set because select() will change bits
 		// of living fds  (( man 2 select ))
 		copyMasterSet = webserv.getMasterSet();
@@ -39,7 +52,7 @@ int main(int ac, char *av[])
 
 		if (nbSocket < 0)
 		{
-			Logger::Write(Logger::ERROR, std::string(RED), "Select has messed up everything...\n", true);
+			// Logger::Write(Logger::ERROR, std::string(RED), "Select has messed up everything...\n", true);
 			return (1);
 		}
 

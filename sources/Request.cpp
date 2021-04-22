@@ -187,3 +187,9 @@ std::string		Request::getAbsoluteTargetPath()
 {
 	return (this->_absoluteTargetPath);
 }
+
+void			Request::updateTarget(std::string target)
+{
+	this->_target = target;
+	this->createPath();
+}
