@@ -17,7 +17,8 @@ private:
 	std::map<std::string, std::string>	_configMap;
 	std::vector<std::map<std::string, std::string> > _locationVector;
 	void								initConfigMap( void );
-	void								initLocationMap( std::map<std::string, std::string> & newLo, std::string path);
+	void								initLocationMap( std::map<std::string, std::string> & newLoc, std::string path);
+	void								addConfigToLocation(std::map<std::string, std::string> newLoc);
 	void								checkFile( std::string fileName );
 	bool								checkSemiColon( std::string str );
 	void								createServerMap( void );

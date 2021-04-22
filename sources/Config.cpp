@@ -42,10 +42,7 @@ void	Config::parseFile( std::string fileName )
 	this->createServerMap();
 	printMap(this->_configMap);
 	for (std::vector<std::map<std::string, std::string> >::const_iterator it = this->_locationVector.begin(); it != this->_locationVector.end(); ++it)
-	{
-		//Logger::Write(Logger::DEBUG, )
 		printMap(*it);
-	}
 	return ;
 }
 
@@ -137,22 +134,32 @@ void	Config::createServerMap( void )
 		Logger::Error("No listen definition\n");
 		throw (std::exception());
 	}
-	if (!locationFound)
+	/*if (!locationFound)
 	{
 		Logger::Error("No location definition\n");
 		throw (std::exception());
-	}
+	}*/
 	return ;
 }
 
 void	Config::initLocationMap(std::map<std::string, std::string> & newLoc, std::string path)
 {
 	newLoc["path"] = path;
-	newLoc["accepted_method"] = "all";
-	newLoc["root"] = "./";
+	newLoc["accepted_method"] = "";
+	newLoc["root"] = "/files/www";
 	newLoc["autoindex"] = "off";
 	newLoc["index"] = "";
 	newLoc["cgi"] = "";
+}
+
+void	Config::addConfigToLocation(std::map<std::string, std::string> newLoc)
+{
+	for (std::map<std::string, std::string>::const_iterator it = this->_configMap.begin(); it != this->_configMap.end(); ++it)
+	{
+		if (!newLoc.count(it->first))
+			newLoc[it->first] = it->second;
+	}
+	this->_locationVector.push_back(newLoc);
 }
 
 void	Config::newLocationConfig( std::string path )
@@ -180,9 +187,13 @@ void	Config::newLocationConfig( std::string path )
 			newLoc["index"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("cgi") && split.size() == 2 && this->checkSemiColon(split.back()))
 			newLoc["cgi"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("client_max_body_size") && split.size() == 2 && this->checkSemiColon(split.back()))
+			newLoc["client_max_body_size"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("error_page") && split.size() == 3 && this->checkSemiColon(split.back()))
+			newLoc[split[1]] = split[2].substr(0, split[2].size() - 1);
 		else if (!split[0].compare("}") && split.size() == 1)
 		{
-			this->_locationVector.push_back(newLoc);
+			addConfigToLocation(newLoc);
 			endOfSectionFound = true;
 			break ;
 		}
@@ -190,7 +201,7 @@ void	Config::newLocationConfig( std::string path )
 		{
 			Logger::Error("Bad location format\n");
 			if (!this->checkSemiColon(split.back()))
-				Logger::Error("Missing a SEMICOLON .... somewhee...\n");
+				Logger::Error("Missing a SEMICOLON .... somewhere...\n");
 			throw (std::exception());
 		}
 		split.clear();
