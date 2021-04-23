@@ -52,4 +52,6 @@ public:
 
 };
 
+std::ostream &	operator<<(std::ostream & o, Response & rhs);
+
 #endif

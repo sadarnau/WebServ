@@ -37,4 +37,6 @@ public:
 	std::vector<std::map<std::string, std::string> >	getLocationVector( void );
 };
 
+std::ostream &	operator<<(std::ostream & o, Config & rhs);
+
 #endif

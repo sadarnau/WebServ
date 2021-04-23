@@ -193,3 +193,15 @@ void			Request::updateTarget(std::string target)
 	this->_target = target;
 	this->createPath();
 }
+
+std::ostream &	operator<<(std::ostream & o, Request & rhs)
+{
+	o << "In this request we have :\n";
+	o << "Absolute target path : " << rhs.getAbsoluteTargetPath() << "\n";
+	o << "Relative target path : " << rhs.getRelativeTargetPath() << "\n";
+	o << "Incomming socket : " << rhs.getInSock() << "\n";
+	o << "Methods : " << rhs.getMethod() << "\n";
+	o << "Target : " << rhs.getTarget() << "\n\n";
+
+	return ( o );
+}

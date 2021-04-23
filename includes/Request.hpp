@@ -50,4 +50,6 @@ public:
 	void			updateTarget(std::string target);
 };
 
+std::ostream &	operator<<(std::ostream & o, Request & rhs);
+
 #endif

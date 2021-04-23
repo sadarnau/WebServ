@@ -225,3 +225,12 @@ std::vector<std::map<std::string, std::string> >	Config::getLocationVector( void
 {
 	return (this->_locationVector);
 }
+
+std::ostream &	operator<<(std::ostream & o, Config & rhs)
+{
+	(void)rhs;
+	o << "In this config we have :\n";
+	// o << rhs.getConfigMap();
+
+	return ( o );
+}

@@ -194,6 +194,7 @@ std::ostream &	operator<<(std::ostream & o, Webserv & rhs)
 	o << "_maxFd = " << rhs.getMaxFd() << '\n';
 	o << "IP address = " << rhs.getIpAddress() << "\n";
 	o << "port = " << rhs.getPort() << "\n\n";
+	// o << "Config = " << rhs.getConfig() << "\n\n";
 
 	return ( o );
 }

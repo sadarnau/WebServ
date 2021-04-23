@@ -247,3 +247,12 @@ std::string Response::getResponse()
 {
 	return (this->_response);
 }
+
+std::ostream &	operator<<(std::ostream & o, Response & rhs)
+{
+	o << "In this response we have :\n";
+	o << "Index path : " << rhs.getIndexPath() << "\n";
+	// o << "Response : " << rhs.getResponse() << "\n";
+
+	return ( o );
+}
