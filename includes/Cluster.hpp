@@ -4,6 +4,7 @@
 # include "Config.hpp"
 # include "Webserv.hpp"
 # include <map>
+# include <sys/select.h>
 
 class Cluster
 {
@@ -25,6 +26,7 @@ public:
 	Cluster & operator=( Cluster const & rhs );		//overload operator =
 
 	int									initialization( std::string fileName );
+	void								lanchServices( void );
 	void								addSocketToMaster( int socket );
 
 	std::map<std::string, std::string>	getMap( void );

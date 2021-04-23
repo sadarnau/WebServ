@@ -53,6 +53,53 @@ int		Cluster::initialization( std::string fileName )
 	return (0);
 }
 
+void								Cluster::lanchServices( void )
+{
+	fd_set	copyMasterSet;
+
+	int serverFd = this->_serverList[0].getFd();
+
+	// test :
+	Webserv webserv = this->_serverList[0];
+
+	std::cout << *this;
+	std::cout << webserv;
+
+	while(1)
+	{
+		// We have to make a copy of the master fd set because select() will change bits
+		// of living fds  (( man 2 select ))
+		copyMasterSet = this->_master_fd;
+
+		Logger::Write(Logger::INFO, std::string(GRN), "I'm waiting for a request...\n\n", true);
+
+		int	nbSocket = select(this->_maxFd + 1, &copyMasterSet, 0, 0, 0); //to do : check if we can write in fd (writefds)
+
+		if (nbSocket < 0)
+		{
+			Logger::Write(Logger::ERROR, std::string(RED), "Select has messed up everything...\n", true);
+			exit (1); //test
+		}
+
+		if (FD_ISSET(serverFd, &copyMasterSet)) // if serv fd changed -> new connection
+		{
+			Logger::Write(Logger::INFO, std::string(GRN), "New connection !\n\n", true);
+			int sock = this->_serverList[0].acceptConexion();
+			addSocketToMaster(sock);
+		}
+
+		// We go throught every open fds to see if we have something new to read
+		std::vector<int> list = this->_fdList;
+		for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
+		{
+			if (FD_ISSET(*it, &copyMasterSet))
+				webserv.handleRequest( *it );		//if so we send a response without checking if we can write...
+		}
+	}
+
+	return ;
+}
+
 void								Cluster::addSocketToMaster( int socket )
 {
 	this->_fdList.push_back(socket);
