@@ -23,17 +23,23 @@ Webserv::~Webserv( void )
 
 Webserv & Webserv::operator=( Webserv const & rhs)
 {
-	// this->??? = rhs.???;
-	(void)rhs;
+	this->_fdList = rhs._fdList;
+	this->_IPaddr = rhs._IPaddr;
+	this->_master_fd = rhs._master_fd;
+	this->_maxFd = rhs._maxFd;
+	this->_port = rhs._port;
+	this->fd = rhs.fd;
+	this->address = rhs.address;
+	this->inRequest = rhs.inRequest;
+	this->config = rhs.config;
+
 	return ( *this );
 }
 
-int		Webserv::initialization( std::string fileName ) //to do : return 1 in case of error else return 0
+int		Webserv::initialization( Config config ) //to do : return 1 in case of error else return 0
 {
-	this->config.parseFile(fileName);
+	this->config = config; // test....
 
-	printMap(this->getMap());
-	
 	if ((this->fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
 		Logger::Write(Logger::ERROR, std::string(RED), "Error assigning the socket...\n", true);
@@ -86,7 +92,7 @@ void	Webserv::fillAddress( void )
 	return ;
 }
 
-void	Webserv::acceptConexion( void )
+int		Webserv::acceptConexion( void )
 {
 	unsigned int addrlen = sizeof(address);
 	int	socket = accept(this->fd, (struct sockaddr *)&this->address, (socklen_t*)&addrlen);
@@ -103,6 +109,8 @@ void	Webserv::acceptConexion( void )
 
 	if (socket > this->_maxFd)			// check until where we have to select
 		this->_maxFd = socket;
+	
+	return (socket);
 }
 
 void	Webserv::handleRequest( int socket )
@@ -160,7 +168,28 @@ Config								&Webserv::getConfig( void )
 	return (this->config);
 }
 
-std::vector<int>					Webserv::getFdList( void )
+std::vector<int>					Webserv::getFdList2( void )
 {
 	return (this->_fdList);
+}
+
+std::string							Webserv::getIpAddress( void )
+{
+	return (this->_IPaddr);
+}
+
+std::string							Webserv::getPort( void )
+{
+	return (this->_port);
+}
+
+std::ostream &	operator<<(std::ostream & o, Webserv & rhs)
+{
+	o << "In this server we have :\n";
+	o << "fd = " << rhs.getFd() << '\n';
+	o << "_maxFd = " << rhs.getMaxFd() << '\n';
+	o << "IP address = " << rhs.getIpAddress() << "\n";
+	o << "port = " << rhs.getPort() << "\n\n";
+
+	return ( o );
 }

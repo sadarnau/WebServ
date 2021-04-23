@@ -1,9 +1,5 @@
 #include "Webserv.hpp"
-#include "Response.hpp"
-#include "Config.hpp"
-#include "Logger.hpp"
-#include <sys/select.h>
-#include <list>
+#include "Cluster.hpp"
 
 static int serverFd;
 
@@ -16,7 +12,7 @@ void		handle_signal(int sig_num)
 
 int main(int ac, char *av[])
 {
-	Webserv	webserv;
+	Cluster cluster;
 
 	Logger::Start(Logger::DEBUG);
 
@@ -27,28 +23,36 @@ int main(int ac, char *av[])
 	}
 	else if (ac == 2)
 	{
-		if (webserv.initialization(av[1]))
+		if (cluster.initialization(av[1]))
 			return (1);
 	}
 	else
-		if (webserv.initialization("files/default.conf"))
+		if (cluster.initialization("files/default.conf"))
 			return (1);
 
-	fd_set	copyMasterSet = webserv.getMasterSet();
-	
-	serverFd = webserv.getFd();
+	fd_set	copyMasterSet = cluster.getMasterSet();
 
-	while(1)
+	serverFd = cluster.getServerList()[0].getFd();
+
+	// test :
+	Webserv webserv = cluster.getServerList()[0];
+
+	int test = 1;
+
+	std::cout << cluster;
+	std::cout << webserv;
+
+	while(test)
 	{
 		signal(SIGINT, handle_signal);
 
 		// We have to make a copy of the master fd set because select() will change bits
 		// of living fds  (( man 2 select ))
-		copyMasterSet = webserv.getMasterSet();
+		copyMasterSet = cluster.getMasterSet();
 
 		Logger::Write(Logger::INFO, std::string(GRN), "I'm waiting for a request...\n\n", true);
 
-		int	nbSocket = select(webserv.getMaxFd() + 1, &copyMasterSet, 0, 0, 0); //to do : check if we can write in fd (writefds)
+		int	nbSocket = select(cluster.getMaxFd() + 1, &copyMasterSet, 0, 0, 0); //to do : check if we can write in fd (writefds)
 
 		if (nbSocket < 0)
 		{
@@ -56,14 +60,15 @@ int main(int ac, char *av[])
 			return (1);
 		}
 
-		if (FD_ISSET(webserv.getFd(), &copyMasterSet)) // if serv fd changed -> new connection
+		if (FD_ISSET(serverFd, &copyMasterSet)) // if serv fd changed -> new connection
 		{
 			Logger::Write(Logger::INFO, std::string(GRN), "New connection !\n\n", true);
-			webserv.acceptConexion();
+			int sock = cluster.getServerList()[0].acceptConexion();
+			cluster.addSocketToMaster(sock);
 		}
 
 		// We go throught every open fds to see if we have something new to read
-		std::vector<int> list = webserv.getFdList();
+		std::vector<int> list = cluster.getFdList();
 		for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
 		{
 			if (FD_ISSET(*it, &copyMasterSet))
@@ -71,11 +76,12 @@ int main(int ac, char *av[])
 		}
 	}
 
-	std::vector<int> list = webserv.getFdList();
-	for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
-		close( *it );
+	// std::vector<int> list = cluster.getFdList();
+	// for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
+	// 	close( *it );
 
 	close(webserv.getFd());
 
 	return 0;
+
 }

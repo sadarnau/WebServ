@@ -36,9 +36,9 @@ public:
 	~Webserv( void );								//destructor
 	Webserv & operator=( Webserv const & rhs );		//overload operator =
 
-	int									initialization( std::string fileName );
+	int									initialization( Config config );
 	void								fillAddress( void );
-	void								acceptConexion( void );
+	int									acceptConexion( void );
 	void								handleRequest( int socket );
 	int									getInSocket( void );
 	int									getFd( void );
@@ -47,8 +47,11 @@ public:
 	std::map<std::string, std::string>	getMap( void );
 	struct sockaddr_in					&getAddr( void );
 	Config								&getConfig( void );
-	std::vector<int>					getFdList( void );
-
+	std::vector<int>					getFdList2( void );
+	std::string							getIpAddress( void );
+	std::string							getPort( void );
 };
+
+std::ostream &	operator<<(std::ostream & o, Webserv & rhs);
 
 #endif

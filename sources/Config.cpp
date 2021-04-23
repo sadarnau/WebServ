@@ -23,8 +23,10 @@ Config::~Config( void )
 
 Config & Config::operator=( Config const & rhs)
 {
-	// this->??? = rhs.???;
-	(void)rhs;
+	// this->f = rhs.f;
+	this->fileMap = rhs.fileMap;
+	this->_locationMap = rhs._locationMap;
+
 	return ( *this );
 }
 
