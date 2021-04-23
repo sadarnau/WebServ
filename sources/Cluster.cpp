@@ -43,7 +43,8 @@ int		Cluster::initialization( std::string fileName )
 	{
 		// Logger::Write(Logger::INFO, std::string(GRN), "Creating Server number " + std::to_string(i) + " !\n", true);
 		Webserv webserv;
-		webserv.initialization(this->_config);		//to do : return 1 or 0;
+		if (webserv.initialization(this->_config))
+			return 1;
 		FD_SET(webserv.getFd(), &this->_master_fd);	//adding our first fd socket, the server one.
 		if(webserv.getFd() > this->_maxFd)
 			this->_maxFd = webserv.getFd();

@@ -13,7 +13,7 @@ NAME =			webserv
 
 # SOURCES
 SRC_PATH =		sources/
-SRC =			main2.cpp Request.cpp Response.cpp Webserv.cpp Config.cpp Logger.cpp Utils.cpp Cluster.cpp
+SRC =			main.cpp Request.cpp Response.cpp Webserv.cpp Config.cpp Logger.cpp Utils.cpp Cluster.cpp
 
 # HEADER
 HEAD_PATH =		includes/
