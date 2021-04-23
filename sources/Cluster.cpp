@@ -33,7 +33,7 @@ int		Cluster::initialization( std::string fileName )
 	this->nbServ = 1;	// to test ONLY
 	this->_maxFd = 0;	// not ouf du tout
 
-	this->_config.parseFile(fileName);
+	this->_config.parseFile(fileName); // renvoyer la list des serveurs !
 
 	printMap(this->getMap());
 	
@@ -63,8 +63,8 @@ void								Cluster::lanchServices( void )
 	// test :
 	Webserv webserv = this->_serverList[0];
 
-	std::cout << *this;
-	std::cout << webserv;
+	// std::cout << *this;
+	// std::cout << webserv;
 
 	while(1)
 	{
