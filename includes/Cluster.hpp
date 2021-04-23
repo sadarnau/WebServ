@@ -26,7 +26,7 @@ public:
 	Cluster & operator=( Cluster const & rhs );		//overload operator =
 
 	int									initialization( std::string fileName );
-	void								lanchServices( void );
+	int									lanchServices( void );
 	void								addSocketToMaster( int socket );
 
 	std::map<std::string, std::string>	getMap( void );

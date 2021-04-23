@@ -36,7 +36,8 @@ int main(int ac, char *av[])
 		if (cluster.initialization("files/default.conf"))
 			return (1);
 
-	cluster.lanchServices();
+	if (cluster.lanchServices())
+		return (1); // exception ??
 
 	// std::vector<int> list = cluster.getFdList();
 	// for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)

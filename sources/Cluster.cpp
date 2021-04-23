@@ -28,7 +28,7 @@ Cluster & Cluster::operator=( Cluster const & rhs)
 	return ( *this );
 }
 
-int		Cluster::initialization( std::string fileName )
+int									Cluster::initialization( std::string fileName )
 {
 	this->nbServ = 1;	// to test ONLY
 	this->_maxFd = 0;	// not ouf du tout
@@ -54,7 +54,7 @@ int		Cluster::initialization( std::string fileName )
 	return (0);
 }
 
-void								Cluster::lanchServices( void )
+int								Cluster::lanchServices( void )
 {
 	fd_set	copyMasterSet;
 
@@ -79,7 +79,8 @@ void								Cluster::lanchServices( void )
 		if (nbSocket < 0)
 		{
 			Logger::Write(Logger::ERROR, std::string(RED), "Select has messed up everything...\n", true);
-			exit (1); //test
+			throw (std::exception()); // to do : exception
+			return (1); //test ???
 		}
 
 		if (FD_ISSET(serverFd, &copyMasterSet)) // if serv fd changed -> new connection
@@ -98,7 +99,7 @@ void								Cluster::lanchServices( void )
 		}
 	}
 
-	return ;
+	return (0);
 }
 
 void								Cluster::addSocketToMaster( int socket )
