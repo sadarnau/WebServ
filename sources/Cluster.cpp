@@ -115,7 +115,7 @@ void								Cluster::addSocketToMaster( int socket )
 
 std::map<std::string, std::string>	Cluster::getMap( void )
 {
-	return (this->_config.getMap());
+	return (this->_config.getConfigMap());
 }
 
 fd_set								Cluster::getMasterSet( void )

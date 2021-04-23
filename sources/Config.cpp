@@ -24,8 +24,8 @@ Config::~Config( void )
 Config & Config::operator=( Config const & rhs)
 {
 	// this->f = rhs.f;
-	this->fileMap = rhs.fileMap;
-	this->_locationMap = rhs._locationMap;
+	this->_configMap = rhs._configMap;
+	this->_locationVector = rhs._locationVector;
 
 	return ( *this );
 }
