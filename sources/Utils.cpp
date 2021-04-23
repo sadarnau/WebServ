@@ -50,7 +50,7 @@ void			printMap(std::map<std::string, std::string> m)
 	oss << "Print map\r\n";
 	for (std::map<std::string, std::string>::const_iterator it = m.begin(); it != m.end(); ++it)
 	{
-		oss << std::setw(20) << it->first << ":" << it->second << "\r\n";
+		oss << std::setw(20) << std::left << it->first << ":" << it->second << "\r\n";
 	}
 	oss << '\n' << std::setw(28) << "----------\n\n";
 	Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);

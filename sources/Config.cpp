@@ -30,11 +30,21 @@ Config & Config::operator=( Config const & rhs)
 	return ( *this );
 }
 
+void	Config::initConfigMap(void)
+{
+	this->_configMap["listen"] = "127.0.0.1:8080";
+	this->_configMap["server_name"] = "";
+	this->_configMap["client_max_body_size"] = "";
+}
+
 void	Config::parseFile( std::string fileName )
 {
-	checkFile(fileName);
-	createMap();
-
+	this->checkFile(fileName);
+	this->initConfigMap();
+	this->createServerMap();
+	printMap(this->_configMap);
+	for (std::vector<std::map<std::string, std::string> >::const_iterator it = this->_locationVector.begin(); it != this->_locationVector.end(); ++it)
+		printMap(*it);
 	return ;
 }
 
@@ -45,99 +55,173 @@ void	Config::checkFile( std::string fileName )
 
 	n = fileName.find(".conf");
 	if (n == std::string::npos)
-		throw (std::exception());	//exeption a faire, pas de .conf
+	{
+		Logger::Error("Config file must be filename.conf\n");
+		throw (std::exception());	//exeption a faire, conf non valide
+	}	//exeption a faire, pas de .conf
 
 	this->f.open(fileName.c_str());	// open conf file
 
 	if (!f.good())
-		throw (std::exception());	//exeption a faire, probleme a l'ouverture
+	{
+		Logger::Error("Fail opening conf file\n");
+		throw (std::exception());	//exeption a faire, conf non valide
+	}	//exeption a faire, probleme a l'ouverture
 
 	std::getline(this->f, line);
 	if (line.compare("server {"))
+	{
+		Logger::Error("Must start by \"server {\"\n");
 		throw (std::exception());	//exeption a faire, conf non valide
-
-	return ;
-}
-
-void	Config::createMap( void )
-{
-	std::string line;
-
-	while (std::getline(this->f, line))
-	{
-  		if ((line.find("location / {")) != std::string::npos )
-				locationConfig();
-		else if ((line.find("error_page")) != std::string::npos )
-			;
-		else if (line.empty())
-			;
-		else if (!line.compare("}"))
-			break ;
-		else
-			parseConf( line );
 	}
 
 	return ;
 }
 
-void	Config::locationConfig( void )
+bool	Config::checkSemiColon(std::string str)
+{
+	if (str[str.size() - 1] == ';')
+		return (true);
+	return (false);
+}
+
+void	Config::createServerMap( void )
 {
 	std::string line;
+	std::vector<std::string> split;
+	bool locationFound = false;
+	bool listenFound = false;
+	bool endOfSectionFound = false;
 
 	while (std::getline(this->f, line))
 	{
-		int	begining = line.find_first_not_of("\t ");
-  		if (line.empty())
+		splitStringToVector(line, split);
+		if (split.empty())
 			;
-		else if (!line.compare(begining, 5, "index") || !line.compare(begining, 4, "root") || 
-		  !line.compare(begining, 20, "client_max_body_size") || !line.compare(begining, 9, "autoindex"))
-		  	putInLocMap(line);
-		else if (!line.compare(begining, 10, "error_page"))
-		  	putInLocMap(line.substr(line.find_first_not_of("\t ", begining + 10)));
-		else if (!line.compare(begining, 1, "}"))
+  		else if (!split[0].compare("listen") && split.size() == 2 && this->checkSemiColon(split.back()))
+		{
+			listenFound = true;
+			this->_configMap["listen"] = split[1].substr(0, split[1].size() - 1);
+		}
+		else if (!split[0].compare("server_name") && split.size() == 2 && this->checkSemiColon(split.back()))
+			this->_configMap["server_name"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("client_max_body_size") && split.size() == 2 && this->checkSemiColon(split.back()))
+			this->_configMap["client_max_body_size"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("error_page") && split.size() == 3 && this->checkSemiColon(split.back()))
+			this->_configMap[split[1]] = split[2].substr(0, split[2].size() - 1);
+		else if (!split[0].compare("location") && split.size() == 3 && !split[2].compare("{"))
+		{
+			locationFound = true;
+			this->newLocationConfig(split[1]);
+		}
+		else if (!split[0].compare("}") && split.size() == 1)
+		{
+			endOfSectionFound = true;
 			break ;
+		}
 		else
+		{
+			Logger::Error("Bad conf format\n");
 			throw (std::exception());
+		}
+		split.clear();
 	}
-
+	if (!endOfSectionFound)
+	{
+		Logger::Error("Server section doesn't end by }\n");
+		throw (std::exception());
+	}
+	if (!listenFound)
+	{
+		Logger::Error("No listen definition\n");
+		throw (std::exception());
+	}
+	/*if (!locationFound)
+	{
+		Logger::Error("No location definition\n");
+		throw (std::exception());
+	}*/
 	return ;
 }
 
-void	Config::putInLocMap( std::string line )
+void	Config::initLocationMap(std::map<std::string, std::string> & newLoc, std::string path)
 {
-	std::string	value;
-    std::string	key;
+	newLoc["path"] = path;
+	newLoc["accepted_method"] = "";
+	newLoc["root"] = "/files/www";
+	newLoc["autoindex"] = "off";
+	newLoc["index"] = "";
+	newLoc["cgi"] = "";
+}
 
-	std::stringstream ss(line);
-	ss >> key >> value;													// set the variables  
-	if(ss.fail())														// if value extraction failed, break while loop
-		return ;
-	if (value[value.size() - 1] == ';')
-		this->_locationMap[key] = value.substr(0, value.size() - 1);	//-1 to take off the ';'
-	else
-		throw (std::exception());										//Create an exeption, conf file not good
+void	Config::addConfigToLocation(std::map<std::string, std::string> newLoc)
+{
+	for (std::map<std::string, std::string>::const_iterator it = this->_configMap.begin(); it != this->_configMap.end(); ++it)
+	{
+		if (!newLoc.count(it->first))
+			newLoc[it->first] = it->second;
+	}
+	this->_locationVector.push_back(newLoc);
+}
 
+void	Config::newLocationConfig( std::string path )
+{
+	std::string line;
+	std::vector<std::string> split;
+	std::map<std::string, std::string> newLoc;
+	bool endOfSectionFound = false;
+
+	this->initLocationMap(newLoc, path);
+	while (std::getline(this->f, line))
+	{
+		splitStringToVector(line, split);
+		std::ostringstream ss;
+		ss << split.size();
+		if (split.empty())
+			;
+  		else if (!split[0].compare("accepted_method") && split.size() == 2 && this->checkSemiColon(split.back()))
+			newLoc["accepted_method"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("root") && split.size() == 2 && this->checkSemiColon(split.back()))
+			newLoc["root"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("autoindex") && split.size() == 2 && this->checkSemiColon(split.back()))
+			newLoc["autoindex"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("index") && split.size() == 2 && this->checkSemiColon(split.back()))
+			newLoc["index"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("cgi") && split.size() == 2 && this->checkSemiColon(split.back()))
+			newLoc["cgi"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("client_max_body_size") && split.size() == 2 && this->checkSemiColon(split.back()))
+			newLoc["client_max_body_size"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("error_page") && split.size() == 3 && this->checkSemiColon(split.back()))
+			newLoc[split[1]] = split[2].substr(0, split[2].size() - 1);
+		else if (!split[0].compare("}") && split.size() == 1)
+		{
+			addConfigToLocation(newLoc);
+			endOfSectionFound = true;
+			break ;
+		}
+		else
+		{
+			Logger::Error("Bad location format\n");
+			if (!this->checkSemiColon(split.back()))
+				Logger::Error("Missing a SEMICOLON .... somewhere...\n");
+			throw (std::exception());
+		}
+		split.clear();
+	}
+	if (!endOfSectionFound)
+	{
+		Logger::Error("Location section doesn't end by }\n");
+		throw (std::exception());
+	}
 	return ;
 }
 
-void	Config::parseConf( std::string line )
+std::map<std::string, std::string>	Config::getConfigMap( void )
 {
-	std::string	value;
-    std::string	key;
-
-	std::stringstream ss(line);
-	ss >> key >> value;											// set the variables  
-	if(ss.fail())												// if value extraction failed, break while loop
-		return ;
-	if (value[value.size() - 1] == ';')
-		this->fileMap[key] = value.substr(0, value.size() - 1);	//-1 to take off the ';'
-	else
-		throw (std::exception());								//Create an exeption, conf file not good
-
-	return ;
+	return (this->_configMap);
 }
 
-std::map<std::string, std::string>	Config::getMap( void )
+std::vector<std::map<std::string, std::string> >	Config::getLocationVector( void )
 {
-	return (this->fileMap);
+	return (this->_locationVector);
 }

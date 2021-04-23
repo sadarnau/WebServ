@@ -49,6 +49,10 @@ int		Webserv::initialization( Config config ) //to do : return 1 in case of erro
 	Logger::Write(Logger::INFO, std::string(GRN), "The socket has been created !\n", true);
 	
 	this->fillAddress();
+	
+	// Fix binding error, it was due to TIME_WAIT who deosnt allow new connection to same socket before a certain time
+	int reusePort = 1;
+	setsockopt(this->fd, SOL_SOCKET, SO_REUSEPORT, &reusePort, sizeof(reusePort));
 
 	if ((bind(this->fd, (struct sockaddr *)&this->address, sizeof(this->address))) < 0)
 	{
@@ -78,7 +82,7 @@ int		Webserv::initialization( Config config ) //to do : return 1 in case of erro
 
 void	Webserv::fillAddress( void )
 {
-	std::map<std::string, std::string> configMap = this->config.getMap();
+	std::map<std::string, std::string> configMap = this->config.getConfigMap();
 	
 	this->_port = configMap["listen"].substr(configMap["listen"].find(":") + 1 , configMap["listen"].size());
 	this->_IPaddr = configMap["listen"].substr(0, configMap["listen"].find(":"));
@@ -150,7 +154,7 @@ int		Webserv::getMaxFd( void )
 
 std::map<std::string, std::string>	Webserv::getMap( void )
 {
-	return (this->config.getMap());
+	return (this->config.getConfigMap());
 }
 
 fd_set								Webserv::getMasterSet( void )
