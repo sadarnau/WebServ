@@ -30,7 +30,6 @@ Cluster & Cluster::operator=( Cluster const & rhs)
 
 int									Cluster::initialization( std::string fileName )
 {
-	this->_nbServ = 1;	// to test ONLY
 	this->_maxFd = 0;	// not ouf du tout
 
 	this->_config.parseFile(fileName);
@@ -38,11 +37,13 @@ int									Cluster::initialization( std::string fileName )
 	printAllServers(this->_serverList);
 	//printMap(this->getMap());
 	
+	this->_nbServ = this->_serverList.size();
+
 	FD_ZERO(&this->_master_fd);				//create a master file descriptor set and initialize it to zero
 
 	for (int i = 0; i < _nbServ; i++)
 	{
-		// Logger::Write(Logger::INFO, std::string(GRN), "Creating Server number " + std::to_string(i) + " !\n", true);
+		Logger::Write(Logger::INFO, std::string(GRN), "Creating Server number " + std::to_string(i) + " !\n", true);
 		if (this->_serverList[i].initialization())
 			return 1;
 		FD_SET(this->_serverList[i].getFd(), &this->_master_fd);	//adding our first fd socket, the server one.
