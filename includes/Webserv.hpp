@@ -2,6 +2,7 @@
 # define WEBSERV_HPP
 
 # include "Request.hpp"
+# include "Response.hpp"
 # include "Logger.hpp"
 # include "Config.hpp"
 # include <unistd.h>		//read function

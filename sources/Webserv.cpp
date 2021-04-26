@@ -128,9 +128,8 @@ void	Webserv::handleRequest( int socket )
 	
 	buff[ret] = 0;
 
-	Request		request(&this->config, socket, buff);
-
-	Response	response(&this->config, &request, socket);	
+	Request		request(&this->_locationVector, socket, buff);
+	Response	response(&this->_locationVector, &request, socket);	
 	response.buildResponse();
 	response.send();
 
