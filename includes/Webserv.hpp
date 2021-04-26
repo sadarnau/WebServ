@@ -52,6 +52,7 @@ public:
 	std::vector<int>					getFdList2( void );
 	std::string							getIpAddress( void );
 	std::string							getPort( void );
+	std::vector<std::map<std::string, std::string> >	getLocationVector( void );
 };
 
 std::ostream &	operator<<(std::ostream & o, Webserv & rhs);

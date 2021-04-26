@@ -35,7 +35,8 @@ int									Cluster::initialization( std::string fileName )
 
 	this->_config.parseFile(fileName);
 	this->_serverList = this->_config.getServerVector();
-	printMap(this->getMap());
+	printAllServers(this->_serverList);
+	//printMap(this->getMap());
 	
 	FD_ZERO(&this->_master_fd);				//create a master file descriptor set and initialize it to zero
 

@@ -44,9 +44,6 @@ void	Config::parseFile( std::string fileName )
 	this->checkFile(fileName);
 	this->initConfigMap();
 	this->createServerMap();
-	printMap(this->_configMap);
-	for (std::vector<std::map<std::string, std::string> >::const_iterator it = this->_locationVector.begin(); it != this->_locationVector.end(); ++it)
-		printMap(*it);
 	return ;
 }
 
@@ -71,11 +68,11 @@ void	Config::checkFile( std::string fileName )
 	}	//exeption a faire, probleme a l'ouverture
 
 	std::getline(this->f, line);
-	if (line.compare("server {"))
+	/*if (line.compare("server {"))
 	{
 		Logger::Error("Must start by \"server {\"\n");
 		throw (std::exception());	//exeption a faire, conf non valide
-	}
+	}*/
 
 	return ;
 }
@@ -95,6 +92,7 @@ void	Config::createServerMap( void )
 	bool listenFound = false;
 	bool endOfSectionFound = false;
 	bool inServerConfig = true;
+	bool rootLocationFound = false;
 	std::map<std::string, std::string> newLoc;
 
 	this->initLocationMap(newLoc, "/");
@@ -108,7 +106,6 @@ void	Config::createServerMap( void )
 			inServerConfig = true;
 			endOfSectionFound = false;
 			listenFound = false;
-			this->_locationVector.push_back(newLoc);
 		}
   		else if (!split[0].compare("listen") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 		{
@@ -123,6 +120,8 @@ void	Config::createServerMap( void )
 			this->_configMap[split[1]] = split[2].substr(0, split[2].size() - 1);
 		else if (!split[0].compare("location") && split.size() == 3 && !split[2].compare("{") && inServerConfig)
 		{
+			if (!split[1].compare("/"))
+				rootLocationFound = true;
 			locationFound = true;
 			this->newLocationConfig(split[1]);
 		}
@@ -135,10 +134,13 @@ void	Config::createServerMap( void )
 				Logger::Error("No listen definition\n");
 				throw (std::exception());
 			}
+			if (!rootLocationFound)
+				this->_locationVector.push_back(newLoc);
 			this->_serverVector.push_back(Webserv(this->_configMap, this->_locationVector));
 			this->_configMap.clear();
 			this->_locationVector.clear();
 			this->initConfigMap();
+			rootLocationFound = false;
 		}
 		else
 		{

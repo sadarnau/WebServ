@@ -9,10 +9,13 @@
 # include <iterator>
 # include <sstream>
 # include "Logger.hpp"
+# include "Webserv.hpp"
+
+class Webserv ;
 
 std::string 	getTimeHMS(void);
 void 			splitStringToVector(std::string line, std::vector<std::string> &split);
-void			printMap(std::map<std::string, std::string> m);
-void			printLocationMap(std::map<std::string, std::map<std::string, std::string> > m);
+void			printMap(std::map<std::string, std::string> m, std::string type);
+void			printAllServers(std::vector<Webserv> serverList);
 
 #endif

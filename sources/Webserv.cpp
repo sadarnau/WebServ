@@ -185,6 +185,12 @@ std::string							Webserv::getPort( void )
 	return (this->_port);
 }
 
+std::vector<std::map<std::string, std::string> >	Webserv::getLocationVector( void )
+{
+	return (this->_locationVector);
+}
+
+
 std::ostream &	operator<<(std::ostream & o, Webserv & rhs)
 {
 	o << "In this server we have :\n";
