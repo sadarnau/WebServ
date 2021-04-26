@@ -8,9 +8,9 @@ Request::Request( void )
 	return ;
 }
 
-Request::Request(Config *config, int inSock, char *buff ) : _inSocket(inSock)
+Request::Request(std::vector<std::map<std::string, std::string> > *locationVector, int inSock, char *buff ) : _inSocket(inSock)
 {
-	this->_config = config;
+	this->_locationVector = locationVector;
 	std::string	tmp(buff);	//convert char* to std::string
 	this->_buff = tmp;
 	this->parseRequest(this->_buff);

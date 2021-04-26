@@ -3,9 +3,9 @@
 ////////////////////
 // Coplien's
 ////////////////////
-Response::Response(Config *conf, Request *req, int socket)
+Response::Response(std::vector<std::map<std::string, std::string> > *locationVector, Request *req, int socket)
 {
-	this->_conf = conf;
+	this->_locationVector = locationVector;
 	this->_req = req;
 	this->_socket = socket;
 
