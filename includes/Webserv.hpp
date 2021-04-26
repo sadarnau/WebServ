@@ -23,7 +23,6 @@ private:
 	int					fd;
 	std::vector<int>	_fdList;
 	struct sockaddr_in	address;
-	Request				inRequest;
 	std::map<std::string, std::string>	_configMap;
 	std::vector<std::map<std::string, std::string> > _locationVector;
 	fd_set				_master_fd;

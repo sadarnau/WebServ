@@ -30,7 +30,6 @@ Webserv & Webserv::operator=( Webserv const & rhs)
 	this->_port = rhs._port;
 	this->fd = rhs.fd;
 	this->address = rhs.address;
-	this->inRequest = rhs.inRequest;
 	this->_configMap = rhs._configMap;
 	this->_locationVector = rhs._locationVector;
 
@@ -138,11 +137,6 @@ void	Webserv::handleRequest( int socket )
 
 	Logger::Write(Logger::DEBUG, std::string(BLU), "\n---------\nResponse:\n\n" + response.getResponse() + "\n-------\n\n", true);
 	Logger::Write(Logger::INFO, std::string(GRN), "Message delivered...\n\n", true);
-}
-
-int		Webserv::getInSocket( void )
-{
-	return (this->inRequest.getInSock());
 }
 
 int		Webserv::getFd( void )
