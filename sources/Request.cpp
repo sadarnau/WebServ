@@ -14,7 +14,7 @@ Request::Request(std::vector<std::map<std::string, std::string> > *locationVecto
 	std::string	tmp(buff);	//convert char* to std::string
 	this->_buff = tmp;
 	this->parseRequest(this->_buff);
-	this->createPath();
+	this->parseUrl();
 	this->printRequest();
 	return ;
 }
@@ -77,11 +77,19 @@ void	Request::parseRequest(std::string req)
 ////////////////////
 // UTILS
 ////////////////////
-void	Request::createPath()
+void	Request::parseUrl()
 {
-	// std::string mapRoot = this->_config->getMap()["root"]; //change with conf->location->root
 	std::string mapRoot = "files/www"; //change with conf->location->root
 	std::string root;
+	int i;
+
+	//Search for query
+	if((i = this->_target.find("?")) != -1)
+	{
+		//query separator is found
+		this->_queryString = this->_target.substr(i + 1, this->_target.size() - 2); // i + 1 to skip &, so size - (1 + '&')
+		this->_target = this->_target.substr(0, i);
+	}
 
 	//Remove '/' from root if exist (because target has already it)
 	if (mapRoot.back() == '/')
@@ -133,9 +141,11 @@ void	Request::printRequest( void )
 	std::ostringstream oss;
 	
 	oss << "\n----------\nREQUEST OBJECT :\n\n" ;
-	oss << std::setw(20) << "request->method" << " : " << this->_method << std::endl;
-	oss << std::setw(20) << "request->relativeTargetPath " << " : " << this->_relativeTargetPath << std::endl << std::endl;
-	oss << std::setw(20) << "request->absoluteTargetPath " << " : " << this->_absoluteTargetPath << std::endl << std::endl;
+	oss << std::setw(30) << "request->method" << " : " << this->_method << std::endl;
+	oss << std::setw(30) << "request->target" << " : " << this->_target << std::endl;
+	oss << std::setw(30) << "request->query" << " : " << this->_queryString << std::endl;
+	oss << std::setw(30) << "request->relativeTargetPath " << " : " << this->_relativeTargetPath << std::endl;
+	oss << std::setw(30) << "request->absoluteTargetPath " << " : " << this->_absoluteTargetPath << std::endl << std::endl;
 
 	oss << "Content of request->headers :" << std::endl << std::endl; 
 	oss << std::setw(20) << "KEY" << " : " << "VALUE" << std::endl << std::endl;
@@ -151,8 +161,8 @@ void	Request::printRequest( void )
 	oss << std::endl << std::endl;
 
 	// RAW REQUEST
-	oss << "Raw request :" << std::endl << std::endl;
-	oss << this->_buff;
+	// oss << "Raw request :" << std::endl << std::endl;
+	// oss << this->_buff;
 	oss << "----------\n\n";
 	oss << RESET;
 	Logger::Write(Logger::DEBUG, std::string(BLU), oss.str(), true);
@@ -188,20 +198,26 @@ std::string		Request::getAbsoluteTargetPath()
 	return (this->_absoluteTargetPath);
 }
 
+std::string		Request::getQueryString()
+{
+	return (this->_queryString);
+}
+
 void			Request::updateTarget(std::string target)
 {
 	this->_target = target;
-	this->createPath();
+	this->parseUrl();
 }
 
 std::ostream &	operator<<(std::ostream & o, Request & rhs)
 {
 	o << "In this request we have :\n";
 	o << "Absolute target path : " << rhs.getAbsoluteTargetPath() << "\n";
-	o << "Relative target path : " << rhs.getRelativeTargetPath() << "\n";
+	// o << "Relative target path : " << rhs.getRelativeTargetPath() << "\n";
 	o << "Incomming socket : " << rhs.getInSock() << "\n";
 	o << "Methods : " << rhs.getMethod() << "\n";
 	o << "Target : " << rhs.getTarget() << "\n\n";
+	o << "Query : " << rhs.getQueryString() << "\n\n";
 
 	return ( o );
 }

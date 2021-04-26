@@ -21,10 +21,11 @@ private:
 
 	std::string _method;
 	std::string _target;
-	std::string _relativeTargetPath;
+	std::string _relativeTargetPath; // try to not work with this, planning to delete it till working w/ relative path of ./webserv is not relevant
 	std::string _absoluteTargetPath;
 	std::map<std::string, std::string> _headers;
 	std::vector<std::string> _skippedHeaders;
+	std::string	_queryString;
 
 public:
 
@@ -35,8 +36,9 @@ public:
 	Request & operator=( Request const & rhs );		//overload operator =
 
 	void	parseRequest( std::string req );
+	void	updateTarget(std::string target);
 
-	void	createPath();
+	void	parseUrl();
 	bool	isValidHeader( std::string header );
 	bool	isRequestMethod( std::string key );
 	void	printRequest();
@@ -46,7 +48,7 @@ public:
 	std::string		getTarget();
 	std::string		getRelativeTargetPath();
 	std::string		getAbsoluteTargetPath();
-	void			updateTarget(std::string target);
+	std::string		getQueryString();
 };
 
 std::ostream &	operator<<(std::ostream & o, Request & rhs);

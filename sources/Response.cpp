@@ -95,7 +95,7 @@ void	Response::processGet()
 	this->_contentType = this->getContentType(this->_req->getTarget());
 
 	// Check if the file can be open and create response
-	std::ifstream 	f(this->_req->getRelativeTargetPath().c_str()); // open file
+	std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
 	if (f.good())
 	{
 		this->setHeaders(200, "OK", this->_contentType);
@@ -133,7 +133,7 @@ bool		Response::autoIndexResponse()
 	DIR *directory;
 	struct dirent *dircontent;
 
-	if ((directory = opendir(this->_req->getRelativeTargetPath().c_str())))
+	if ((directory = opendir(this->_req->getAbsoluteTargetPath().c_str())))
 	{
 		setHeaders(200, "OK", "text/html");
 
@@ -172,10 +172,10 @@ std::string	Response::getIndexPath()
 {
 	std::string 	index_page = "index.html";	// Change to index in conf 
 
-	if (this->_req->getRelativeTargetPath().back() != '/')
-		return(this->_req->getRelativeTargetPath() + "/" + index_page); 
+	if (this->_req->getTarget().back() != '/')
+		return(this->_req->getTarget() + "/" + index_page); 
 	else
-		return (this->_req->getRelativeTargetPath() + index_page);
+		return (this->_req->getTarget() + index_page);
 }
 
 bool		Response::isIndexPagePresent()
@@ -187,7 +187,7 @@ bool		Response::isIndexPagePresent()
 	if (index_page.empty())						//If no index in conf file
 		return false;
 
-	target = getIndexPath();
+	target = this->_req->getAbsoluteTargetPath() + "/" + index_page;
 
 	std::ifstream 	f(target.c_str());
 
@@ -198,7 +198,7 @@ bool		Response::isDirectory()
 {
 	DIR *directory;
 
-	if ((directory = opendir(this->_req->getRelativeTargetPath().c_str())))
+	if ((directory = opendir(this->_req->getAbsoluteTargetPath().c_str())))
 		return true;
 	return false;
 }

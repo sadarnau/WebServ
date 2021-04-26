@@ -51,7 +51,7 @@ int		Webserv::initialization( void ) //to do : return 1 in case of error else re
 	
 	// Fix binding error, it was due to TIME_WAIT who deosnt allow new connection to same socket before a certain time
 	int reusePort = 1;
-	setsockopt(this->fd, SOL_SOCKET, SO_REUSEPORT, &reusePort, sizeof(reusePort));
+	setsockopt(this->fd, SOL_SOCKET, SO_REUSEPORT, &reusePort, sizeof(reusePort));	// to protect !
 
 	if ((bind(this->fd, (struct sockaddr *)&this->address, sizeof(this->address))) < 0)
 	{
