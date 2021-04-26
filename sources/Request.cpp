@@ -16,6 +16,7 @@ Request::Request(std::vector<std::map<std::string, std::string> > *locationVecto
 	this->parseRequest(this->_buff);
 	this->selectLocation();
 	this->parseUrl();
+	this->createPath();
 	this->printRequest();
 	return ;
 }
@@ -87,20 +88,16 @@ void			Request::updateTarget(std::string target)
 
 void	Request::selectLocation()
 {
-	// std::cout << this->_target << std::endl;
-
 	// iter through locations
 	for (vlocation::iterator it = this->_locationVector->begin() ; it != this->_locationVector->end(); ++it)
     {
 		std::map<std::string, std::string> tmpMap(*it);
-		// std::cout << "testing location " << tmpMap["path"] << std::endl;
-		
-		//compare location["path"] to target on lacation["path"] length
+				
+		// compare location["path"] to target on lacation["path"] length
 		if (std::strncmp(tmpMap["path"].c_str(), this->_target.c_str(), tmpMap["path"].size()) == 0) 
 		{
-			// std::cout << "pass test 1 "<< tmpMap["path"].size() << "  " << this->_target[tmpMap["path"].size()] << std::endl;
-
-			//check if its a valid route, "/" is always valid 
+			// check if its a valid route (for now, if its a correct folder), "/" is always valid
+			// relevant if this->target = "/weeeee" and loc["path"] = "/we" for example (/we is not a good loc)
 			if (tmpMap["path"] == "/" || this->_target[tmpMap["path"].length()] == '\0' || this->_target[tmpMap["path"].length()] == '/')
 			{
 				//if no location, add anyone, if theres something, check if the new match on more char than the previous one
@@ -115,7 +112,7 @@ void	Request::selectLocation()
 
 	this->_urlTargetPath = this->_target;
 	
-	// delete location in target (ex: if location is /salut and target /salut/index.html, target become index.html) - not in case of default loc /
+	// delete location in target (ex: if location is /salut and target /salut/index.html, target become /index.html) - not in case of default loc /
 	if (this->_selectedLocation["path"] != "/")
 		this->_target = this->_target.substr(this->_selectedLocation["path"].size(), this->_target.size());
 	
@@ -135,11 +132,14 @@ void	Request::parseUrl()
 		this->_queryString = this->_target.substr(i + 1, this->_target.size() - 2); // i + 1 to skip &, so size - (1 + '&')
 		this->_target = this->_target.substr(0, i);
 	}
+}
 
+void	Request::createPath()
+{
 	//Remove '/' from root if exist (because target has already it)
 	if (this->_selectedLocation["root"].back() == '/')
 		this->_selectedLocation["root"] = this->_selectedLocation["root"].substr(0, this->_selectedLocation["root"].size() - 1);
-		
+
 	//Create absolute path
 	if (this->_selectedLocation["root"].front() == '/')
 		this->_absoluteTargetPath =  this->_selectedLocation["root"] + this->_target;

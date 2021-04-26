@@ -49,16 +49,16 @@ void			printAllServers(std::vector<class Webserv> serverList)
 	std::vector<std::map<std::string, std::string> > locVector;
 	Webserv wserv;
 
-	oss << "Print all servers\r\n";
+	oss << "Print all servers\n";
 	for (std::vector<class Webserv>::const_iterator it = serverList.begin(); it != serverList.end(); ++it)
 	{
 		wserv = *it;
 		oss << wserv;
 		Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
-		printMap(wserv.getConfigMap(), "Print config map\r\n");
+		printMap(wserv.getConfigMap(), "Print config map\n");
 		locVector = wserv.getLocationVector();
 		for (std::vector<std::map<std::string, std::string> >::const_iterator it2 = locVector.begin(); it2 != locVector.end(); ++it2)
-			printMap(*it2, "Print location map\r\n");
+			printMap(*it2, "Print location map\n");
 		oss.str("");
 		oss.clear();
 	}
@@ -69,12 +69,12 @@ void			printMap(std::map<std::string, std::string> m, std::string type)
 {
 	std::ostringstream oss;
 
-	oss << std::left << type;
+	oss << type;
 	for (std::map<std::string, std::string>::const_iterator it = m.begin(); it != m.end(); ++it)
 	{
 		oss << std::setw(20) << std::left << it->first << ":" << it->second << "\r\n";
 	}
-	oss << '\n' << std::setw(28) << "----------\n\n";
+	oss << '\n' << "----------\n\n";
 	Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
 }
 

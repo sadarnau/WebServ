@@ -17,18 +17,18 @@ class Request
 {
 private:
 
-	vlocation *_locationVector;
-	int			_inSocket;
-	std::string	_buff;
+	vlocation							*_locationVector;
+	int									_inSocket;
+	std::string							_buff;
 
-	std::string _method;
-	std::string _target;
-	std::string _urlTargetPath; // try to not work with this, planning to delete it till working w/ relative path of ./webserv is not relevant
-	std::string _absoluteTargetPath;
-	std::map<std::string, std::string> _headers;
-	std::vector<std::string> _skippedHeaders;
-	std::string	_queryString;
-	std::map<std::string, std::string> _selectedLocation;
+	std::string							_method;
+	std::string							_target;
+	std::string							_urlTargetPath;
+	std::string							_absoluteTargetPath;
+	std::map<std::string, std::string>	_headers;
+	std::vector<std::string>			_skippedHeaders;
+	std::string							_queryString;
+	std::map<std::string, std::string>	_selectedLocation;
 
 public:
 
@@ -43,6 +43,7 @@ public:
 
 	void	parseUrl();
 	void	selectLocation();
+	void	createPath();
 
 	bool	isValidHeader( std::string header );
 	bool	isRequestMethod( std::string key );
