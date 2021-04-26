@@ -83,7 +83,7 @@ void	Request::parseRequest(std::string req)
 void			Request::updateTarget(std::string target)
 {
 	this->_target = target;
-	this->parseUrl();
+	this->createPath();
 }
 
 void	Request::selectLocation()

@@ -149,7 +149,7 @@ bool		Response::autoIndexResponse()
 		while((dircontent = readdir(directory)))
 		{
 				content << "<li>" << "<a href='" << this->_req->getUrlTargetPath();
-				if (this->_req->getTarget().back() != '/')			// this ensure folder path to have '/' when traget is not root
+				if (this->_req->getUrlTargetPath().back() != '/')			// this ensure folder path to have '/' when traget is not root
 					content << '/';
 				content << dircontent->d_name <<"'>";
 				content << dircontent->d_name << "</a>" << "</li>" << std::endl;
