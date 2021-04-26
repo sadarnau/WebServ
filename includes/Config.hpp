@@ -9,6 +9,9 @@
 # include <string>
 # include "Logger.hpp"
 
+class Request ;
+class Webserv ;
+
 class Config
 {
 private:
@@ -16,6 +19,7 @@ private:
 	std::ifstream						f;		// open index.html
 	std::map<std::string, std::string>	_configMap;
 	std::vector<std::map<std::string, std::string> > _locationVector;
+	std::vector<Webserv>				_serverVector;
 	void								initConfigMap( void );
 	void								initLocationMap( std::map<std::string, std::string> & newLoc, std::string path);
 	void								addConfigToLocation(std::map<std::string, std::string> newLoc);
@@ -35,6 +39,7 @@ public:
 	void								parseFile( std::string fileName );
 	std::map<std::string, std::string>	getConfigMap( void );
 	std::vector<std::map<std::string, std::string> >	getLocationVector( void );
+	std::vector<Webserv> getServerVector(void);
 };
 
 std::ostream &	operator<<(std::ostream & o, Config & rhs);

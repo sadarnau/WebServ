@@ -9,6 +9,10 @@
 # include <dirent.h>
 # include "Logger.hpp"
 # include "Webserv.hpp"
+# include "Request.hpp"
+
+class Request ;
+class Config ;
 
 class Response
 {

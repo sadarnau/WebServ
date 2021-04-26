@@ -92,32 +92,49 @@ void	Config::createServerMap( void )
 	bool locationFound = false;
 	bool listenFound = false;
 	bool endOfSectionFound = false;
+	bool inServerConfig = true;
 
 	while (std::getline(this->f, line))
 	{
 		splitStringToVector(line, split);
 		if (split.empty())
 			;
-  		else if (!split[0].compare("listen") && split.size() == 2 && this->checkSemiColon(split.back()))
+		else if (!split[0].compare("server") && split.size() == 2 && !split[1].compare("{") && !inServerConfig)
+		{
+			inServerConfig = true;
+			endOfSectionFound = false;
+			listenFound = false;
+			this->newLocationConfig(split[1]);
+		}
+  		else if (!split[0].compare("listen") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 		{
 			listenFound = true;
 			this->_configMap["listen"] = split[1].substr(0, split[1].size() - 1);
 		}
-		else if (!split[0].compare("server_name") && split.size() == 2 && this->checkSemiColon(split.back()))
+		else if (!split[0].compare("server_name") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 			this->_configMap["server_name"] = split[1].substr(0, split[1].size() - 1);
-		else if (!split[0].compare("client_max_body_size") && split.size() == 2 && this->checkSemiColon(split.back()))
+		else if (!split[0].compare("client_max_body_size") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 			this->_configMap["client_max_body_size"] = split[1].substr(0, split[1].size() - 1);
-		else if (!split[0].compare("error_page") && split.size() == 3 && this->checkSemiColon(split.back()))
+		else if (!split[0].compare("error_page") && split.size() == 3 && this->checkSemiColon(split.back()) && inServerConfig)
 			this->_configMap[split[1]] = split[2].substr(0, split[2].size() - 1);
-		else if (!split[0].compare("location") && split.size() == 3 && !split[2].compare("{"))
+		else if (!split[0].compare("location") && split.size() == 3 && !split[2].compare("{") && inServerConfig)
 		{
 			locationFound = true;
 			this->newLocationConfig(split[1]);
 		}
-		else if (!split[0].compare("}") && split.size() == 1)
+		else if (!split[0].compare("}") && split.size() == 1 && inServerConfig)
 		{
+			inServerConfig = false;
 			endOfSectionFound = true;
-			break ;
+			if (!listenFound)
+			{
+				Logger::Error("No listen definition\n");
+				throw (std::exception());
+			}
+			this->_serverVector.push_back(Webserv(this->_configMap, this->_locationVector));
+			this->_configMap.clear();
+			this->_locationVector.clear();
+			this->initConfigMap();
 		}
 		else
 		{
@@ -126,14 +143,9 @@ void	Config::createServerMap( void )
 		}
 		split.clear();
 	}
-	if (!endOfSectionFound)
+	if (inServerConfig && !endOfSectionFound)
 	{
 		Logger::Error("Server section doesn't end by }\n");
-		throw (std::exception());
-	}
-	if (!listenFound)
-	{
-		Logger::Error("No listen definition\n");
 		throw (std::exception());
 	}
 	/*if (!locationFound)
@@ -219,6 +231,11 @@ void	Config::newLocationConfig( std::string path )
 std::map<std::string, std::string>	Config::getConfigMap( void )
 {
 	return (this->_configMap);
+}
+
+std::vector<Webserv> getServerVector(void)
+{
+	return (this->_serverVector);
 }
 
 std::vector<std::map<std::string, std::string> >	Config::getLocationVector( void )

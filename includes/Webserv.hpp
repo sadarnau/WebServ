@@ -4,7 +4,6 @@
 # include "Request.hpp"
 # include "Logger.hpp"
 # include "Config.hpp"
-# include "Response.hpp"
 # include <unistd.h>		//read function
 # include <arpa/inet.h>		//inet_addr function
 # include <string>
@@ -14,6 +13,9 @@
 # include <netinet/in.h>	//sockaddr struct
 # include <sys/select.h>	//FD_ZERO
 
+class Request ;
+class Config ;
+
 class Webserv
 {
 private:
@@ -22,7 +24,8 @@ private:
 	std::vector<int>	_fdList;
 	struct sockaddr_in	address;
 	Request				inRequest;
-	Config				config;
+	std::map<std::string, std::string>	_configMap;
+	std::vector<std::map<std::string, std::string> > _locationVector;
 	fd_set				_master_fd;
 	int					_maxFd;
 	std::string			_port;
@@ -31,7 +34,7 @@ private:
 public:
 
 	Webserv( void );						 		//default constructor
-	// Webserv( std::string name );					//constructor
+	Webserv( std::map<std::string, std::string>	configMap, std::vector<std::map<std::string, std::string> > locationVector );					//constructor
 	Webserv( Webserv const & src);  				//copy
 	~Webserv( void );								//destructor
 	Webserv & operator=( Webserv const & rhs );		//overload operator =

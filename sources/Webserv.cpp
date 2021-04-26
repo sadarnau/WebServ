@@ -5,10 +5,10 @@ Webserv::Webserv( void )
 	return ;
 }
 
-// Webserv::Webserv( std::string name )
-// {
-// 	return ;
-// }
+Webserv::Webserv( std::map<std::string, std::string> configMap, std::vector<std::map<std::string, std::string> > locationVector ) : _configMap(configMap), _locationVector(locationVector)				//constructor
+{
+	return ;
+}
 
 Webserv::Webserv( Webserv const & src )
 {
@@ -31,7 +31,8 @@ Webserv & Webserv::operator=( Webserv const & rhs)
 	this->fd = rhs.fd;
 	this->address = rhs.address;
 	this->inRequest = rhs.inRequest;
-	this->config = rhs.config;
+	this->_configMap = rhs._configMap;
+	this->_locationVector = rhs._locationVector;
 
 	return ( *this );
 }
