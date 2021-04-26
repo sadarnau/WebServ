@@ -39,6 +39,8 @@ void	Config::initConfigMap(void)
 
 void	Config::parseFile( std::string fileName )
 {
+	std::map<std::string, std::string> newLoc;
+
 	this->checkFile(fileName);
 	this->initConfigMap();
 	this->createServerMap();
@@ -93,7 +95,9 @@ void	Config::createServerMap( void )
 	bool listenFound = false;
 	bool endOfSectionFound = false;
 	bool inServerConfig = true;
+	std::map<std::string, std::string> newLoc;
 
+	this->initLocationMap(newLoc, "/");
 	while (std::getline(this->f, line))
 	{
 		splitStringToVector(line, split);
@@ -104,7 +108,7 @@ void	Config::createServerMap( void )
 			inServerConfig = true;
 			endOfSectionFound = false;
 			listenFound = false;
-			this->newLocationConfig(split[1]);
+			this->_locationVector.push_back(newLoc);
 		}
   		else if (!split[0].compare("listen") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 		{
