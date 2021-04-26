@@ -74,21 +74,22 @@ void	Response::buildHeader()
 ////////////////////
 void	Response::processGet()
 {
-
-	std::string		content;
-
-	std::string		root = "files/www";			// Change to config->location->root
-	std::string		auto_index= "on";			// Change to config->location->auto_index
+	std::string		auto_index = this->_location["autoindex"];
 	std::string 	index_page = "/index.html";	// Change to index in conf 
 
 	std::string 	target;
 	// Directory Request
 	if (this->isDirectory())
 	{
-		if(!this->isIndexPagePresent() && auto_index == "on" && this->autoIndexResponse())  //autoIndexRequest return true on success
-			return ;
-		else if (this->isIndexPagePresent())
+		if (this->isIndexPagePresent())
 			this->_req->updateTarget(this->_req->getTarget() + index_page);
+		else if(auto_index == "on" && this->autoIndexResponse())  //autoIndexRequest return true on success
+			return ;
+		else
+		{
+			this->setToErrorPage(404);
+			return;
+		}
 	}
 	
 	//Here comes the block where you check the file ext and define content_type
@@ -104,10 +105,7 @@ void	Response::processGet()
 	}
 	else
 	{
-		this->setHeaders(404, "FILE_NOT_FOUND", "text/html");
-		std::ifstream error_page("files/default_pages/custom_404.html");
-		std::string str((std::istreambuf_iterator<char>(error_page)), std::istreambuf_iterator<char>());
-		this->_body = str;
+		this->setToErrorPage(404);
 	}
 
 	f.close();
@@ -128,8 +126,6 @@ void	Response::processPost()
 ////////////////////
 bool		Response::autoIndexResponse()
 {
-	std::string		auto_index = "on";						// Change to config->location->auto_index
-
 	DIR *directory;
 	struct dirent *dircontent;
 
@@ -149,7 +145,7 @@ bool		Response::autoIndexResponse()
 		while((dircontent = readdir(directory)))
 		{
 				content << "<li>" << "<a href='" << this->_req->getUrlTargetPath();
-				if (this->_req->getUrlTargetPath().back() != '/')			// this ensure folder path to have '/' when traget is not root
+				if (this->_req->getUrlTargetPath().back() != '/')			// this ensure folder path to have '/' when target is not root
 					content << '/';
 				content << dircontent->d_name <<"'>";
 				content << dircontent->d_name << "</a>" << "</li>" << std::endl;
@@ -165,6 +161,31 @@ bool		Response::autoIndexResponse()
 }
 
 
+////////////////////
+// ERRORS
+////////////////////
+void		Response::setToErrorPage(int errorNumber)
+{
+	std::ifstream error_page;
+	std::string errorNbrString;          // string which will contain the result
+	std::ostringstream convert;   // stream used for the conversion
+	convert << errorNumber;      // insert the textual representation of 'Number' in the characters in the stream
+	errorNbrString = convert.str();
+
+	if (errorNumber == 404)
+	{
+		this->setHeaders(404, "FILE_NOT_FOUND", "text/html");
+		std::cout << this->_location[errorNbrString] << std::endl; 
+		if(this->_location[errorNbrString].empty())
+			error_page.open("files/default_pages/custom_404.html");
+		else
+			error_page.open(this->_location[errorNbrString]);
+	}
+
+	std::string str((std::istreambuf_iterator<char>(error_page)), std::istreambuf_iterator<char>());
+	this->_body = str;
+
+}
 ////////////////////
 // UTILS
 ////////////////////
@@ -184,7 +205,7 @@ bool		Response::isIndexPagePresent()
 
 	std::string		target;
 
-	if (index_page.empty())						//If no index in conf file
+	if (index_page.empty())						// if no index in conf file
 		return false;
 
 	target = this->_req->getAbsoluteTargetPath() + "/" + index_page;

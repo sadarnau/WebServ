@@ -12,7 +12,6 @@
 # include "Request.hpp"
 
 class Request ;
-class Config ;
 
 class Response
 {
@@ -47,6 +46,9 @@ public:
 	void			processPost();
 
 	bool			autoIndexResponse();
+
+	void			setToErrorPage(int errorNumber);
+
 	bool			isIndexPagePresent();
 	bool			isDirectory();
 	std::string		getContentType(std::string target);
