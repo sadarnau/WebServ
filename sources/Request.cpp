@@ -113,9 +113,12 @@ void	Request::selectLocation()
 		}
 	}
 
+	this->_urlTargetPath = this->_target;
+	
 	// delete location in target (ex: if location is /salut and target /salut/index.html, target become index.html) - not in case of default loc /
 	if (this->_selectedLocation["path"] != "/")
 		this->_target = this->_target.substr(this->_selectedLocation["path"].size(), this->_target.size());
+	
 	// format target
 	if(this->_target.front() != '/')
 		this->_target.insert(0, "/");
@@ -123,8 +126,6 @@ void	Request::selectLocation()
 
 void	Request::parseUrl()
 {
-	std::string mapRoot = this->_selectedLocation["root"]; //change with conf->location->root
-	std::string root;
 	int i;
 
 	//Search for query
@@ -136,22 +137,17 @@ void	Request::parseUrl()
 	}
 
 	//Remove '/' from root if exist (because target has already it)
-	if (mapRoot.back() == '/')
-		root = mapRoot.substr(0, mapRoot.size() - 1);
-	else
-		root = mapRoot;
-
-	// Create relative path
-	this->_urlTargetPath = root + this->_target;
-
+	if (this->_selectedLocation["root"].back() == '/')
+		this->_selectedLocation["root"] = this->_selectedLocation["root"].substr(0, this->_selectedLocation["root"].size() - 1);
+		
 	//Create absolute path
-	if (root.front() == '/')
-		this->_absoluteTargetPath =  root + this->_target;
+	if (this->_selectedLocation["root"].front() == '/')
+		this->_absoluteTargetPath =  this->_selectedLocation["root"] + this->_target;
 	else{
 		char cwd[1000];
 		getcwd(cwd, sizeof(cwd));
 		std::string currentdir = cwd;
-		this->_absoluteTargetPath = currentdir + "/" + root + this->_target;
+		this->_absoluteTargetPath = currentdir + "/" + this->_selectedLocation["root"] + this->_target;
 	}
 }
 
