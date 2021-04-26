@@ -8,6 +8,7 @@
 # include <iostream>
 # include <string>
 # include "Logger.hpp"
+# include "Webserv.hpp"
 
 class Request ;
 class Webserv ;

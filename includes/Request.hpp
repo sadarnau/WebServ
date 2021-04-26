@@ -10,7 +10,8 @@
 # include <colors.hpp>
 # include <iomanip>
 # include "Logger.hpp"
-# include "Config.hpp"
+
+class Config ;
 
 class Request
 {

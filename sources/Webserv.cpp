@@ -37,10 +37,8 @@ Webserv & Webserv::operator=( Webserv const & rhs)
 	return ( *this );
 }
 
-int		Webserv::initialization( Config config ) //to do : return 1 in case of error else return 0
+int		Webserv::initialization( void ) //to do : return 1 in case of error else return 0
 {
-	this->config = config; // test....
-
 	if ((this->fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
 		Logger::Write(Logger::ERROR, std::string(RED), "Error assigning the socket...\n", true);
@@ -83,8 +81,11 @@ int		Webserv::initialization( Config config ) //to do : return 1 in case of erro
 
 void	Webserv::fillAddress( void )
 {
-	std::map<std::string, std::string> configMap = this->config.getConfigMap();
+	// std::map<std::string, std::string> configMap = this->config.getConfigMap();
+	std::map<std::string, std::string> configMap;
 	
+	configMap = this->_configMap; // test
+
 	this->_port = configMap["listen"].substr(configMap["listen"].find(":") + 1 , configMap["listen"].size());
 	this->_IPaddr = configMap["listen"].substr(0, configMap["listen"].find(":"));
 
@@ -123,14 +124,15 @@ void	Webserv::handleRequest( int socket )
 	// consider socket like a stream, the request can be send in multiple packets (for big request)
 	// so this version is KO
 	
-	char buff[1024];						// GNL maybe better ?
+	char buff[1024];						// 1024 ????
 	int ret = read( socket , buff, 1024);	// to protect
 	
 	buff[ret] = 0;
 
-	Request		request(&this->config, socket, buff);
+	Request		request(this->_locationVector, socket, buff);
 
-	Response	response(&this->config, &request, socket);	
+	Response	response(this->_locationVector, &request, socket);
+
 	response.buildResponse();
 	response.send();
 
@@ -153,9 +155,9 @@ int		Webserv::getMaxFd( void )
 	return (this->_maxFd);
 }
 
-std::map<std::string, std::string>	Webserv::getMap( void )
+std::map<std::string, std::string>	Webserv::getConfigMap( void )
 {
-	return (this->config.getConfigMap());
+	return (this->_configMap);
 }
 
 fd_set								Webserv::getMasterSet( void )
@@ -166,11 +168,6 @@ fd_set								Webserv::getMasterSet( void )
 struct sockaddr_in					&Webserv::getAddr( void )
 {
 	return (this->address);
-}
-
-Config								&Webserv::getConfig( void )
-{
-	return (this->config);
 }
 
 std::vector<int>					Webserv::getFdList2( void )

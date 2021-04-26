@@ -233,7 +233,7 @@ std::map<std::string, std::string>	Config::getConfigMap( void )
 	return (this->_configMap);
 }
 
-std::vector<Webserv> getServerVector(void)
+std::vector<Webserv> Config::getServerVector(void)
 {
 	return (this->_serverVector);
 }

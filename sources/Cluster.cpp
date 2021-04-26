@@ -33,7 +33,7 @@ int									Cluster::initialization( std::string fileName )
 	this->_nbServ = 1;	// to test ONLY
 	this->_maxFd = 0;	// not ouf du tout
 
-	this->_config.parseFile(fileName); // renvoyer la list des serveurs !
+	this->_config.parseFile(fileName);
 	this->_serverList = this->_config.getServerVector();
 	printMap(this->getMap());
 	
@@ -42,13 +42,11 @@ int									Cluster::initialization( std::string fileName )
 	for (int i = 0; i < _nbServ; i++)
 	{
 		// Logger::Write(Logger::INFO, std::string(GRN), "Creating Server number " + std::to_string(i) + " !\n", true);
-		Webserv webserv;
-		if (webserv.initialization(this->_config))
+		if (this->_serverList[i].initialization())
 			return 1;
-		FD_SET(webserv.getFd(), &this->_master_fd);	//adding our first fd socket, the server one.
-		if(webserv.getFd() > this->_maxFd)
-			this->_maxFd = webserv.getFd();
-		this->_serverList.push_back(webserv);
+		FD_SET(this->_serverList[i].getFd(), &this->_master_fd);	//adding our first fd socket, the server one.
+		if(this->_serverList[i].getFd() > this->_maxFd)
+			this->_maxFd = this->_serverList[i].getFd();
 	}
 
 	return (0);

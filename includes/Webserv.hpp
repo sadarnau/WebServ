@@ -2,6 +2,7 @@
 # define WEBSERV_HPP
 
 # include "Request.hpp"
+# include "Response.hpp"
 # include "Logger.hpp"
 # include "Config.hpp"
 # include <unistd.h>		//read function
@@ -14,7 +15,6 @@
 # include <sys/select.h>	//FD_ZERO
 
 class Request ;
-class Config ;
 
 class Webserv
 {
@@ -39,7 +39,7 @@ public:
 	~Webserv( void );								//destructor
 	Webserv & operator=( Webserv const & rhs );		//overload operator =
 
-	int									initialization( Config config );
+	int									initialization( void );
 	void								fillAddress( void );
 	int									acceptConexion( void );
 	void								handleRequest( int socket );
@@ -47,9 +47,8 @@ public:
 	int									getFd( void );
 	int									getMaxFd( void );
 	fd_set								getMasterSet( void );
-	std::map<std::string, std::string>	getMap( void );
+	std::map<std::string, std::string>	getConfigMap( void );
 	struct sockaddr_in					&getAddr( void );
-	Config								&getConfig( void );
 	std::vector<int>					getFdList2( void );
 	std::string							getIpAddress( void );
 	std::string							getPort( void );
