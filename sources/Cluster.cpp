@@ -34,7 +34,6 @@ int									Cluster::initialization( std::string fileName )
 
 	this->_config.parseFile(fileName);
 	this->_serverList = this->_config.getServerVector();
-	printAllServers(this->_serverList);
 	//printMap(this->getMap());
 	
 	this->_nbServ = this->_serverList.size();
@@ -50,6 +49,8 @@ int									Cluster::initialization( std::string fileName )
 		if(this->_serverList[i].getFd() > this->_maxFd)
 			this->_maxFd = this->_serverList[i].getFd();
 	}
+
+	printAllServers(this->_serverList);
 
 	return (0);
 }
