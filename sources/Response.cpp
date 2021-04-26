@@ -3,9 +3,9 @@
 ////////////////////
 // Coplien's
 ////////////////////
-Response::Response(std::vector<std::map<std::string, std::string> > *locationVector, Request *req, int socket)
+Response::Response(Request *req, int socket)
 {
-	this->_locationVector = locationVector;
+	this->_location = req->getSelectedLocation();
 	this->_req = req;
 	this->_socket = socket;
 
@@ -143,12 +143,12 @@ bool		Response::autoIndexResponse()
 
 		content << std::string((std::istreambuf_iterator<char>(content_start)), std::istreambuf_iterator<char>());
 
-		content << "<h1>Directory : " << this->_req->getTarget() << "</h1>";
+		content << "<h1>Directory : " << this->_req->getUrlTargetPath() << "</h1>";
 		content << "<ul>" << std::endl;
 
 		while((dircontent = readdir(directory)))
 		{
-				content << "<li>" << "<a href='" << this->_req->getTarget();
+				content << "<li>" << "<a href='" << this->_req->getUrlTargetPath();
 				if (this->_req->getTarget().back() != '/')			// this ensure folder path to have '/' when traget is not root
 					content << '/';
 				content << dircontent->d_name <<"'>";

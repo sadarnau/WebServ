@@ -17,9 +17,10 @@ class Config ;
 class Response
 {
 private:
-	std::vector<std::map<std::string, std::string> > *_locationVector;
 	Request									*_req;
 	int										_socket;
+
+	std::map<std::string, std::string> 		_location;
 
 	std::string 							_httpVersion;
 	int										_responseCode;
@@ -33,8 +34,8 @@ private:
 	std::string								_response;
 
 public:
-	Response(std::vector<std::map<std::string, std::string> > *_locationVector, Request *req, int socket);	//default constructor
-	Response( Response const & src);  					//copy
+	Response( Request *req, int socket );	//default constructor
+	Response( Response const & src );  					//copy
 	~Response( void );									//destructor
 	Response & operator=( Response const & rhs );		//overload operator =
 

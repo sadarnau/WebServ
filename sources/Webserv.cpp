@@ -130,7 +130,7 @@ void	Webserv::handleRequest( int socket )
 
 	Request		request(&this->_locationVector, socket, buff);
 
-	Response	response(&this->_locationVector, &request, socket);
+	Response	response(&request, socket);
 
 	response.buildResponse();
 	response.send();

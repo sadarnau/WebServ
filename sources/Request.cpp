@@ -14,6 +14,7 @@ Request::Request(std::vector<std::map<std::string, std::string> > *locationVecto
 	std::string	tmp(buff);	//convert char* to std::string
 	this->_buff = tmp;
 	this->parseRequest(this->_buff);
+	this->selectLocation();
 	this->parseUrl();
 	this->printRequest();
 	return ;
@@ -77,9 +78,52 @@ void	Request::parseRequest(std::string req)
 ////////////////////
 // UTILS
 ////////////////////
+
+void			Request::updateTarget(std::string target)
+{
+	this->_target = target;
+	this->parseUrl();
+}
+
+void	Request::selectLocation()
+{
+	// std::cout << this->_target << std::endl;
+
+	// iter through locations
+	for (vlocation::iterator it = this->_locationVector->begin() ; it != this->_locationVector->end(); ++it)
+    {
+		std::map<std::string, std::string> tmpMap(*it);
+		// std::cout << "testing location " << tmpMap["path"] << std::endl;
+		
+		//compare location["path"] to target on lacation["path"] length
+		if (std::strncmp(tmpMap["path"].c_str(), this->_target.c_str(), tmpMap["path"].size()) == 0) 
+		{
+			// std::cout << "pass test 1 "<< tmpMap["path"].size() << "  " << this->_target[tmpMap["path"].size()] << std::endl;
+
+			//check if its a valid route, "/" is always valid 
+			if (tmpMap["path"] == "/" || this->_target[tmpMap["path"].length()] == '\0' || this->_target[tmpMap["path"].length()] == '/')
+			{
+				//if no location, add anyone, if theres something, check if the new match on more char than the previous one
+				if(this->_selectedLocation.empty())
+					this->_selectedLocation = tmpMap;
+				else
+					if(this->_selectedLocation["path"].size() < tmpMap["path"].size())
+						this->_selectedLocation = tmpMap;
+			}
+		}
+	}
+
+	// delete location in target (ex: if location is /salut and target /salut/index.html, target become index.html) - not in case of default loc /
+	if (this->_selectedLocation["path"] != "/")
+		this->_target = this->_target.substr(this->_selectedLocation["path"].size(), this->_target.size());
+	// format target
+	if(this->_target.front() != '/')
+		this->_target.insert(0, "/");
+}
+
 void	Request::parseUrl()
 {
-	std::string mapRoot = "files/www"; //change with conf->location->root
+	std::string mapRoot = this->_selectedLocation["root"]; //change with conf->location->root
 	std::string root;
 	int i;
 
@@ -93,18 +137,22 @@ void	Request::parseUrl()
 
 	//Remove '/' from root if exist (because target has already it)
 	if (mapRoot.back() == '/')
-		root = mapRoot.substr(0, mapRoot.size()-1);
+		root = mapRoot.substr(0, mapRoot.size() - 1);
 	else
 		root = mapRoot;
 
 	// Create relative path
-	this->_relativeTargetPath = root + this->_target;
+	this->_urlTargetPath = root + this->_target;
 
 	//Create absolute path
-	char cwd[1000];
-	getcwd(cwd, sizeof(cwd));
-	std::string currentdir = cwd;
-	this->_absoluteTargetPath = currentdir + "/" + root + this->_target;
+	if (root.front() == '/')
+		this->_absoluteTargetPath =  root + this->_target;
+	else{
+		char cwd[1000];
+		getcwd(cwd, sizeof(cwd));
+		std::string currentdir = cwd;
+		this->_absoluteTargetPath = currentdir + "/" + root + this->_target;
+	}
 }
 
 bool	Request::isValidHeader(std::string header)
@@ -144,9 +192,9 @@ void	Request::printRequest( void )
 	oss << std::setw(30) << "request->method" << " : " << this->_method << std::endl;
 	oss << std::setw(30) << "request->target" << " : " << this->_target << std::endl;
 	oss << std::setw(30) << "request->query" << " : " << this->_queryString << std::endl;
-	oss << std::setw(30) << "request->relativeTargetPath " << " : " << this->_relativeTargetPath << std::endl;
-	oss << std::setw(30) << "request->absoluteTargetPath " << " : " << this->_absoluteTargetPath << std::endl << std::endl;
-
+	oss << std::setw(30) << "request->urlTargetPath " << " : " << this->_urlTargetPath << std::endl;
+	oss << std::setw(30) << "request->absoluteTargetPath " << " : " << this->_absoluteTargetPath << std::endl;
+	oss << std::setw(30) << "selectedLocation[\"path\"] " << " : " << this->_selectedLocation["path"] << std::endl << std::endl;
 	oss << "Content of request->headers :" << std::endl << std::endl; 
 	oss << std::setw(20) << "KEY" << " : " << "VALUE" << std::endl << std::endl;
 	for (std::map<std::string, std::string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); ++it)
@@ -188,9 +236,9 @@ std::string		Request::getTarget()
 	return (this->_target);
 }
 
-std::string		Request::getRelativeTargetPath()
+std::string		Request::getUrlTargetPath()
 {
-	return (this->_relativeTargetPath);
+	return (this->_urlTargetPath);
 }
 
 std::string		Request::getAbsoluteTargetPath()
@@ -203,10 +251,11 @@ std::string		Request::getQueryString()
 	return (this->_queryString);
 }
 
-void			Request::updateTarget(std::string target)
+
+
+std::map<std::string, std::string> Request::getSelectedLocation()
 {
-	this->_target = target;
-	this->parseUrl();
+	return (this->_selectedLocation);
 }
 
 std::ostream &	operator<<(std::ostream & o, Request & rhs)
