@@ -17,7 +17,7 @@ class Config ;
 class Response
 {
 private:
-	Config									*_conf;
+	std::vector<std::map<std::string, std::string> > *_locationVector;
 	Request									*_req;
 	int										_socket;
 
@@ -33,7 +33,7 @@ private:
 	std::string								_response;
 
 public:
-	Response(Config *conf, Request *req, int socket);	//default constructor
+	Response(std::vector<std::map<std::string, std::string> > *_locationVector, Request *req, int socket);	//default constructor
 	Response( Response const & src);  					//copy
 	~Response( void );									//destructor
 	Response & operator=( Response const & rhs );		//overload operator =

@@ -11,13 +11,11 @@
 # include <iomanip>
 # include "Logger.hpp"
 
-class Config ;
-
 class Request
 {
 private:
 
-	Config		*_config;
+	std::vector<std::map<std::string, std::string> > *_locationVector;
 	int			_inSocket;
 	std::string	_buff;
 
@@ -31,7 +29,7 @@ private:
 public:
 
 	Request( void );								//default constructor
-	Request( Config *config, int inSock, char *buff );					//constructor
+	Request( std::vector<std::map<std::string, std::string> > *_locationVector, int inSock, char *buff );					//constructor
 	Request( Request const & src );  				//copy
 	~Request( void );								//destructor
 	Request & operator=( Request const & rhs );		//overload operator =
