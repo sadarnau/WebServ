@@ -42,7 +42,6 @@ public:
 	void								fillAddress( void );
 	int									acceptConexion( void );
 	void								handleRequest( int socket );
-	int									getInSocket( void );
 	int									getFd( void );
 	int									getMaxFd( void );
 	fd_set								getMasterSet( void );

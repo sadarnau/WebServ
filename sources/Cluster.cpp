@@ -28,25 +28,25 @@ Cluster & Cluster::operator=( Cluster const & rhs)
 	return ( *this );
 }
 
-int									Cluster::initialization( std::string fileName )
+int								Cluster::initialization( std::string fileName )
 {
 	this->_maxFd = 0;	// not ouf du tout
 
 	this->_config.parseFile(fileName);
 	this->_serverList = this->_config.getServerVector();
-	//printMap(this->getMap());
+	// printMap(this->getMap());
 	
 	this->_nbServ = this->_serverList.size();
 
-	FD_ZERO(&this->_master_fd);				//create a master file descriptor set and initialize it to zero
+	FD_ZERO(&this->_master_fd);				// create a master file descriptor set and initialize it to zero
 
-	for (int i = 0; i < _nbServ; i++)
+	for (int i = 0; i < this->_nbServ; i++)
 	{
 		Logger::Write(Logger::INFO, std::string(GRN), "Creating Server number " + std::to_string(i) + " !\n", true);
 		if (this->_serverList[i].initialization())
 			return 1;
-		FD_SET(this->_serverList[i].getFd(), &this->_master_fd);	//adding our first fd socket, the server one.
-		if(this->_serverList[i].getFd() > this->_maxFd)
+		FD_SET(this->_serverList[i].getFd(), &this->_master_fd);	// adding our first fd socket, the server one.
+		if(this->_serverList[i].getFd() > this->_maxFd)				// ternaire ??
 			this->_maxFd = this->_serverList[i].getFd();
 	}
 
@@ -58,8 +58,6 @@ int									Cluster::initialization( std::string fileName )
 int								Cluster::lanchServices( void )
 {
 	fd_set	copyMasterSet;
-
-	int serverFd = this->_serverList[0].getFd();
 
 	// test :
 	Webserv webserv = this->_serverList[0];
@@ -84,11 +82,14 @@ int								Cluster::lanchServices( void )
 			return (1); //test ???
 		}
 
-		if (FD_ISSET(serverFd, &copyMasterSet)) // if serv fd changed -> new connection
+		for(int i = 0; i < this->_nbServ; i++)
 		{
-			Logger::Write(Logger::INFO, std::string(GRN), "New connection !\n\n", true);
-			int sock = this->_serverList[0].acceptConexion();
-			addSocketToMaster(sock);
+			if (FD_ISSET(this->_serverList[i].getFd(), &copyMasterSet)) // if serv fd changed -> new connection
+			{
+				Logger::Write(Logger::INFO, std::string(GRN), "New connection on serv " + std::to_string(i) + " !\n", true);
+				int sock = this->_serverList[i].acceptConexion();
+				addSocketToMaster(sock);
+			}
 		}
 
 		// We go throught every open fds to see if we have something new to read
