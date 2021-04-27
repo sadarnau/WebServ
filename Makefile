@@ -26,7 +26,7 @@ OBJS =			$(SRC:%.cpp=$(OBJS_PATH)%.o)
 CLANG =			clang++
 
 # Compilation flags
-CLANGFLAGS =	-Werror -Wall -Wextra -g3 -fsanitize=address 
+CLANGFLAGS =	-Werror -Wall -Wextra
 
 # LOGS
 LOG_PATH =		log/log.txt
@@ -38,7 +38,11 @@ LOG_PATH =		log/log.txt
 all:			$(OBJS)
 				@$(CLANG) $(CLANGFLAGS) $(OBJS) -o $(NAME)
 				@printf "$(_GREEN)All done!$(_END)\n"
-				
+
+fsanitize:		$(OBJS)
+				@$(CLANG) $(CLANGFLAGS) -g3 -fsanitize=address $(OBJS) -o $(NAME)
+				@printf "$(_GREEN)All done!$(_END)\n"
+
 $(NAME):		all
 
 # Getting .o from .cpp rule
