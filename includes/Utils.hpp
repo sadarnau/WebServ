@@ -13,9 +13,11 @@
 
 class Webserv ;
 
-std::string 	getTimeHMS(void);
-void 			splitStringToVector(std::string line, std::vector<std::string> &split);
-void			printMap(std::map<std::string, std::string> m, std::string type);
-void			printAllServers(std::vector<Webserv> serverList);
+std::string 	            getTimeHMS(void);
+void 			            splitStringToVector(std::string line, std::vector<std::string> &split);
+void			            printMap(std::map<std::string, std::string> m, std::string type);
+void			            printAllServers(std::vector<Webserv> serverList);
+std::string                 safeUrlJoin(std::string url1, std::string url2);
+std::vector<std::string>	concatToVecor(std::string toParse);
 
 #endif

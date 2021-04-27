@@ -10,6 +10,7 @@
 # include "Logger.hpp"
 # include "Webserv.hpp"
 # include "Request.hpp"
+# include "Utils.hpp"
 
 class Request ;
 
@@ -55,7 +56,7 @@ public:
 	
 	void			setHeaders( int responseCode, std::string responseCodeMessage, std::string contentType );
 	std::string		getResponse();
-	std::string		getIndexPath();
+	std::string		getIndexTarget();
 
 };
 

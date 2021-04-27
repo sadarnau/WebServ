@@ -78,3 +78,32 @@ void			printMap(std::map<std::string, std::string> m, std::string type)
 	Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
 }
 
+std::string	safeUrlJoin(std::string url1, std::string url2)
+{
+
+	if(url1.back() == '/' )
+		url1 = url1.substr(0, url1.size() - 1);
+
+	if(url2.front() == '/')
+		url2 = url2.substr(1, url2.size());
+
+	return (std::string(url1 + "/" + url2));
+}
+
+std::vector<std::string>	concatToVecor(std::string toParse)
+{
+	std::vector<std::string> result;
+	std::string separator = "/";
+	std::string token;
+	size_t pos;
+
+	while ((pos = toParse.find(separator)) != std::string::npos)
+	{
+		token = toParse.substr(0, pos);
+		toParse = toParse.substr(pos + 1, toParse.length());
+		result.push_back(token);
+	}
+	result.push_back(toParse);
+
+	return (result);
+}

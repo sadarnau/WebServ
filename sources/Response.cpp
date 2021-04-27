@@ -82,9 +82,13 @@ void	Response::processGet()
 	if (this->isDirectory())
 	{
 		if (this->isIndexPagePresent())
-			this->_req->updateTarget(this->_req->getTarget() + index_page);
-		else if(auto_index == "on" && this->autoIndexResponse())  //autoIndexRequest return true on success
+		{
+			this->_req->updateTarget(safeUrlJoin(this->_req->getTarget(), this->getIndexTarget()));
+		}
+		else if(auto_index == "on" && this->autoIndexResponse())  //autoIndexResponse return true on success
+		{
 			return ;
+		}
 		else
 		{
 			this->setToErrorPage(404);
@@ -97,6 +101,7 @@ void	Response::processGet()
 
 	// Check if the file can be open and create response
 	std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
+
 	if (f.good())
 	{
 		this->setHeaders(200, "OK", this->_contentType);
@@ -144,11 +149,8 @@ bool		Response::autoIndexResponse()
 
 		while((dircontent = readdir(directory)))
 		{
-				content << "<li>" << "<a href='" << this->_req->getUrlTargetPath();
-				if (this->_req->getUrlTargetPath().back() != '/')			// this ensure folder path to have '/' when target is not root
-					content << '/';
-				content << dircontent->d_name <<"'>";
-				content << dircontent->d_name << "</a>" << "</li>" << std::endl;
+				content << "<li>" << "<a href='" << safeUrlJoin(this->_req->getUrlTargetPath(), dircontent->d_name) << 
+				"'>" << dircontent->d_name << "</a>" << "</li>" << std::endl;
 		}
 		content << "</ul>" << std::endl;
 		
@@ -175,7 +177,7 @@ void		Response::setToErrorPage(int errorNumber)
 	if (errorNumber == 404)
 	{
 		this->setHeaders(404, "FILE_NOT_FOUND", "text/html");
-		std::cout << this->_location[errorNbrString] << std::endl; 
+
 		if(this->_location[errorNbrString].empty())
 			error_page.open("files/default_pages/custom_404.html");
 		else
@@ -184,35 +186,59 @@ void		Response::setToErrorPage(int errorNumber)
 
 	std::string str((std::istreambuf_iterator<char>(error_page)), std::istreambuf_iterator<char>());
 	this->_body = str;
-
 }
+
 ////////////////////
 // UTILS
 ////////////////////
-std::string	Response::getIndexPath()
+std::string	Response::getIndexTarget()
 {
-	std::string 	index_page = "index.html";	// Change to index in conf 
+	std::string 	indexPage = this->_location["index"];
 
-	if (this->_req->getTarget().back() != '/')
-		return(this->_req->getTarget() + "/" + index_page); 
-	else
-		return (this->_req->getTarget() + index_page);
+	// check and return the first available index page
+	if (indexPage.empty())
+		return(this->_req->getTarget());
+
+	std::vector<std::string> vIndex = concatToVecor(this->_location["index"]);
+
+	for(std::vector<std::string>::iterator it = vIndex.begin(); it != vIndex.end(); ++it)
+	{
+		std::string target(this->_req->getAbsoluteTargetPath() + *it);
+		std::ifstream 	f(target.c_str());
+		if (f.good())
+		{
+			return (safeUrlJoin(this->_req->getTarget(), *it));
+		}
+		f.close();
+	}
+	// std::ifstream indexTry;
+
+	return (this->_req->getTarget());
 }
 
 bool		Response::isIndexPagePresent()
 {
-	std::string 	index_page = "index.html";	// Change to index in conf 
+	std::string 	indexPage = this->_location["index"];
 
-	std::string		target;
+	// check and return the first available index page
+	if (indexPage.empty())
+		return(false);
 
-	if (index_page.empty())						// if no index in conf file
-		return false;
+	std::vector<std::string> vIndex = concatToVecor(this->_location["index"]);
 
-	target = this->_req->getAbsoluteTargetPath() + "/" + index_page;
+	for(std::vector<std::string>::iterator it = vIndex.begin(); it != vIndex.end(); ++it)
+	{
+		std::string target(this->_req->getAbsoluteTargetPath() + *it);
+		std::ifstream 	f(target.c_str());
+		if (f.good())
+		{
+			return (true);
+		}
+		f.close();
+	}
+	// std::ifstream indexTry;
 
-	std::ifstream 	f(target.c_str());
-
-	return (f.good());
+	return (false);
 }
 
 bool		Response::isDirectory()
@@ -271,8 +297,9 @@ std::string Response::getResponse()
 
 std::ostream &	operator<<(std::ostream & o, Response & rhs)
 {
+	(void)rhs;
 	o << "In this response we have :\n";
-	o << "Index path : " << rhs.getIndexPath() << "\n";
+	o << "Index path : "  << "\n";
 	// o << "Response : " << rhs.getResponse() << "\n";
 
 	return ( o );

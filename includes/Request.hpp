@@ -10,6 +10,7 @@
 # include <colors.hpp>
 # include <iomanip>
 # include "Logger.hpp"
+# include "Utils.hpp"
 
 typedef std::vector< std::map<std::string, std::string> > vlocation;
 

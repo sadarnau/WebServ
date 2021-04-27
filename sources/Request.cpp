@@ -8,7 +8,7 @@ Request::Request( void )
 	return ;
 }
 
-Request::Request(std::vector<std::map<std::string, std::string> > *locationVector, int inSock, char *buff ) : _inSocket(inSock)
+Request::Request(vlocation *locationVector, int inSock, char *buff ) : _inSocket(inSock)
 {
 	this->_locationVector = locationVector;
 	std::string	tmp(buff);	//convert char* to std::string
@@ -134,20 +134,18 @@ void	Request::parseUrl()
 	}
 }
 
+
 void	Request::createPath()
 {
-	//Remove '/' from root if exist (because target has already it)
-	if (this->_selectedLocation["root"].back() == '/')
-		this->_selectedLocation["root"] = this->_selectedLocation["root"].substr(0, this->_selectedLocation["root"].size() - 1);
-
 	//Create absolute path
 	if (this->_selectedLocation["root"].front() == '/')
-		this->_absoluteTargetPath =  this->_selectedLocation["root"] + this->_target;
+		this->_absoluteTargetPath =  safeUrlJoin(this->_selectedLocation["root"], this->_target);
 	else{
 		char cwd[1000];
 		getcwd(cwd, sizeof(cwd));
 		std::string currentdir = cwd;
-		this->_absoluteTargetPath = currentdir + "/" + this->_selectedLocation["root"] + this->_target;
+		this->_absoluteTargetPath = safeUrlJoin(currentdir, this->_selectedLocation["root"]);
+		this->_absoluteTargetPath = safeUrlJoin(this->_absoluteTargetPath, this->_target);
 	}
 }
 
