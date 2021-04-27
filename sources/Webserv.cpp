@@ -25,8 +25,6 @@ Webserv & Webserv::operator=( Webserv const & rhs)
 {
 	this->_fdList = rhs._fdList;
 	this->_IPaddr = rhs._IPaddr;
-	this->_master_fd = rhs._master_fd;
-	this->_maxFd = rhs._maxFd;
 	this->_port = rhs._port;
 	this->fd = rhs.fd;
 	this->address = rhs.address;
@@ -36,8 +34,10 @@ Webserv & Webserv::operator=( Webserv const & rhs)
 	return ( *this );
 }
 
-int		Webserv::initialization( void ) //to do : return 1 in case of error else return 0
+int		Webserv::initialization( int i ) //to do : return 1 in case of error else return 0
 {
+	this->_serverNb = i;
+
 	if ((this->fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
 		Logger::Write(Logger::ERROR, std::string(RED), "Error assigning the socket...\n", true);
@@ -69,18 +69,11 @@ int		Webserv::initialization( void ) //to do : return 1 in case of error else re
 
 	Logger::Write(Logger::INFO, std::string(GRN), "Listening the socket !\n", true);
 
-	FD_ZERO(&this->_master_fd);				//create a master file descriptor set and initialize it to zero
-
-	FD_SET(this->fd, &this->_master_fd);	//adding our first fd socket, the server one.
-	
-	this->_maxFd = this->fd;
-
 	return (0);
 }
 
 void	Webserv::fillAddress( void )
 {
-	// std::map<std::string, std::string> configMap = this->config.getConfigMap();
 	std::map<std::string, std::string> configMap;
 	
 	configMap = this->_configMap; // test
@@ -110,11 +103,6 @@ int		Webserv::acceptConexion( void )
 
 	this->_fdList.push_back(socket);
 
-	FD_SET(socket, &this->_master_fd);	// add the new fd in the master fd set
-
-	if (socket > this->_maxFd)			// check until where we have to select
-		this->_maxFd = socket;
-	
 	return (socket);
 }
 
@@ -122,11 +110,11 @@ void	Webserv::handleRequest( int socket )
 {
 	// consider socket like a stream, the request can be send in multiple packets (for big request)
 	// so this version is KO
-	
+
 	char buff[1024];						// 1024 ????
 	int ret = read( socket , buff, 1024);	// to protect
 	
-	buff[ret] = 0;
+	buff[ret] = 0;	// realy usefull ?
 
 	Request		request(&this->_locationVector, socket, buff);
 
@@ -137,7 +125,7 @@ void	Webserv::handleRequest( int socket )
 
 	Logger::Write(Logger::DEBUG, std::string(BLU), "\n---------\nRESPONSE HEADER :\n\n" + response.getHeader() + "\n-------\n\n", true);
 	Logger::Write(Logger::MORE, std::string(BLU), "\n---------\nRESPONSE BODY :\n\n" + response.getBody() + "\n-------\n\n", true);
-	Logger::Write(Logger::INFO, std::string(GRN), "Response delivered...\n\n", true);
+	Logger::Write(Logger::INFO, std::string(GRN), "Response delivered by server number " + std::to_string(this->_serverNb) + " !\n", true);
 }
 
 int		Webserv::getFd( void )
@@ -145,19 +133,9 @@ int		Webserv::getFd( void )
 	return (this->fd);
 }
 
-int		Webserv::getMaxFd( void )
-{
-	return (this->_maxFd);
-}
-
 std::map<std::string, std::string>	Webserv::getConfigMap( void )
 {
 	return (this->_configMap);
-}
-
-fd_set								Webserv::getMasterSet( void )
-{
-	return (this->_master_fd);
 }
 
 struct sockaddr_in					&Webserv::getAddr( void )
@@ -165,7 +143,7 @@ struct sockaddr_in					&Webserv::getAddr( void )
 	return (this->address);
 }
 
-std::vector<int>					Webserv::getFdList2( void )
+std::vector<int>					Webserv::getFdList( void )
 {
 	return (this->_fdList);
 }
@@ -190,7 +168,6 @@ std::ostream &	operator<<(std::ostream & o, Webserv & rhs)
 {
 	o << "In this server we have :\n";
 	o << "fd = " << rhs.getFd() << '\n';
-	o << "_maxFd = " << rhs.getMaxFd() << '\n';
 	o << "IP address = " << rhs.getIpAddress() << "\n";
 	o << "port = " << rhs.getPort() << "\n\n";
 	// o << "Config = " << rhs.getConfig() << "\n\n";

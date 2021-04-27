@@ -26,7 +26,7 @@ OBJS =			$(SRC:%.cpp=$(OBJS_PATH)%.o)
 CLANG =			clang++
 
 # Compilation flags
-CLANGFLAGS =	-Werror -Wall -Wextra 
+CLANGFLAGS =	-Werror -Wall -Wextra -g3 -fsanitize=address 
 
 # LOGS
 LOG_PATH =		log/log.txt

@@ -43,7 +43,7 @@ int								Cluster::initialization( std::string fileName )
 	for (int i = 0; i < this->_nbServ; i++)
 	{
 		Logger::Write(Logger::INFO, std::string(GRN), "Creating Server number " + std::to_string(i) + " !\n", true);
-		if (this->_serverList[i].initialization())
+		if (this->_serverList[i].initialization(i))
 			return 1;
 		FD_SET(this->_serverList[i].getFd(), &this->_master_fd);	// adding our first fd socket, the server one.
 		if(this->_serverList[i].getFd() > this->_maxFd)				// ternaire ??
@@ -60,7 +60,7 @@ int								Cluster::lanchServices( void )
 	fd_set	copyMasterSet;
 
 	// test :
-	Webserv webserv = this->_serverList[0];
+	// Webserv webserv = this->_serverList[0];
 
 	// std::cout << *this;
 	// std::cout << webserv;
@@ -89,15 +89,19 @@ int								Cluster::lanchServices( void )
 				Logger::Write(Logger::INFO, std::string(GRN), "New connection on serv " + std::to_string(i) + " !\n", true);
 				int sock = this->_serverList[i].acceptConexion();
 				addSocketToMaster(sock);
+				break ;			// no need to check any more serv
 			}
 		}
 
 		// We go throught every open fds to see if we have something new to read
-		std::vector<int> list = this->_fdList;
-		for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
+		for(int i = 0; i < this->_nbServ; i++)
 		{
-			if (FD_ISSET(*it, &copyMasterSet))
-				webserv.handleRequest( *it );		//if so we send a response without checking if we can write...
+			std::vector<int> list = this->_serverList[i].getFdList();
+			for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
+			{
+				if (FD_ISSET(*it, &copyMasterSet))
+					this->_serverList[i].handleRequest( *it );		//if so we send a response without checking if we can write...
+			}
 		}
 	}
 
