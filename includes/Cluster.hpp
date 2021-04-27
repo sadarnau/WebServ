@@ -25,7 +25,7 @@ public:
 	~Cluster( void );								//destructor
 	Cluster & operator=( Cluster const & rhs );		//overload operator =
 
-	int									initialization( std::string fileName );
+	int									initialization( std::string fileName, int debugMode );
 	int									lanchServices( void );
 	void								addSocketToMaster( int socket );
 	void								requestPrintServ( void );

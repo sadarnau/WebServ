@@ -28,7 +28,7 @@ Cluster & Cluster::operator=( Cluster const & rhs)
 	return ( *this );
 }
 
-int								Cluster::initialization( std::string fileName )
+int								Cluster::initialization( std::string fileName, int debugMode )
 {
 	this->_maxFd = 0;	// not ouf du tout
 
@@ -49,8 +49,10 @@ int								Cluster::initialization( std::string fileName )
 			this->_maxFd = this->_serverList[i].getFd();
 	}
 
-	// requestPrintServ();
-	printAllServers(this->_serverList);
+	if (debugMode)
+		printAllServers(this->_serverList);
+	else
+		requestPrintServ();
 
 	return (0);
 }
