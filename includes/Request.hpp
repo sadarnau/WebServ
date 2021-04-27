@@ -9,9 +9,9 @@
 # include <sstream>
 # include <colors.hpp>
 # include <iomanip>
+# include "Location.hpp"
 # include "Logger.hpp"
 # include "Utils.hpp"
-# include "Location.hpp"
 
 class Location ;
 typedef std::vector< Location > vlocation;

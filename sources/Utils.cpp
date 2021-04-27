@@ -43,22 +43,67 @@ void 			splitStringToVector(std::string line, std::vector<std::string> &split)
 	delete[] str;
 }
 
+void		printLocation(Location loc)
+{
+	std::ostringstream oss;
+	std::vector<std::string> vec;
+	std::map<std::string, std::string> mapstr;
+
+	oss << "In this location we have :\n";
+	oss << "path = " << loc.getPath() << '\n';
+	oss << "listen = " << loc.getListen() << '\n';
+	oss << "server_name = " << loc.getServerName() << "\n";
+	oss << "client_max_body_size = " << loc.getClientMaxBodySize() << "\n\n";
+	oss << "root = " << loc.getRoot() << "\n";
+	oss << "cgi = " << loc.getCgi() << "\n";
+	oss << "autoindex = " << loc.getAutoindex() << "\n\n";
+	oss << "index = ";
+	vec = loc.getIndex();
+	if (!vec.empty())
+	{
+		for (std::vector<std::string>::const_iterator it = vec.begin(); it != vec.end(); ++it)
+			oss << *it << " ";
+	}
+	oss << "\n";
+	oss << "accepted_method = ";
+	vec = loc.getAcceptedMethod();
+	if (!vec.empty())
+	{
+		for (std::vector<std::string>::const_iterator it = vec.begin(); it != vec.end(); ++it)
+			oss << *it << " ";
+	}
+	oss << "\n";
+	oss << "error_page = \n";
+	mapstr = loc.getErrorPage();
+	if (!mapstr.empty())
+	{
+		for (std::map<std::string, std::string>::const_iterator it = mapstr.begin(); it != mapstr.end(); ++it)
+			oss << "   - " << it->first << " " << it->second << "\n";
+	}
+	oss << "\n\n";
+	Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
+}
+
 void			printAllServers(std::vector<class Webserv> serverList)
 {
 	std::ostringstream oss;
-	std::vector<std::map<std::string, std::string> > locVector;
+	std::vector<Location> locVector;
+	Location loc;
 	Webserv wserv;
 
 	oss << "Print all servers\n";
 	for (std::vector<class Webserv>::const_iterator it = serverList.begin(); it != serverList.end(); ++it)
 	{
 		wserv = *it;
+		locVector = wserv.getLocationVector();
 		oss << wserv;
 		Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
-		printMap(wserv.getConfigMap(), "Print config map\n");
-		locVector = wserv.getLocationVector();
-		for (std::vector<std::map<std::string, std::string> >::const_iterator it2 = locVector.begin(); it2 != locVector.end(); ++it2)
-			printMap(*it2, "Print location map\n");
+		for (std::vector<class Location>::const_iterator it2 = locVector.begin(); it2 != locVector.end(); ++it2)
+		{
+			//std::cout << "plop\n";
+			printLocation(*it2);
+			//Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
+		}
 		oss.str("");
 		oss.clear();
 	}
@@ -90,7 +135,7 @@ std::string	safeUrlJoin(std::string url1, std::string url2)
 	return (std::string(url1 + "/" + url2));
 }
 
-std::vector<std::string>	concatToVecor(std::string toParse)
+std::vector<std::string>	concatToVector(std::string toParse)
 {
 	std::vector<std::string> result;
 	std::string separator = "/";
