@@ -56,7 +56,8 @@ public:
 	std::string		getUrlTargetPath();
 	std::string		getAbsoluteTargetPath();
 	std::string		getQueryString();
-	std::map<std::string, std::string> getSelectedLocation();
+	std::map<std::string, std::string>	getHeaders();
+	std::map<std::string, std::string>	getSelectedLocation();
 };
 
 std::ostream &	operator<<(std::ostream & o, Request & rhs);

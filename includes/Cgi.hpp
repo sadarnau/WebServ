@@ -3,6 +3,8 @@
 
 # include <string>
 # include <map>
+# include "Request.hpp"
+// # include "Location.hpp"
 
 class Cgi
 {
@@ -12,9 +14,12 @@ class Cgi
 
 		void								_initEnv();
 		char								**_envToCArray();
+		Request								*_req;
+		// Location							*_loc;
 
 	public:
-		Cgi();
+		// Cgi(Request *req, Location *loc);
+		Cgi(Request *req);
 		Cgi( Cgi const & src );  				//copy
 		~Cgi( void );							//destructor
 		Cgi & operator=( Cgi const & rhs );		//overload operator =

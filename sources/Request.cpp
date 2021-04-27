@@ -257,6 +257,11 @@ std::map<std::string, std::string> Request::getSelectedLocation()
 	return (this->_selectedLocation);
 }
 
+std::map<std::string, std::string>	Request::getHeaders()
+{
+	return(this->_headers);
+}
+
 std::ostream &	operator<<(std::ostream & o, Request & rhs)
 {
 	o << "In this request we have :\n";
