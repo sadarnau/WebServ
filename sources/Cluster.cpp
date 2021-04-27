@@ -49,7 +49,8 @@ int								Cluster::initialization( std::string fileName )
 			this->_maxFd = this->_serverList[i].getFd();
 	}
 
-	requestPrintServ();
+	// requestPrintServ();
+	printAllServers(this->_serverList);
 
 	return (0);
 }
