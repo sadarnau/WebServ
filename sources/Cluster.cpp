@@ -118,14 +118,14 @@ void								Cluster::requestPrintServ( void )
 	char	c;
 
 	std::cout << "\n\n";
-	Logger::Write(Logger::INFO, std::string(MAG), "Do you want to print server info ? (Y or n) : ", true);
+	Logger::Write(Logger::INFO, std::string(MAG), "Do you want to print server info ? (y or n) : ", true);
 	std::cin >> c;
 
-	if (c == 'Y')
+	if (c == 'y')
 	{
-		Logger::Write(Logger::INFO, std::string(MAG), "Do you want to print all server info (A) or a specific number (0 to " + std::to_string(this->_serverList.size() - 1) + ") ? ", true);
+		Logger::Write(Logger::INFO, std::string(MAG), "Do you want to print all server info (a) or a specific number (0 to " + std::to_string(this->_serverList.size() - 1) + ") ? ", true);
 		std::cin >> c;
-		if(c == 'A')
+		if(c == 'a')
 			printAllServers(this->_serverList);
 		else if (c < '9' && c >= '0')
 		{
@@ -135,6 +135,8 @@ void								Cluster::requestPrintServ( void )
 			else
 				requestPrintServ();
 		}
+		else
+				requestPrintServ();
 	}
 	else if (c == 'n')
 		std::cout << "\n\n";
