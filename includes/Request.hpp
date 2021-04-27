@@ -13,6 +13,7 @@
 # include "Utils.hpp"
 # include "Location.hpp"
 
+class Location ;
 typedef std::vector< Location > vlocation;
 
 class Request

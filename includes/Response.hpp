@@ -11,6 +11,7 @@
 # include "Webserv.hpp"
 # include "Request.hpp"
 # include "Utils.hpp"
+# include "Location.hpp"
 
 class Request ;
 
