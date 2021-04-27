@@ -49,7 +49,7 @@ int		Webserv::initialization( int i ) //to do : return 1 in case of error else r
 	this->fillAddress();
 	
 	// Fix binding error, it was due to TIME_WAIT who deosnt allow new connection to same socket before a certain time
-	int reusePort = 1;
+	int reusePort = 1; // enum ?
 	setsockopt(this->fd, SOL_SOCKET, SO_REUSEPORT, &reusePort, sizeof(reusePort));	// to protect !
 
 	if ((bind(this->fd, (struct sockaddr *)&this->address, sizeof(this->address))) < 0)
@@ -61,7 +61,7 @@ int		Webserv::initialization( int i ) //to do : return 1 in case of error else r
 
 	Logger::Write(Logger::INFO, std::string(GRN), "The socket has been binded on : " + this->_IPaddr + ':' + this->_port + " !\n", true);
 
-	if ((listen(this->fd, 5)) < 0) 			// 5 = number of max connections
+	if ((listen(this->fd, 5)) < 0) 			// 5 = number of max connections (why 5 ??)
 	{
 		Logger::Write(Logger::ERROR, std::string(RED), "Error listening the socket...\n", true);
 		return (1);
@@ -85,20 +85,20 @@ void	Webserv::fillAddress( void )
 	this->address.sin_addr.s_addr = inet_addr(this->_IPaddr.c_str());	//htonl ??
 	this->address.sin_port = htons(std::stoi(this->_port));
 
-	memset(this->address.sin_zero, 0, sizeof(this->address.sin_zero));	// to pprotect
+	memset(this->address.sin_zero, 0, sizeof(this->address.sin_zero));	// to protect
 
 	return ;
 }
 
 int		Webserv::acceptConexion( void )
 {
-	unsigned int addrlen = sizeof(address);
-	int	socket = accept(this->fd, (struct sockaddr *)&this->address, (socklen_t*)&addrlen);
+	unsigned int addrlen = sizeof(this->address);
+	int	socket = accept(this->fd, (struct sockaddr *)&this->address, (socklen_t*)&addrlen); // to protect
 	
 	if (socket < 0)
 	{
 		Logger::Write(Logger::ERROR, std::string(RED), "Error accepting a new connection\n", true);
-		exit(1);
+		exit(1); // not ouf du tout...
 	}
 
 	this->_fdList.push_back(socket);

@@ -28,6 +28,7 @@ public:
 	int									initialization( std::string fileName );
 	int									lanchServices( void );
 	void								addSocketToMaster( int socket );
+	void								requestPrintServ( void );
 
 	std::map<std::string, std::string>	getMap( void );
 	fd_set								getMasterSet( void );
