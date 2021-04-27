@@ -37,21 +37,24 @@ void Logger::Write(Priority priority, const std::string &col, const std::string 
 		else if (priority == ERROR)
 			oss << RED;
 		oss << _priorityNames[priority] << "[" << getTimeHMS() << "]: " << col << message << RESET ;
+		oss << std::endl;
 
 		std::ostream& stream1 = Log._fileStream;
 		stream1 << oss.str();
 		if (_isWriteStdout)
 			std::cout << oss.str();
+		
 	}
 
 	if (Log._fileStream.is_open())
         Log._fileStream.close();
+
 }
 
 void Logger::Error(const std::string &message)
 {
 	if (DISPLAY_ERRNO && errno != 0)
-		Logger::Write(Logger::ERROR, std::string(RED), message + "Errno -> (" + std::string(strerror(errno)) + ")\n", true);
+		Logger::Write(Logger::ERROR, std::string(RED), message + "Errno -> (" + std::string(strerror(errno)), true);
 	else
 		Logger::Write(Logger::ERROR, std::string(RED), message, true);
 }

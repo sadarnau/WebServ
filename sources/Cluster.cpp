@@ -41,7 +41,7 @@ int								Cluster::initialization( std::string fileName, int debugMode )
 
 	for (int i = 0; i < this->_nbServ; i++)
 	{
-		Logger::Write(Logger::INFO, std::string(GRN), "Creating Server number " + std::to_string(i) + " !\n", true);
+		Logger::Write(Logger::INFO, std::string(GRN), "webserv[" + std::to_string(i) + "] : creation", true);
 		if (this->_serverList[i].initialization(i))
 			return 1;
 		FD_SET(this->_serverList[i].getFd(), &this->_master_fd);	// adding our first fd socket, the server one.
@@ -67,13 +67,13 @@ int								Cluster::lanchServices( void )
 		// of living fds  (( man 2 select ))
 		copyMasterSet = this->_master_fd;
 
-		Logger::Write(Logger::INFO, std::string(GRN), "I'm waiting for a request...\n\n", true);
+		Logger::Write(Logger::INFO, std::string(GRN), "waiting for request...\n", true);
 
 		int	nbSocket = select(this->_maxFd + 1, &copyMasterSet, 0, 0, 0); //to do : check if we can write in fd (writefds)
 
 		if (nbSocket < 0)
 		{
-			Logger::Write(Logger::ERROR, std::string(RED), "Select has messed up everything...\n", true);
+			Logger::Write(Logger::ERROR, std::string(RED), "error : select", true);
 			throw (std::exception()); // to do : exception
 			return (1); //test ???
 		}
@@ -82,7 +82,7 @@ int								Cluster::lanchServices( void )
 		{
 			if (FD_ISSET(this->_serverList[i].getFd(), &copyMasterSet)) // if serv fd changed -> new connection
 			{
-				Logger::Write(Logger::INFO, std::string(GRN), "New connection on serv " + std::to_string(i) + " !\n", true);
+				Logger::Write(Logger::INFO, std::string(GRN), "webserv[" + std::to_string(i) + "] : new connection", true);
 				int sock = this->_serverList[i].acceptConexion();
 				addSocketToMaster(sock);
 				break ;			// no need to check any more serv

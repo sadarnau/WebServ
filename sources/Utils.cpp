@@ -49,39 +49,41 @@ void		printLocation(Location loc)
 	std::vector<std::string> vec;
 	std::map<std::string, std::string> mapstr;
 
-	oss << "In this location we have :\n";
-	oss << "path = " << loc.getPath() << '\n';
-	oss << "listen = " << loc.getListen() << '\n';
-	oss << "server_name = " << loc.getServerName() << "\n";
-	oss << "client_max_body_size = " << loc.getClientMaxBodySize() << "\n\n";
-	oss << "root = " << loc.getRoot() << "\n";
-	oss << "cgi = " << loc.getCgi() << "\n";
-	oss << "autoindex = " << loc.getAutoindex() << "\n\n";
-	oss << "index = ";
+	oss << "location ";
+	oss << "[path: " << loc.getPath() << "] : ";
+	oss << "[listen: " << loc.getListen() << "]";
+	oss << "[server_name: " << loc.getServerName() << "]";
+	oss << "[client_max_body_size: " << loc.getClientMaxBodySize() << "]";
+	oss << "[root: " << loc.getRoot() << "]";
+	oss << "[cgi: " << loc.getCgi() << "]";
+	oss << "[autoindex: " << loc.getAutoindex() << "]";
+	oss << "[index: ";
 	vec = loc.getIndex();
 	if (!vec.empty())
 	{
 		for (std::vector<std::string>::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			oss << *it << " ";
 	}
-	oss << "\n";
-	oss << "accepted_method = ";
+	oss << "[accepted_method: ";
 	vec = loc.getAcceptedMethod();
 	if (!vec.empty())
 	{
 		for (std::vector<std::string>::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			oss << *it << " ";
 	}
-	oss << "\n";
-	oss << "error_page = \n";
+	oss << "]";
+
 	mapstr = loc.getErrorPage();
+
+	oss << "[error_pages :";
 	if (!mapstr.empty())
 	{
 		for (std::map<std::string, std::string>::const_iterator it = mapstr.begin(); it != mapstr.end(); ++it)
-			oss << "   - " << it->first << " " << it->second << "\n";
+			oss << it->first << " " << it->second << "\n";
 	}
-	oss << "\n\n";
-	Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
+	oss << "]";
+
+	Logger::Write(Logger::MORE, std::string(WHT), oss.str(), true);
 }
 
 void			printServer(Webserv wserv)
@@ -92,6 +94,7 @@ void			printServer(Webserv wserv)
 	locVector = wserv.getLocationVector();
 	oss << wserv;
 	Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
+
 	for (std::vector<class Location>::const_iterator it2 = locVector.begin(); it2 != locVector.end(); ++it2)
 		printLocation(*it2);
 	oss.str("");
