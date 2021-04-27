@@ -195,19 +195,24 @@ void	Request::printRequest( void )
 	{
 		oss << std::setw(20) << it->first << " : " << it->second << std::endl;
 	}
+	oss << std::endl << std::endl;
+	Logger::Write(Logger::DEBUG, std::string(BLU), oss.str(), true);
 
+	oss.clear();
+	
 	//SKIPPED HEADERS
-	oss << std::endl << std::endl << "Skipped headers : ";
+	oss << std::endl << "Skipped headers : ";
 	for (std::vector<std::string>::iterator it = this->_skippedHeaders.begin(); it != this->_skippedHeaders.end(); ++it)
 		oss << " " << *it;
 	oss << std::endl << std::endl;
-
+	
 	// RAW REQUEST
-	// oss << "Raw request :" << std::endl << std::endl;
-	// oss << this->_buff;
+	oss << "Raw request :" << std::endl << std::endl;
+	oss << this->_buff;
 	oss << "----------\n\n";
 	oss << RESET;
-	Logger::Write(Logger::DEBUG, std::string(BLU), oss.str(), true);
+	Logger::Write(Logger::MORE, std::string(BLU), oss.str(), true);
+
 	return ;
 }
 

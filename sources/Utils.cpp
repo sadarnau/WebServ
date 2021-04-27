@@ -107,7 +107,6 @@ void			printAllServers(std::vector<class Webserv> serverList)
 		oss.str("");
 		oss.clear();
 	}
-
 }
 
 void			printMap(std::map<std::string, std::string> m, std::string type)

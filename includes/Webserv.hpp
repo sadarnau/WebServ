@@ -30,6 +30,7 @@ private:
 	int						_maxFd;
 	std::string				_port;
 	std::string				_IPaddr;
+	int						_serverNb;
 
 public:
 
@@ -39,16 +40,15 @@ public:
 	~Webserv( void );								//destructor
 	Webserv & operator=( Webserv const & rhs );		//overload operator =
 
-	int									initialization( void );
+	int									initialization( int i );
 	void								fillAddress( void );
 	int									acceptConexion( void );
 	void								handleRequest( int socket );
-	int									getInSocket( void );
 	int									getFd( void );
 	int									getMaxFd( void );
 	fd_set								getMasterSet( void );
 	struct sockaddr_in					&getAddr( void );
-	std::vector<int>					getFdList2( void );
+	std::vector<int>					getFdList( void );
 	std::string							getIpAddress( void );
 	std::string							getPort( void );
 	std::string							getListen( void );
