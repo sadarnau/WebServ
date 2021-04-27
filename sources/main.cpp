@@ -24,7 +24,7 @@ int main(int ac, char *av[])
 
 	if (ac > 2)
 	{
-		Logger::Write(Logger::ERROR, std::string(RED), "Only two args allowed\n\n", true);
+		Logger::Write(Logger::ERROR, std::string(RED), "Only one arg allowed\n\n", true);
 		return 1;
 	}
 	else if (ac == 2)

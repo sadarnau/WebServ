@@ -20,13 +20,12 @@ class Webserv
 {
 private:
 
+	int					_serverNb;
 	int					fd;
 	std::vector<int>	_fdList;
 	struct sockaddr_in	address;
 	std::map<std::string, std::string>	_configMap;
 	std::vector<std::map<std::string, std::string> > _locationVector;
-	fd_set				_master_fd;
-	int					_maxFd;
 	std::string			_port;
 	std::string			_IPaddr;
 
@@ -38,17 +37,14 @@ public:
 	~Webserv( void );								//destructor
 	Webserv & operator=( Webserv const & rhs );		//overload operator =
 
-	int									initialization( void );
+	int									initialization( int i );
 	void								fillAddress( void );
 	int									acceptConexion( void );
 	void								handleRequest( int socket );
-	int									getInSocket( void );
 	int									getFd( void );
-	int									getMaxFd( void );
-	fd_set								getMasterSet( void );
 	std::map<std::string, std::string>	getConfigMap( void );
 	struct sockaddr_in					&getAddr( void );
-	std::vector<int>					getFdList2( void );
+	std::vector<int>					getFdList( void );
 	std::string							getIpAddress( void );
 	std::string							getPort( void );
 	std::vector<std::map<std::string, std::string> >	getLocationVector( void );
