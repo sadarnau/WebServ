@@ -137,7 +137,7 @@ void	Config::createServerMap( void )
 				throw (std::exception());
 			}
 			if (!rootLocationFound)
-				addConfigToLocation(newLoc);
+				addConfigToLocation(newLoc, "/");
 			this->_serverVector.push_back(Webserv(this->_listen, this->_locationVector));
 			newLoc.clear();
 			this->initLocationMap(newLoc);
