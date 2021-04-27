@@ -11,6 +11,7 @@
 # include "Webserv.hpp"
 # include "Request.hpp"
 # include "Utils.hpp"
+# include "Location.hpp"
 
 class Request ;
 
@@ -20,7 +21,7 @@ private:
 	Request									*_req;
 	int										_socket;
 
-	std::map<std::string, std::string> 		_location;
+	Location 								_location;
 
 	std::string 							_httpVersion;
 	int										_responseCode;

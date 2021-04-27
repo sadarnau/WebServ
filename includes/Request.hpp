@@ -9,10 +9,12 @@
 # include <sstream>
 # include <colors.hpp>
 # include <iomanip>
+# include "Location.hpp"
 # include "Logger.hpp"
 # include "Utils.hpp"
 
-typedef std::vector< std::map<std::string, std::string> > vlocation;
+class Location ;
+typedef std::vector< Location > vlocation;
 
 class Request
 {
@@ -29,7 +31,7 @@ private:
 	std::map<std::string, std::string>	_headers;
 	std::vector<std::string>			_skippedHeaders;
 	std::string							_queryString;
-	std::map<std::string, std::string>	_selectedLocation;
+	Location							_selectedLocation;
 
 public:
 
@@ -57,7 +59,7 @@ public:
 	std::string		getAbsoluteTargetPath();
 	std::string		getQueryString();
 	std::map<std::string, std::string>	getHeaders();
-	std::map<std::string, std::string>	getSelectedLocation();
+	Location		getSelectedLocation();
 };
 
 std::ostream &	operator<<(std::ostream & o, Request & rhs);

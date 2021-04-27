@@ -26,6 +26,7 @@ Config & Config::operator=( Config const & rhs)
 	// this->f = rhs.f;
 	this->_configMap = rhs._configMap;
 	this->_locationVector = rhs._locationVector;
+	this->_serverVector = rhs._serverVector;
 
 	return ( *this );
 }
@@ -99,7 +100,7 @@ void	Config::createServerMap( void )
 	while (std::getline(this->f, line))
 	{
 		splitStringToVector(line, split);
-		if (split.empty())
+		if (split.empty() || split[0][0] == '#')
 			;
 		else if (!split[0].compare("server") && split.size() == 2 && !split[1].compare("{") && !inServerConfig)
 		{
@@ -111,6 +112,7 @@ void	Config::createServerMap( void )
 		{
 			listenFound = true;
 			this->_configMap["listen"] = split[1].substr(0, split[1].size() - 1);
+			this->_listen = this->_configMap["listen"];
 		}
 		else if (!split[0].compare("server_name") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 			this->_configMap["server_name"] = split[1].substr(0, split[1].size() - 1);
@@ -136,7 +138,9 @@ void	Config::createServerMap( void )
 			}
 			if (!rootLocationFound)
 				addConfigToLocation(newLoc);
-			this->_serverVector.push_back(Webserv(this->_configMap, this->_locationVector));
+			this->_serverVector.push_back(Webserv(this->_listen, this->_locationVector));
+			newLoc.clear();
+			this->initLocationMap(newLoc, "/");
 			this->_configMap.clear();
 			this->_locationVector.clear();
 			this->initConfigMap();
@@ -179,7 +183,7 @@ void	Config::addConfigToLocation(std::map<std::string, std::string> newLoc)
 		if (!newLoc.count(it->first))
 			newLoc[it->first] = it->second;
 	}
-	this->_locationVector.push_back(newLoc);
+	this->_locationVector.push_back(Location(newLoc));
 }
 
 void	Config::newLocationConfig( std::string path )
@@ -195,7 +199,7 @@ void	Config::newLocationConfig( std::string path )
 		splitStringToVector(line, split);
 		std::ostringstream ss;
 		ss << split.size();
-		if (split.empty())
+		if (split.empty() || split[0][0] == '#')
 			;
   		else if (!split[0].compare("accepted_method") && split.size() == 2 && this->checkSemiColon(split.back()))
 			newLoc["accepted_method"] = split[1].substr(0, split[1].size() - 1);
@@ -239,12 +243,12 @@ std::map<std::string, std::string>	Config::getConfigMap( void )
 	return (this->_configMap);
 }
 
-std::vector<Webserv> Config::getServerVector(void)
+std::vector<Webserv> 	Config::getServerVector(void)
 {
 	return (this->_serverVector);
 }
 
-std::vector<std::map<std::string, std::string> >	Config::getLocationVector( void )
+std::vector<Location>	Config::getLocationVector( void )
 {
 	return (this->_locationVector);
 }

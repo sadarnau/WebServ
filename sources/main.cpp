@@ -22,7 +22,7 @@ int main(int ac, char *av[])
 
 	Logger::Start(Logger::DEBUG);
 
-	if (ac > 2)
+	if (ac > 3)
 	{
 		Logger::Write(Logger::ERROR, std::string(RED), "Only one arg allowed\n\n", true);
 		return 1;

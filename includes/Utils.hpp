@@ -8,6 +8,7 @@
 # include <vector>
 # include <iterator>
 # include <sstream>
+# include "Location.hpp"
 # include "Logger.hpp"
 # include "Webserv.hpp"
 
@@ -16,8 +17,9 @@ class Webserv ;
 std::string 	            getTimeHMS(void);
 void 			            splitStringToVector(std::string line, std::vector<std::string> &split);
 void			            printMap(std::map<std::string, std::string> m, std::string type);
+void						printLocation(Location loc);
 void			            printAllServers(std::vector<Webserv> serverList);
 std::string                 safeUrlJoin(std::string url1, std::string url2);
-std::vector<std::string>	concatToVecor(std::string toParse);
+std::vector<std::string>	concatToVector(std::string toParse);
 
 #endif

@@ -5,6 +5,7 @@
 # include "Response.hpp"
 # include "Logger.hpp"
 # include "Config.hpp"
+# include "Location.hpp"
 # include <unistd.h>		//read function
 # include <arpa/inet.h>		//inet_addr function
 # include <string>
@@ -20,19 +21,21 @@ class Webserv
 {
 private:
 
-	int					_serverNb;
-	int					fd;
-	std::vector<int>	_fdList;
-	struct sockaddr_in	address;
-	std::map<std::string, std::string>	_configMap;
-	std::vector<std::map<std::string, std::string> > _locationVector;
-	std::string			_port;
-	std::string			_IPaddr;
+	int						fd;
+	std::vector<int>		_fdList;
+	struct sockaddr_in		address;
+	std::string				_listen;
+	std::vector<Location>	_locationVector;
+	fd_set					_master_fd;
+	int						_maxFd;
+	std::string				_port;
+	std::string				_IPaddr;
+	int						_serverNb;
 
 public:
 
 	Webserv( void );						 		//default constructor
-	Webserv( std::map<std::string, std::string>	configMap, std::vector<std::map<std::string, std::string> > locationVector );					//constructor
+	Webserv( std::string listen, std::vector<Location> locationVector );					//constructor
 	Webserv( Webserv const & src);  				//copy
 	~Webserv( void );								//destructor
 	Webserv & operator=( Webserv const & rhs );		//overload operator =
@@ -42,12 +45,14 @@ public:
 	int									acceptConexion( void );
 	void								handleRequest( int socket );
 	int									getFd( void );
-	std::map<std::string, std::string>	getConfigMap( void );
+	int									getMaxFd( void );
+	fd_set								getMasterSet( void );
 	struct sockaddr_in					&getAddr( void );
 	std::vector<int>					getFdList( void );
 	std::string							getIpAddress( void );
 	std::string							getPort( void );
-	std::vector<std::map<std::string, std::string> >	getLocationVector( void );
+	std::string							getListen( void );
+	std::vector<Location>				getLocationVector( void );
 };
 
 std::ostream &	operator<<(std::ostream & o, Webserv & rhs);

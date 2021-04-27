@@ -33,9 +33,8 @@ int								Cluster::initialization( std::string fileName )
 	this->_maxFd = 0;	// not ouf du tout
 
 	this->_config.parseFile(fileName);
+
 	this->_serverList = this->_config.getServerVector();
-	// printMap(this->getMap());
-	
 	this->_nbServ = this->_serverList.size();
 
 	FD_ZERO(&this->_master_fd);				// create a master file descriptor set and initialize it to zero
@@ -50,6 +49,7 @@ int								Cluster::initialization( std::string fileName )
 			this->_maxFd = this->_serverList[i].getFd();
 	}
 
+	// requestPrintServ();
 	printAllServers(this->_serverList);
 
 	return (0);
@@ -58,12 +58,6 @@ int								Cluster::initialization( std::string fileName )
 int								Cluster::lanchServices( void )
 {
 	fd_set	copyMasterSet;
-
-	// test :
-	// Webserv webserv = this->_serverList[0];
-
-	// std::cout << *this;
-	// std::cout << webserv;
 
 	while(1)
 	{
@@ -110,7 +104,7 @@ int								Cluster::lanchServices( void )
 
 void								Cluster::addSocketToMaster( int socket )
 {
-	this->_fdList.push_back(socket);
+	this->_fdList.push_back(socket);	// ??
 
 	FD_SET(socket, &this->_master_fd);	// add the new fd in the master fd set
 
@@ -118,6 +112,37 @@ void								Cluster::addSocketToMaster( int socket )
 		this->_maxFd = socket;
 
 	return ;
+}
+
+void								Cluster::requestPrintServ( void )
+{
+	char	c;
+
+	std::cout << "\n\n";
+	Logger::Write(Logger::INFO, std::string(MAG), "Do you want to print server info ? (y or n) : ", true);
+	std::cin >> c;
+
+	if (c == 'y')
+	{
+		Logger::Write(Logger::INFO, std::string(MAG), "Do you want to print all server info (a) or a specific number (0 to " + std::to_string(this->_serverList.size() - 1) + ") ? ", true);
+		std::cin >> c;
+		if(c == 'a')
+			printAllServers(this->_serverList);
+		else if (c < '9' && c >= '0')
+		{
+			unsigned long ic = c - '0';
+			if (ic < this->_serverList.size())
+				std::cout << this->_serverList[ic];
+			else
+				requestPrintServ();
+		}
+		else
+				requestPrintServ();
+	}
+	else if (c == 'n')
+		std::cout << "\n\n";
+	else
+		requestPrintServ();
 }
 
 std::map<std::string, std::string>	Cluster::getMap( void )
