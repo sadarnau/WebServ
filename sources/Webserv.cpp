@@ -5,7 +5,7 @@ Webserv::Webserv( void )
 	return ;
 }
 
-Webserv::Webserv( std::map<std::string, std::string> configMap, std::vector<std::map<std::string, std::string> > locationVector ) : _configMap(configMap), _locationVector(locationVector)				//constructor
+Webserv::Webserv( std::string listen, std::vector<std::map<std::string, std::string> > locationVector ) : _listen(listen), _locationVector(locationVector)				//constructor
 {
 	return ;
 }
@@ -30,7 +30,7 @@ Webserv & Webserv::operator=( Webserv const & rhs)
 	this->_port = rhs._port;
 	this->fd = rhs.fd;
 	this->address = rhs.address;
-	this->_configMap = rhs._configMap;
+	this->_listen = rhs._listen;
 	this->_locationVector = rhs._locationVector;
 
 	return ( *this );
@@ -80,13 +80,8 @@ int		Webserv::initialization( void ) //to do : return 1 in case of error else re
 
 void	Webserv::fillAddress( void )
 {
-	// std::map<std::string, std::string> configMap = this->config.getConfigMap();
-	std::map<std::string, std::string> configMap;
-	
-	configMap = this->_configMap; // test
-
-	this->_port = configMap["listen"].substr(configMap["listen"].find(":") + 1 , configMap["listen"].size());
-	this->_IPaddr = configMap["listen"].substr(0, configMap["listen"].find(":"));
+	this->_port = this->_listen.substr(this->_listen.find(":") + 1 , this->_listen.size());
+	this->_IPaddr = this->_listen.substr(0, this->_listen.find(":"));
 
 	this->address.sin_family = AF_INET;
 	this->address.sin_addr.s_addr = inet_addr(this->_IPaddr.c_str());	//htonl ??
@@ -149,11 +144,6 @@ int		Webserv::getMaxFd( void )
 	return (this->_maxFd);
 }
 
-std::map<std::string, std::string>	Webserv::getConfigMap( void )
-{
-	return (this->_configMap);
-}
-
 fd_set								Webserv::getMasterSet( void )
 {
 	return (this->_master_fd);
@@ -179,7 +169,7 @@ std::string							Webserv::getPort( void )
 	return (this->_port);
 }
 
-std::vector<std::map<std::string, std::string> >	Webserv::getLocationVector( void )
+std::vector<Location>	Webserv::getLocationVector( void )
 {
 	return (this->_locationVector);
 }
