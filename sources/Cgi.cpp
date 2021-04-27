@@ -6,6 +6,13 @@ Cgi::Cgi()
     this->_envC = this->_envToCArray();
 }
 
+Cgi::Cgi( Cgi const & src )
+{
+	*this = src;
+	return ;
+}
+
+
 Cgi::~Cgi()
 {
     //delete _envCFormat;
@@ -15,6 +22,13 @@ Cgi::~Cgi()
             delete[] this->_envC[i];
         delete this->_envC;
     }
+}
+
+Cgi & Cgi::operator=( Cgi const & rhs)
+{
+	(void)rhs;
+    // this->??? = rhs.???;
+	return ( *this );
 }
 
 void    Cgi::_initEnv()

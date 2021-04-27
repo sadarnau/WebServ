@@ -15,6 +15,9 @@ class Cgi
 
 	public:
 		Cgi();
+		Cgi( Cgi const & src );  				//copy
+		~Cgi( void );							//destructor
+		Cgi & operator=( Cgi const & rhs );		//overload operator =
 };
 
 #endif
