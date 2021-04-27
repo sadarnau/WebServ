@@ -4,10 +4,12 @@
 # include <string>
 # include <vector>
 # include <map>
+# include "Utils.hpp"
 
 class Location
 {
 	private:
+		bool								_isSet;
 		std::string							_listen;
 		std::string							_path;
 		std::string							_serverName;
@@ -34,6 +36,7 @@ class Location
 		std::vector<std::string>			getIndex(void);
 		std::vector<std::string>			getAcceptedMethod(void);
 		std::map<std::string, std::string>	getErrorPage(void);
+		bool								isSet(void);
 };
 
 

@@ -30,7 +30,7 @@ private:
 	std::map<std::string, std::string>	_headers;
 	std::vector<std::string>			_skippedHeaders;
 	std::string							_queryString;
-	std::map<std::string, std::string>	_selectedLocation;
+	Location							_selectedLocation;
 
 public:
 
@@ -57,7 +57,7 @@ public:
 	std::string		getUrlTargetPath();
 	std::string		getAbsoluteTargetPath();
 	std::string		getQueryString();
-	std::map<std::string, std::string> getSelectedLocation();
+	Location		getSelectedLocation();
 };
 
 std::ostream &	operator<<(std::ostream & o, Request & rhs);

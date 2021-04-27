@@ -91,21 +91,21 @@ void	Request::selectLocation()
 	// iter through locations
 	for (vlocation::iterator it = this->_locationVector->begin() ; it != this->_locationVector->end(); ++it)
     {
-		std::map<std::string, std::string> tmpMap(*it);
+		Location tmpLoc(*it);
 				
 		// compare location["path"] to target on lacation["path"] length
-		if (std::strncmp(tmpMap["path"].c_str(), this->_target.c_str(), tmpMap["path"].size()) == 0) 
+		if (std::strncmp(tmpLoc.getPath().c_str(), this->_target.c_str(), tmpLoc.getPath().size()) == 0) 
 		{
 			// check if its a valid route (for now, if its a correct folder), "/" is always valid
 			// relevant if this->target = "/weeeee" and loc["path"] = "/we" for example (/we is not a good loc)
-			if (tmpMap["path"] == "/" || this->_target[tmpMap["path"].length()] == '\0' || this->_target[tmpMap["path"].length()] == '/')
+			if (tmpLoc.getPath() == "/" || this->_target[tmpLoc.getPath().length()] == '\0' || this->_target[tmpLoc.getPath().length()] == '/')
 			{
 				//if no location, add anyone, if theres something, check if the new match on more char than the previous one
-				if(this->_selectedLocation.empty())
-					this->_selectedLocation = tmpMap;
+				if(!this->_selectedLocation.isSet())
+					this->_selectedLocation = tmpLoc;
 				else
-					if(this->_selectedLocation["path"].size() < tmpMap["path"].size())
-						this->_selectedLocation = tmpMap;
+					if(this->_selectedLocation.getPath().size() < tmpLoc.getPath().size())
+						this->_selectedLocation = tmpLoc;
 			}
 		}
 	}
@@ -113,8 +113,8 @@ void	Request::selectLocation()
 	this->_urlTargetPath = this->_target;
 	
 	// delete location in target (ex: if location is /salut and target /salut/index.html, target become /index.html) - not in case of default loc /
-	if (this->_selectedLocation["path"] != "/")
-		this->_target = this->_target.substr(this->_selectedLocation["path"].size(), this->_target.size());
+	if (this->_selectedLocation.getPath() != "/")
+		this->_target = this->_target.substr(this->_selectedLocation.getPath().size(), this->_target.size());
 	
 	// format target
 	if(this->_target.front() != '/')
@@ -138,13 +138,13 @@ void	Request::parseUrl()
 void	Request::createPath()
 {
 	//Create absolute path
-	if (this->_selectedLocation["root"].front() == '/')
-		this->_absoluteTargetPath =  safeUrlJoin(this->_selectedLocation["root"], this->_target);
+	if (this->_selectedLocation.getRoot().front() == '/')
+		this->_absoluteTargetPath =  safeUrlJoin(this->_selectedLocation.getRoot(), this->_target);
 	else{
 		char cwd[1000];
 		getcwd(cwd, sizeof(cwd));
 		std::string currentdir = cwd;
-		this->_absoluteTargetPath = safeUrlJoin(currentdir, this->_selectedLocation["root"]);
+		this->_absoluteTargetPath = safeUrlJoin(currentdir, this->_selectedLocation.getRoot());
 		this->_absoluteTargetPath = safeUrlJoin(this->_absoluteTargetPath, this->_target);
 	}
 }
@@ -188,7 +188,7 @@ void	Request::printRequest( void )
 	oss << std::setw(30) << "request->query" << " : " << this->_queryString << std::endl;
 	oss << std::setw(30) << "request->urlTargetPath " << " : " << this->_urlTargetPath << std::endl;
 	oss << std::setw(30) << "request->absoluteTargetPath " << " : " << this->_absoluteTargetPath << std::endl;
-	oss << std::setw(30) << "selectedLocation[\"path\"] " << " : " << this->_selectedLocation["path"] << std::endl << std::endl;
+	oss << std::setw(30) << "selectedLocation.getPath() " << " : " << this->_selectedLocation.getPath() << std::endl << std::endl;
 	oss << "Content of request->headers :" << std::endl << std::endl; 
 	oss << std::setw(20) << "KEY" << " : " << "VALUE" << std::endl << std::endl;
 	for (std::map<std::string, std::string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); ++it)
@@ -247,7 +247,7 @@ std::string		Request::getQueryString()
 
 
 
-std::map<std::string, std::string> Request::getSelectedLocation()
+Location		Request::getSelectedLocation()
 {
 	return (this->_selectedLocation);
 }

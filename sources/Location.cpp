@@ -2,10 +2,12 @@
 
 Location::Location(void)
 {
+	this->_isSet = false;
 }
 
 Location::Location(std::map<std::string, std::string> locationMap) : _listen(""), _path(""), _serverName(""), _clientMaxBodySize(""), _root(""), _autoindex("")
 {
+	this->_isSet = true;
 	this->_index.clear();
 	this->_acceptedMethod.clear();
 	this->_errorPage.clear();
@@ -98,3 +100,9 @@ std::map<std::string, std::string>	Location::getErrorPage(void)
 {
 	return (this->_errorPage);
 }
+
+bool								Location::isSet(void)
+{
+	return (this->_isSet);
+}
+

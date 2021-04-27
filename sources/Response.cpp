@@ -74,8 +74,8 @@ void	Response::buildHeader()
 ////////////////////
 void	Response::processGet()
 {
-	std::string		auto_index = this->_location["autoindex"];
-	std::string 	index_page = "/index.html";	// Change to index in conf 
+	std::string		auto_index = this->_location.getAutoindex();
+	// std::string 	index_page = "/index.html";	// Change to index in conf 
 
 	std::string 	target;
 	// Directory Request
@@ -178,10 +178,10 @@ void		Response::setToErrorPage(int errorNumber)
 	{
 		this->setHeaders(404, "FILE_NOT_FOUND", "text/html");
 
-		if(this->_location[errorNbrString].empty())
+		if(this->_location.getErrorPage()[errorNbrString].empty())
 			error_page.open("files/default_pages/custom_404.html");
 		else
-			error_page.open(this->_location[errorNbrString]);
+			error_page.open(this->_location.getErrorPage()[errorNbrString]);
 	}
 
 	std::string str((std::istreambuf_iterator<char>(error_page)), std::istreambuf_iterator<char>());
@@ -193,13 +193,9 @@ void		Response::setToErrorPage(int errorNumber)
 ////////////////////
 std::string	Response::getIndexTarget()
 {
-	std::string 	indexPage = this->_location["index"];
-
-	// check and return the first available index page
-	if (indexPage.empty())
+	std::vector<std::string> vIndex = this->_location.getIndex();
+	if (vIndex.empty())
 		return(this->_req->getTarget());
-
-	std::vector<std::string> vIndex = concatToVecor(this->_location["index"]);
 
 	for(std::vector<std::string>::iterator it = vIndex.begin(); it != vIndex.end(); ++it)
 	{
@@ -218,13 +214,9 @@ std::string	Response::getIndexTarget()
 
 bool		Response::isIndexPagePresent()
 {
-	std::string 	indexPage = this->_location["index"];
-
-	// check and return the first available index page
-	if (indexPage.empty())
+	std::vector<std::string> vIndex = this->_location.getIndex();
+	if (vIndex.empty())
 		return(false);
-
-	std::vector<std::string> vIndex = concatToVecor(this->_location["index"]);
 
 	for(std::vector<std::string>::iterator it = vIndex.begin(); it != vIndex.end(); ++it)
 	{
