@@ -11,8 +11,9 @@
 # include <iomanip>
 # include "Logger.hpp"
 # include "Utils.hpp"
+# include "Location.hpp"
 
-typedef std::vector< std::map<std::string, std::string> > vlocation;
+typedef std::vector< Location > vlocation;
 
 class Request
 {

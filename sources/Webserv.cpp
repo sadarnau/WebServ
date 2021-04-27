@@ -5,7 +5,7 @@ Webserv::Webserv( void )
 	return ;
 }
 
-Webserv::Webserv( std::string listen, std::vector<std::map<std::string, std::string> > locationVector ) : _listen(listen), _locationVector(locationVector)				//constructor
+Webserv::Webserv( std::string listen, std::vector<Location > locationVector ) : _listen(listen), _locationVector(locationVector)				//constructor
 {
 	return ;
 }
