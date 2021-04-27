@@ -83,7 +83,7 @@ void	Response::processGet()
 	{
 		if (this->isIndexPagePresent())
 		{
-			this->_req->updateTarget(safeUrlJoin(this->_req->getTarget(), this->getIndexTarget()));
+			this->_req->updateTarget(this->getIndexTarget());
 		}
 		else if(auto_index == "on" && this->autoIndexResponse())  //autoIndexResponse return true on success
 		{
@@ -194,15 +194,18 @@ void		Response::setToErrorPage(int errorNumber)
 std::string	Response::getIndexTarget()
 {
 	std::vector<std::string> vIndex = this->_location.getIndex();
+
 	if (vIndex.empty())
 		return(this->_req->getTarget());
 
 	for(std::vector<std::string>::iterator it = vIndex.begin(); it != vIndex.end(); ++it)
 	{
-		std::string target(this->_req->getAbsoluteTargetPath() + *it);
+
+		std::string target(safeUrlJoin(this->_req->getAbsoluteTargetPath(), *it));
 		std::ifstream 	f(target.c_str());
 		if (f.good())
 		{
+			f.close();
 			return (safeUrlJoin(this->_req->getTarget(), *it));
 		}
 		f.close();
@@ -220,16 +223,16 @@ bool		Response::isIndexPagePresent()
 
 	for(std::vector<std::string>::iterator it = vIndex.begin(); it != vIndex.end(); ++it)
 	{
-		std::string target(this->_req->getAbsoluteTargetPath() + *it);
+		std::string target(safeUrlJoin(this->_req->getAbsoluteTargetPath(), *it));
+
 		std::ifstream 	f(target.c_str());
 		if (f.good())
 		{
+			f.close();
 			return (true);
 		}
 		f.close();
 	}
-	// std::ifstream indexTry;
-
 	return (false);
 }
 
