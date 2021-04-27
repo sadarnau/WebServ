@@ -47,7 +47,7 @@ public:
 	void			processPost();
 
 	bool			autoIndexResponse();
-
+	std::string		getIndexTarget();
 	void			setToErrorPage(int errorNumber);
 
 	bool			isIndexPagePresent();
@@ -56,7 +56,9 @@ public:
 	
 	void			setHeaders( int responseCode, std::string responseCodeMessage, std::string contentType );
 	std::string		getResponse();
-	std::string		getIndexTarget();
+	std::string		getBody();
+	std::string		getHeader();
+
 
 };
 

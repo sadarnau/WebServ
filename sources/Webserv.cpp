@@ -135,8 +135,9 @@ void	Webserv::handleRequest( int socket )
 	response.buildResponse();
 	response.send();
 
-	Logger::Write(Logger::DEBUG, std::string(BLU), "\n---------\nResponse:\n\n" + response.getResponse() + "\n-------\n\n", true);
-	Logger::Write(Logger::INFO, std::string(GRN), "Message delivered...\n\n", true);
+	Logger::Write(Logger::DEBUG, std::string(BLU), "\n---------\nRESPONSE HEADER :\n\n" + response.getHeader() + "\n-------\n\n", true);
+	Logger::Write(Logger::MORE, std::string(BLU), "\n---------\nRESPONSE BODY :\n\n" + response.getBody() + "\n-------\n\n", true);
+	Logger::Write(Logger::INFO, std::string(GRN), "Response delivered...\n\n", true);
 }
 
 int		Webserv::getFd( void )
