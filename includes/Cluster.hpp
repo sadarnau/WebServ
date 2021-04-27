@@ -15,7 +15,7 @@ private:
 	std::vector<Webserv>	_serverList;
 	std::vector<int>		_fdList;
 	Config					_config;
-	int						_nbServ; // ONLY A TEST
+	int						_nbServ;
 
 public:
 

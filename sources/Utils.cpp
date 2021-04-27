@@ -84,6 +84,20 @@ void		printLocation(Location loc)
 	Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
 }
 
+void			printServer(Webserv wserv)
+{
+	std::vector<Location> locVector;
+	std::ostringstream oss;
+
+	locVector = wserv.getLocationVector();
+	oss << wserv;
+	Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
+	for (std::vector<class Location>::const_iterator it2 = locVector.begin(); it2 != locVector.end(); ++it2)
+		printLocation(*it2);
+	oss.str("");
+	oss.clear();
+}
+
 void			printAllServers(std::vector<class Webserv> serverList)
 {
 	std::ostringstream oss;
@@ -91,22 +105,8 @@ void			printAllServers(std::vector<class Webserv> serverList)
 	Location loc;
 	Webserv wserv;
 
-	oss << "Print all servers\n";
 	for (std::vector<class Webserv>::const_iterator it = serverList.begin(); it != serverList.end(); ++it)
-	{
-		wserv = *it;
-		locVector = wserv.getLocationVector();
-		oss << wserv;
-		Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
-		for (std::vector<class Location>::const_iterator it2 = locVector.begin(); it2 != locVector.end(); ++it2)
-		{
-			//std::cout << "plop\n";
-			printLocation(*it2);
-			//Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
-		}
-		oss.str("");
-		oss.clear();
-	}
+		printServer(*it);
 }
 
 void			printMap(std::map<std::string, std::string> m, std::string type)

@@ -134,7 +134,7 @@ void								Cluster::requestPrintServ( void )
 		{
 			unsigned long ic = c - '0';
 			if (ic < this->_serverList.size())
-				std::cout << this->_serverList[ic];
+				printServer(this->_serverList[ic]);
 			else
 				requestPrintServ();
 		}
