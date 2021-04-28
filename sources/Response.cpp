@@ -46,6 +46,7 @@ void	Response::buildResponse()
 {
 	std::string		requestMethod = this->_req->getMethod();
 
+	// METHODS
 	if (!this->isValidMethod(requestMethod))
 	{
 		this->setToErrorPage(405);
@@ -57,8 +58,18 @@ void	Response::buildResponse()
 	else if (requestMethod == "POST")
 		this->processPost();
 
+	// CGI
+	if (!this->_location.getCgi().empty())
+	{
+		Cgi		cgi(this->_req);
+		this->_body = cgi.processCgi(this->_body);
+	}
+
+	// BUILD HEADER AND RESPONSE
 	this->buildHeader();
 	this->_response = this->_header + this->_body;
+
+
 }
 
 void	Response::buildHeader()
@@ -85,7 +96,6 @@ void	Response::processGet()
 {
 	std::string		auto_index = this->_location.getAutoindex();
 
-	Cgi		cgi(this->_req);
 	// Directory Request
 	if (this->isDirectory())
 	{
@@ -116,16 +126,11 @@ void	Response::processGet()
 		std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
 		this->_body = str;
 
-		if (!this->_location.getCgi().empty())
-		{
-			this->_body = cgi.processCgi(this->_body);
-		}
 	}
 	else
 	{
 		this->setToErrorPage(404);
 	}
-
 	f.close();
 }
 
