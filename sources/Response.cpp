@@ -5,6 +5,8 @@
 ////////////////////
 Response::Response(Request *req, int socket)
 {
+	this->initErrorMap();
+
 	this->_location = req->getSelectedLocation();
 	this->_req = req;
 	this->_socket = socket;
@@ -43,6 +45,12 @@ void	Response::send()
 void	Response::buildResponse()
 {
 	std::string		requestMethod = this->_req->getMethod();
+
+	if (!this->isValidMethod(requestMethod))
+	{
+		this->setToErrorPage(405);
+		return ;
+	}
 
 	if (requestMethod == "GET")
 		this->processGet();
@@ -171,24 +179,47 @@ bool		Response::autoIndexResponse()
 ////////////////////
 // ERRORS
 ////////////////////
+void		Response::initErrorMap()
+{
+	this->_errorMap[404] = "FILE_NOT_FOUND";
+	this->_errorMap[405] = "METHOD_NOT_ALLOWED";
+	this->_errorMap[500] = "INTERNAL_ERROR";
+
+}
+
 void		Response::setToErrorPage(int errorNumber)
 {
 	std::ifstream error_page;
 	std::string errorNbrString = intToStr(errorNumber);          // string which will contain the result
 
+	this->setHeaders(errorNumber, this->_errorMap[errorNumber], "text/html");
 
-	if (errorNumber == 404)
+	if(!this->_location.getErrorPage()[errorNbrString].empty())
 	{
-		this->setHeaders(404, "FILE_NOT_FOUND", "text/html");
-
-		if(this->_location.getErrorPage()[errorNbrString].empty())
-			error_page.open("files/default_pages/custom_404.html");
-		else
-			error_page.open(this->_location.getErrorPage()[errorNbrString]);
+		error_page.open(this->_location.getErrorPage()[errorNbrString]);
+		std::string str((std::istreambuf_iterator<char>(error_page)), std::istreambuf_iterator<char>());
+		this->_body = str;
 	}
+	else
+		this->_body = this->generateDefaultErrorPage(errorNbrString, this->_errorMap[errorNumber]);
 
-	std::string str((std::istreambuf_iterator<char>(error_page)), std::istreambuf_iterator<char>());
-	this->_body = str;
+}
+
+std::string		Response::generateDefaultErrorPage(std::string errorNbr, std::string message)
+{
+	std::ifstream content_1("files/default_pages/default_error_1.html");
+	std::ifstream content_2("files/default_pages/default_error_2.html");
+	std::ifstream content_3("files/default_pages/default_error_3.html");
+	std::ostringstream body;
+
+	body << std::string((std::istreambuf_iterator<char>(content_1)), std::istreambuf_iterator<char>());
+	body << "error " << errorNbr;
+	body << std::string((std::istreambuf_iterator<char>(content_2)), std::istreambuf_iterator<char>());
+	body << "<h1>" << errorNbr << "</h1>";
+	body << "<p>" << message << "</p>";
+	body << std::string((std::istreambuf_iterator<char>(content_3)), std::istreambuf_iterator<char>());
+
+	return(body.str());
 }
 
 ////////////////////
@@ -200,11 +231,28 @@ bool	Response::isValidMethod(std::string key)
 	
 	std::vector<std::string> acceptedMethods = this->_location.getAcceptedMethod();
 
+	// check if method is include in http 1.1
+	if (!isValidHttpMethod(key))
+		return (false);
+
 	// if empty = accept all methods
 	if (acceptedMethods.empty())
 		return (true);
 
 	for (std::vector<std::string>::iterator it = acceptedMethods.begin(); it != acceptedMethods.end(); ++it)
+		if (key == *it)
+			return (true);
+
+	return (false);
+}
+
+bool	Response::isValidHttpMethod(std::string key)
+{
+	std::string listOfvalidHttpMethods[8] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE"}; // see https://tools.ietf.org/html/rfc7231 - RFC 7231
+	std::vector<std::string> validHttpMethods;
+	validHttpMethods.assign(listOfvalidHttpMethods, listOfvalidHttpMethods + 8);
+
+	for (std::vector<std::string>::iterator it = validHttpMethods.begin(); it != validHttpMethods.end(); ++it)
 		if (key == *it)
 			return (true);
 

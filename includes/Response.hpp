@@ -30,6 +30,7 @@ private:
 	std::string								_header;
 	std::string								_body;
 	std::string								_response;
+	std::map<int, std::string>				_errorMap;
 
 	void			send();
 	void			buildHeader();
@@ -42,12 +43,15 @@ private:
 	std::string		getIndexTarget();
 	bool			isIndexPagePresent();
 
+	void			initErrorMap();
 	void			setToErrorPage( int errorNumber );
+	std::string		generateDefaultErrorPage(std::string errorNbr, std::string message);
 
 	bool			isDirectory();
 	std::string		getContentType( std::string target );
 	bool			isValidMethod( std::string key );
-	
+	bool			isValidHttpMethod(std::string key);
+
 
 public:
 	Response( Request *req, int socket );	//default constructor
