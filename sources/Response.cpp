@@ -113,7 +113,11 @@ void	Response::processGet()
 			return;
 		}
 	}
-	
+	if ((std::strcmp(strerror(errno), "Permission denied")) == 0)
+	{
+		this->setToErrorPage(403);
+		return;
+	}
 	//Here comes the block where you check the file ext and define content_type
 	this->_contentType = this->getContentType(this->_req->getTarget());
 
