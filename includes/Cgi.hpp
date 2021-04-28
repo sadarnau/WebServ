@@ -3,8 +3,8 @@
 
 # include <string>
 # include <map>
+# include <unistd.h>
 # include "Request.hpp"
-// # include "Location.hpp"
 
 class Cgi
 {
@@ -15,7 +15,6 @@ class Cgi
 		void								_initEnv();
 		char								**_envToCArray();
 		Request								*_req;
-		// Location							*_loc;
 
 	public:
 		// Cgi(Request *req, Location *loc);
