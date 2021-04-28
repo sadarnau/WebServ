@@ -47,6 +47,11 @@ int main(int ac, char *av[])
 			Logger::Start(Logger::NONE);
 			Logger::Write(Logger::NONE, GRN, "Logger in NONE mod");
 		}
+		else
+		{
+			Logger::Start(Logger::DEBUG);
+			Logger::Write(Logger::DEBUG, GRN, "Logger in DEBUG mod");
+		}
 
 	}
 	else
