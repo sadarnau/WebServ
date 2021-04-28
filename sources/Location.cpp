@@ -29,7 +29,7 @@ Location::Location(std::map<std::string, std::string> locationMap) : _listen("")
 			this->_cgi = it->second;
 		else if (!it->first.compare("index"))
 			this->_index = concatToVector(it->second);
-		else if (!it->first.compare("accepted_method") && it->second.compare(""))
+		else if (!it->first.compare("accepted_method"))
 			this->_acceptedMethod = concatToVector(it->second);
 		else
 			this->_errorPage[it->first] = it->second;
