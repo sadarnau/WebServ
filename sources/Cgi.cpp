@@ -90,8 +90,8 @@ std::string		Cgi::processCgi(std::string body)
 	//creating fd for child execution
 	FILE	*fIn = tmpfile();
 	FILE	*fOut = tmpfile();
-	long	fdIn = fileno(fIn);
-	long	fdOut = fileno(fOut);
+	int		fdIn = fileno(fIn);
+	int		fdOut = fileno(fOut);
 
 	// writing content of body in fdIn
 	write(fdIn, body.c_str(), body.size());
@@ -134,6 +134,8 @@ std::string		Cgi::processCgi(std::string body)
 	// restore STDIN and STDOUT
 	dup2(stdIn, STDIN_FILENO);
 	dup2(stdOut, STDOUT_FILENO);
+
+	//close fds
 	close(fdIn);
 	close(fdOut);
 	fclose(fIn);
