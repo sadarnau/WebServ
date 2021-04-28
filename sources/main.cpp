@@ -19,15 +19,48 @@ void		handle_signal(int sig_num)
 int main(int ac, char *av[])
 {
 	Cluster cluster;
-
-	Logger::Start(Logger::DEBUG);
-
-	if (ac > 2)
+	if (ac == 3)
 	{
-		Logger::Write(Logger::ERROR, std::string(RED), "Only two args allowed\n\n");
+		std::string str(av[2]);
+		if (!str.compare("more"))
+		{
+			Logger::Start(Logger::MORE);
+			Logger::Write(Logger::MORE, GRN, "Logger in MORE mod");
+		}
+		else if (!str.compare("debug"))
+		{
+			Logger::Start(Logger::DEBUG);
+			Logger::Write(Logger::DEBUG, GRN, "Logger in DEBUG mod");
+		}
+		else if (!str.compare("info"))
+		{
+			Logger::Start(Logger::INFO);
+			Logger::Write(Logger::INFO, GRN, "Logger in INFO mod");
+		}
+		else if (!str.compare("error"))
+		{
+			Logger::Start(Logger::ERROR);
+			Logger::Write(Logger::ERROR, GRN, "Logger in ERROR mod");
+		}
+		else if (!str.compare("none"))
+		{
+			Logger::Start(Logger::NONE);
+			Logger::Write(Logger::NONE, GRN, "Logger in NONE mod");
+		}
+
+	}
+	else
+	{
+		Logger::Start(Logger::DEBUG);
+		Logger::Write(Logger::DEBUG, GRN, "Logger in DEBUG mod");
+	}
+
+	if (ac > 3)
+	{
+		Logger::Write(Logger::ERROR, std::string(RED), "Only two/three args allowed\n\n");
 		return 1;
 	}
-	else if (ac == 2)
+	else if (ac == 2 || ac == 3)
 	{
 		if (cluster.initialization(av[1]))
 			return (1);
