@@ -22,39 +22,18 @@ int main(int ac, char *av[])
 
 	Logger::Start(Logger::DEBUG);
 
-	if (ac > 3)
+	if (ac > 2)
 	{
-		Logger::Write(Logger::ERROR, std::string(RED), "usage : ./webserv (-d for debug) (path to .conf file)\n\n", true);
+		Logger::Write(Logger::ERROR, std::string(RED), "Only two args allowed\n\n", true);
 		return 1;
-	}
-	else if (ac == 3) // check '-d'
-	{
-		std::string str(av[1]);
-		if (!str.compare("-d"))
-		{
-			if (cluster.initialization(av[2], 1))
-				return (1);
-		}
-		else
-		{
-			Logger::Write(Logger::ERROR, std::string(RED), "usage : ./webserv (-d for debug) (path to .conf file)\n\n", true);
-			return (1);
-		}
 	}
 	else if (ac == 2)
 	{
-		std::string str(av[1]);
-		if (!str.compare("-d"))
-		{
-			if (cluster.initialization("files/default.conf", 1))
-				return (1);
-		}
-		else
-			if (cluster.initialization(av[1], 0))
-				return (1);
+		if (cluster.initialization(av[1]))
+			return (1);
 	}
 	else
-		if (cluster.initialization("files/default.conf", 0))
+		if (cluster.initialization("files/default.conf"))
 			return (1);
 
 	if (cluster.lanchServices())

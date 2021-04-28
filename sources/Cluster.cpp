@@ -28,7 +28,7 @@ Cluster & Cluster::operator=( Cluster const & rhs)
 	return ( *this );
 }
 
-int								Cluster::initialization( std::string fileName, int debugMode )
+int								Cluster::initialization( std::string fileName)
 {
 	this->_maxFd = 0;	// not ouf du tout
 
@@ -49,10 +49,7 @@ int								Cluster::initialization( std::string fileName, int debugMode )
 			this->_maxFd = this->_serverList[i].getFd();
 	}
 
-	if (debugMode)
-		printAllServers(this->_serverList);
-	else
-		requestPrintServ();
+	printAllServers(this->_serverList);
 
 	return (0);
 }
@@ -114,37 +111,6 @@ void								Cluster::addSocketToMaster( int socket )
 		this->_maxFd = socket;
 
 	return ;
-}
-
-void								Cluster::requestPrintServ( void )
-{
-	char	c;
-
-	std::cout << "\n\n";
-	Logger::Write(Logger::INFO, std::string(MAG), "Do you want to print server info ? (y or n) : ", true);
-	std::cin >> c;
-
-	if (c == 'y')
-	{
-		Logger::Write(Logger::INFO, std::string(MAG), "Do you want to print all server info (a) or a specific number (0 to " + std::to_string(this->_serverList.size() - 1) + ") ? ", true);
-		std::cin >> c;
-		if(c == 'a')
-			printAllServers(this->_serverList);
-		else if (c < '9' && c >= '0')
-		{
-			unsigned long ic = c - '0';
-			if (ic < this->_serverList.size())
-				printServer(this->_serverList[ic]);
-			else
-				requestPrintServ();
-		}
-		else
-				requestPrintServ();
-	}
-	else if (c == 'n')
-		std::cout << "\n\n";
-	else
-		requestPrintServ();
 }
 
 std::map<std::string, std::string>	Cluster::getMap( void )
