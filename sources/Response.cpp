@@ -196,6 +196,23 @@ void		Response::setToErrorPage(int errorNumber)
 ////////////////////
 // UTILS
 ////////////////////
+
+bool	Response::isValidMethod(std::string key)
+{
+	
+	std::vector<std::string> acceptedMethods = this->_location.getAcceptedMethod();
+
+	// if empty = accept all methods
+	if (acceptedMethods.empty())
+		return (true);
+
+	for (std::vector<std::string>::iterator it = acceptedMethods.begin(); it != acceptedMethods.end(); ++it)
+		if (key == *it)
+			return (true);
+
+	return (false);
+}
+
 std::string	Response::getIndexTarget()
 {
 	std::vector<std::string> vIndex = this->_location.getIndex();

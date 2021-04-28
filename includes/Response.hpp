@@ -54,6 +54,7 @@ public:
 	bool			isIndexPagePresent();
 	bool			isDirectory();
 	std::string		getContentType(std::string target);
+	bool			isValidMethod( std::string key );
 
 	void			logResponse();
 	
