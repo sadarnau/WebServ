@@ -11,7 +11,7 @@ static int serverFd;
 
 void		handle_signal(int sig_num)
 {
-	Logger::Write(Logger::INFO, std::string(GRN), "See you\n", true);
+	Logger::Write(Logger::INFO, GRN, "See you\n");
 	if (sig_num == SIGINT)
 		close(serverFd);
 }
@@ -24,7 +24,7 @@ int main(int ac, char *av[])
 
 	if (ac > 3)
 	{
-		Logger::Write(Logger::ERROR, std::string(RED), "usage : ./webserv (-d for debug) (path to .conf file)\n\n", true);
+		Logger::Write(Logger::ERROR, RED, "usage : ./webserv (-d for debug) (path to .conf file)\n");
 		return 1;
 	}
 	else if (ac == 3) // check '-d'
@@ -37,7 +37,7 @@ int main(int ac, char *av[])
 		}
 		else
 		{
-			Logger::Write(Logger::ERROR, std::string(RED), "usage : ./webserv (-d for debug) (path to .conf file)\n\n", true);
+			Logger::Write(Logger::ERROR, RED, "usage : ./webserv (-d for debug) (path to .conf file)\n");
 			return (1);
 		}
 	}

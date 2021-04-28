@@ -40,11 +40,11 @@ int		Webserv::initialization( int i ) //to do : return 1 in case of error else r
 
 	if ((this->fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
-		Logger::Write(Logger::ERROR, std::string(RED), "error : assigning the socket", true);
+		Logger::Write(Logger::ERROR, RED, "error : assigning the socket");
 		return (1);
 	}
 
-	Logger::Write(Logger::INFO, std::string(GRN), "socket : created", true);
+	Logger::Write(Logger::INFO, GRN, "socket : created");
 	
 	this->fillAddress();
 	
@@ -54,20 +54,20 @@ int		Webserv::initialization( int i ) //to do : return 1 in case of error else r
 
 	if ((bind(this->fd, (struct sockaddr *)&this->address, sizeof(this->address))) < 0)
 	{
-		Logger::Write(Logger::ERROR, std::string(RED), "error : bindind the socket...", true);
+		Logger::Write(Logger::ERROR, RED, "error : bindind the socket...");
 		close(this->fd);
 		return (1);
 	}
 
-	Logger::Write(Logger::INFO, std::string(GRN), "socket : binded on " + this->_IPaddr + ":" + this->_port, true);
+	Logger::Write(Logger::INFO, GRN, "socket : binded on " + this->_IPaddr + ":" + this->_port);
 
 	if ((listen(this->fd, 5)) < 0) 			// 5 = number of max connections (why 5 ??)
 	{
-		Logger::Write(Logger::ERROR, std::string(RED), "error : listening socket", true);
+		Logger::Write(Logger::ERROR, RED, "error : listening socket");
 		return (1);
 	}
 
-	Logger::Write(Logger::INFO, std::string(GRN), "socket : listening...", true);
+	Logger::Write(Logger::INFO, GRN, "socket : listening...");
 
 	return (0);
 }
@@ -93,7 +93,7 @@ int		Webserv::acceptConexion( void )
 	
 	if (socket < 0)
 	{
-		Logger::Write(Logger::ERROR, std::string(RED), "error : accepting a new connection", true);
+		Logger::Write(Logger::ERROR, RED, "error : accepting a new connection");
 		exit(1); // not ouf du tout...
 	}
 
@@ -113,9 +113,9 @@ void	Webserv::handleRequest( int socket )
 	buff[ret] = 0;	// realy usefull ?
 
 	Request		request(&this->_locationVector, socket, buff);
-	Logger::Write(Logger::INFO, std::string(BLU), "webserv[" + std::to_string(this->_serverNb) + "] : request received [method: " + request.getMethod() + "] [location: " + request.getSelectedLocation().getPath() + "] [target: " + request.getTarget() + "]", true);
+	Logger::Write(Logger::INFO, BLU, "webserv[" + std::to_string(this->_serverNb) + "] : request received [method: " + request.getMethod() + "] [location: " + request.getSelectedLocation().getPath() + "] [target: " + request.getTarget() + "]");
 	Response	response(&request, socket);
-	Logger::Write(Logger::INFO, std::string(BLU), "webserv[" + std::to_string(this->_serverNb) + "] : resonse sent [code: " + response.getResponseCodeStr() + "] [message: " + response.getResponseCodeMessage() + "] [content length: " + response.getContentLength()+ "]", true);
+	Logger::Write(Logger::INFO, BLU, "webserv[" + std::to_string(this->_serverNb) + "] : resonse sent [code: " + response.getResponseCodeStr() + "] [message: " + response.getResponseCodeMessage() + "] [content length: " + response.getContentLength()+ "]");
 }
 
 int		Webserv::getFd( void )

@@ -41,7 +41,7 @@ int								Cluster::initialization( std::string fileName, int debugMode )
 
 	for (int i = 0; i < this->_nbServ; i++)
 	{
-		Logger::Write(Logger::INFO, std::string(GRN), "webserv[" + std::to_string(i) + "] : creation", true);
+		Logger::Write(Logger::INFO, GRN, "webserv[" + std::to_string(i) + "] : creation");
 		if (this->_serverList[i].initialization(i))
 			return 1;
 		FD_SET(this->_serverList[i].getFd(), &this->_master_fd);	// adding our first fd socket, the server one.
@@ -67,13 +67,13 @@ int								Cluster::lanchServices( void )
 		// of living fds  (( man 2 select ))
 		copyMasterSet = this->_master_fd;
 
-		Logger::Write(Logger::INFO, std::string(GRN), "waiting for request...\n", true);
+		Logger::Write(Logger::INFO, GRN, "waiting for request...");
 
 		int	nbSocket = select(this->_maxFd + 1, &copyMasterSet, 0, 0, 0); //to do : check if we can write in fd (writefds)
 
 		if (nbSocket < 0)
 		{
-			Logger::Write(Logger::ERROR, std::string(RED), "error : select", true);
+			Logger::Write(Logger::ERROR, RED, "error : select");
 			throw (std::exception()); // to do : exception
 			return (1); //test ???
 		}
@@ -82,7 +82,7 @@ int								Cluster::lanchServices( void )
 		{
 			if (FD_ISSET(this->_serverList[i].getFd(), &copyMasterSet)) // if serv fd changed -> new connection
 			{
-				Logger::Write(Logger::INFO, std::string(GRN), "webserv[" + std::to_string(i) + "] : new connection", true);
+				Logger::Write(Logger::INFO, GRN, "webserv[" + std::to_string(i) + "] : new connection");
 				int sock = this->_serverList[i].acceptConexion();
 				addSocketToMaster(sock);
 				break ;			// no need to check any more serv
@@ -121,12 +121,12 @@ void								Cluster::requestPrintServ( void )
 	char	c;
 
 	std::cout << "\n\n";
-	Logger::Write(Logger::INFO, std::string(MAG), "Do you want to print server info ? (y or n) : ", true);
+	Logger::Write(Logger::INFO, MAG, "Do you want to print server info ? (y or n) : ");
 	std::cin >> c;
 
 	if (c == 'y')
 	{
-		Logger::Write(Logger::INFO, std::string(MAG), "Do you want to print all server info (a) or a specific number (0 to " + std::to_string(this->_serverList.size() - 1) + ") ? ", true);
+		Logger::Write(Logger::INFO, MAG, "Do you want to print all server info (a) or a specific number (0 to " + std::to_string(this->_serverList.size() - 1) + ") ? ");
 		std::cin >> c;
 		if(c == 'a')
 			printAllServers(this->_serverList);

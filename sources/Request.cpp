@@ -196,7 +196,7 @@ void	Request::logRequest( void )
 		oss << std::setw(20) << it->first << " : " << it->second << std::endl;
 	}
 	oss << std::endl << std::endl;
-	Logger::Write(Logger::MORE, std::string(BLU), oss.str(), true);
+	Logger::Write(Logger::MORE, BLU, oss.str());
 
 	oss.clear();
 	
@@ -211,7 +211,7 @@ void	Request::logRequest( void )
 	oss << this->_buff;
 	oss << "----------\n\n";
 	oss << RESET;
-	Logger::Write(Logger::MORE, std::string(BLU), oss.str(), true);
+	Logger::Write(Logger::MORE, BLU, oss.str());
 
 	return ;
 }

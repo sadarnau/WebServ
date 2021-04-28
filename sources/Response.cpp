@@ -276,12 +276,12 @@ std::string	Response::getContentType(std::string target)
 	return ("text/plain");
 }
 
-
 void Response::logResponse()
 {
-	Logger::Write(Logger::DEBUG, std::string(BLU), "response : header\n\n" + this->getHeader() + "\n-------\n", true);
-	Logger::Write(Logger::MORE, std::string(BLU), "response : body\n\n" + this->getBody() + "\n-------\n", true);
+	Logger::Write(Logger::DEBUG, BLU, "response : header\n\n" + this->getHeader() + "\n-------\n");
+	Logger::Write(Logger::MORE, BLU, "response : body\n\n" + this->getBody() + "\n-------\n");
 }
+
 ////////////////////
 // GETTERS / SETTERS
 ////////////////////

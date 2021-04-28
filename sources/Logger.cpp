@@ -23,10 +23,11 @@ void Logger::Start(Priority minPriority)
         Log._fileStream.close();
 }
 
-void Logger::Write(Priority priority, const std::string &col, const std::string &message, bool _isWriteStdout)
+void Logger::Write(Priority priority, std::string color, const std::string &message)
 {
 	Log._fileStream.open("./log/log.txt", std::ofstream::app);
 
+	std::string col(color);
 	if (priority >= Log._minPriority) {
 		std::ostringstream oss;
 		
@@ -41,8 +42,7 @@ void Logger::Write(Priority priority, const std::string &col, const std::string 
 
 		std::ostream& stream1 = Log._fileStream;
 		stream1 << oss.str();
-		if (_isWriteStdout)
-			std::cout << oss.str();
+		std::cout << oss.str();
 		
 	}
 
@@ -54,9 +54,9 @@ void Logger::Write(Priority priority, const std::string &col, const std::string 
 void Logger::Error(const std::string &message)
 {
 	if (DISPLAY_ERRNO && errno != 0)
-		Logger::Write(Logger::ERROR, std::string(RED), message + "Errno -> (" + std::string(strerror(errno)), true);
+		Logger::Write(Logger::ERROR, RED, message + "Errno -> (" + std::string(strerror(errno)));
 	else
-		Logger::Write(Logger::ERROR, std::string(RED), message, true);
+		Logger::Write(Logger::ERROR, RED, message);
 }
 
 void Logger::Stop(void)

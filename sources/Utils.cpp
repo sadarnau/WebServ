@@ -83,7 +83,7 @@ void		printLocation(Location loc)
 	}
 	oss << "]";
 
-	Logger::Write(Logger::MORE, std::string(WHT), oss.str(), true);
+	Logger::Write(Logger::MORE, WHT, oss.str());
 }
 
 void			printServer(Webserv wserv)
@@ -93,7 +93,7 @@ void			printServer(Webserv wserv)
 
 	locVector = wserv.getLocationVector();
 	oss << wserv;
-	Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
+	Logger::Write(Logger::DEBUG, WHT, oss.str());
 
 	for (std::vector<class Location>::const_iterator it2 = locVector.begin(); it2 != locVector.end(); ++it2)
 		printLocation(*it2);
@@ -122,7 +122,7 @@ void			printMap(std::map<std::string, std::string> m, std::string type)
 		oss << std::setw(20) << std::left << it->first << ":" << it->second << "\r\n";
 	}
 	oss << '\n' << "----------\n\n";
-	Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
+	Logger::Write(Logger::DEBUG, WHT, oss.str());
 }
 
 std::string	safeUrlJoin(std::string url1, std::string url2)
