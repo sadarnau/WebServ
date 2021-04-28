@@ -41,7 +41,7 @@ int								Cluster::initialization( std::string fileName)
 
 	for (int i = 0; i < this->_nbServ; i++)
 	{
-		Logger::Write(Logger::INFO, GRN, "webserv[" + std::to_string(i) + "] : creation");
+		Logger::Write(Logger::INFO, GRN, "server[" + std::to_string(i) + "] : creation");
 		if (this->_serverList[i].initialization(i))
 			return 1;
 		FD_SET(this->_serverList[i].getFd(), &this->_master_fd);	// adding our first fd socket, the server one.
@@ -79,7 +79,7 @@ int								Cluster::lanchServices( void )
 		{
 			if (FD_ISSET(this->_serverList[i].getFd(), &copyMasterSet)) // if serv fd changed -> new connection
 			{
-				Logger::Write(Logger::INFO, GRN, "webserv[" + std::to_string(i) + "] : new connection");
+				Logger::Write(Logger::INFO, GRN, "server[" + std::to_string(i) + "] : new connection");
 				int sock = this->_serverList[i].acceptConexion();
 				addSocketToMaster(sock);
 				break ;			// no need to check any more serv

@@ -113,9 +113,9 @@ void	Webserv::handleRequest( int socket )
 	buff[ret] = 0;	// realy usefull ?
 
 	Request		request(&this->_locationVector, socket, buff);
-	Logger::Write(Logger::INFO, BLU, "webserv[" + std::to_string(this->_serverNb) + "] : request received [method: " + request.getMethod() + "] [location: " + request.getSelectedLocation().getPath() + "] [target: " + request.getTarget() + "]");
+	Logger::Write(Logger::INFO, BLU, "server[" + std::to_string(this->_serverNb) + "] : request received [method: " + request.getMethod() + "] [location: " + request.getSelectedLocation().getPath() + "] [target: " + request.getTarget() + "]");
 	Response	response(&request, socket);
-	Logger::Write(Logger::INFO, BLU, "webserv[" + std::to_string(this->_serverNb) + "] : resonse sent [code: " + response.getResponseCodeStr() + "] [message: " + response.getResponseCodeMessage() + "] [content length: " + response.getContentLength()+ "]");
+	Logger::Write(Logger::INFO, BLU, "server[" + std::to_string(this->_serverNb) + "] : resonse sent [code: " + response.getResponseCodeStr() + "] [message: " + response.getResponseCodeMessage() + "] [content length: " + response.getContentLength()+ "]");
 }
 
 int		Webserv::getFd( void )
@@ -166,7 +166,7 @@ int						Webserv::getServerNb( void )
 
 std::ostream &	operator<<(std::ostream & o, Webserv & rhs)
 {
-	o << "server [" << rhs.getServerNb() << "] : " ;
+	o << "server[" << rhs.getServerNb() << "] : " ;
 	o << "[fd: " << rhs.getFd() << "] ";
 	o << "[IP address: " << rhs.getIpAddress() << "] ";
 	o << "[port: " << rhs.getPort() << "] ";
