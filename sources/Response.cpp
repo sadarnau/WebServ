@@ -105,7 +105,7 @@ void	Response::processGet()
 		}
 		else if(auto_index == "on" && this->autoIndexResponse())  //autoIndexResponse return true on success
 		{
-			return ;
+				return ;
 		}
 		else
 		{
@@ -186,6 +186,7 @@ bool		Response::autoIndexResponse()
 ////////////////////
 void		Response::initErrorMap()
 {
+	this->_errorMap[403] = "FORBIDDEN";
 	this->_errorMap[404] = "FILE_NOT_FOUND";
 	this->_errorMap[405] = "METHOD_NOT_ALLOWED";
 	this->_errorMap[500] = "INTERNAL_ERROR";
