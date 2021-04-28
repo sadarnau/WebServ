@@ -19,7 +19,6 @@ typedef std::vector< Location > vlocation;
 class Request
 {
 private:
-
 	vlocation							*_locationVector;
 	int									_inSocket;
 	std::string							_buff;
@@ -34,32 +33,31 @@ private:
 	std::string							_queryString;
 	Location							_selectedLocation;
 
-public:
+	void								parseRequest( std::string req );
 
+	void								parseUrl();
+	void								selectLocation();
+	void								createPath();
+
+public:
 	Request( void );								//default constructor
 	Request( vlocation *_locationVector, int inSock, char *buff );					//constructor
 	Request( Request const & src );  				//copy
 	~Request( void );								//destructor
 	Request & operator=( Request const & rhs );		//overload operator =
 
-	void	parseRequest( std::string req );
-	void	updateTarget(std::string target);
-
-	void	parseUrl();
-	void	selectLocation();
-	void	createPath();
-
 	bool	isValidHeader( std::string header );
-	void	logRequest();
 
-	int				getInSock();
-	std::string		getMethod();
-	std::string		getTarget();
-	std::string		getUrlTargetPath();
-	std::string		getAbsoluteTargetPath();
-	std::string		getQueryString();
+	void								updateTarget(std::string target);
+	void								logRequest();
+	int									getInSock();
+	std::string							getMethod();
+	std::string							getTarget();
+	std::string							getUrlTargetPath();
+	std::string							getAbsoluteTargetPath();
+	std::string							getQueryString();
 	std::map<std::string, std::string>	getHeaders();
-	Location		getSelectedLocation();
+	Location							getSelectedLocation();
 };
 
 std::ostream &	operator<<(std::ostream & o, Request & rhs);
