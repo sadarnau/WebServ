@@ -15,7 +15,7 @@ private:
 	std::vector<Webserv>	_serverList;
 	std::vector<int>		_fdList;
 	Config					_config;
-	int						_nbServ; // ONLY A TEST
+	int						_nbServ;
 
 public:
 
@@ -28,7 +28,6 @@ public:
 	int									initialization( std::string fileName );
 	int									lanchServices( void );
 	void								addSocketToMaster( int socket );
-	void								requestPrintServ( void );
 
 	std::map<std::string, std::string>	getMap( void );
 	fd_set								getMasterSet( void );

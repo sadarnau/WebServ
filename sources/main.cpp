@@ -11,7 +11,7 @@ static int serverFd;
 
 void		handle_signal(int sig_num)
 {
-	Logger::Write(Logger::INFO, std::string(GRN), "See you\n", true);
+	Logger::Write(Logger::INFO, GRN, "See you\n");
 	if (sig_num == SIGINT)
 		close(serverFd);
 }
@@ -22,9 +22,9 @@ int main(int ac, char *av[])
 
 	Logger::Start(Logger::DEBUG);
 
-	if (ac > 3)
+	if (ac > 2)
 	{
-		Logger::Write(Logger::ERROR, std::string(RED), "Only one arg allowed\n\n", true);
+		Logger::Write(Logger::ERROR, std::string(RED), "Only two args allowed\n\n");
 		return 1;
 	}
 	else if (ac == 2)

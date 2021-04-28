@@ -38,7 +38,7 @@ private:
 	public:
 	static void Start(Priority minPriority);
 	static void Stop(void);
-	static void Write(Priority priority, const std::string &col, const std::string &message, bool _isWriteStdout);
+	static void Write(Priority priority, std::string color, const std::string &message);
 	static void Error(const std::string &message);
 	~Logger();
 };

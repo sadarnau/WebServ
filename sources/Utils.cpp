@@ -49,39 +49,56 @@ void		printLocation(Location loc)
 	std::vector<std::string> vec;
 	std::map<std::string, std::string> mapstr;
 
-	oss << "In this location we have :\n";
-	oss << "path = " << loc.getPath() << '\n';
-	oss << "listen = " << loc.getListen() << '\n';
-	oss << "server_name = " << loc.getServerName() << "\n";
-	oss << "client_max_body_size = " << loc.getClientMaxBodySize() << "\n\n";
-	oss << "root = " << loc.getRoot() << "\n";
-	oss << "cgi = " << loc.getCgi() << "\n";
-	oss << "autoindex = " << loc.getAutoindex() << "\n\n";
-	oss << "index = ";
+	oss << "location ";
+	oss << "[path: " << loc.getPath() << "] : ";
+	oss << "[listen: " << loc.getListen() << "]";
+	oss << "[server_name: " << loc.getServerName() << "]";
+	oss << "[client_max_body_size: " << loc.getClientMaxBodySize() << "]";
+	oss << "[root: " << loc.getRoot() << "]";
+	oss << "[cgi: " << loc.getCgi() << "]";
+	oss << "[autoindex: " << loc.getAutoindex() << "]";
+	oss << "[index: ";
 	vec = loc.getIndex();
 	if (!vec.empty())
 	{
 		for (std::vector<std::string>::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			oss << *it << " ";
 	}
-	oss << "\n";
-	oss << "accepted_method = ";
+	oss << "[accepted_method: ";
 	vec = loc.getAcceptedMethod();
 	if (!vec.empty())
 	{
 		for (std::vector<std::string>::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			oss << *it << " ";
 	}
-	oss << "\n";
-	oss << "error_page = \n";
+	oss << "]";
+
 	mapstr = loc.getErrorPage();
+
+	oss << "[error_pages :";
 	if (!mapstr.empty())
 	{
 		for (std::map<std::string, std::string>::const_iterator it = mapstr.begin(); it != mapstr.end(); ++it)
-			oss << "   - " << it->first << " " << it->second << "\n";
+			oss << it->first << " " << it->second << "\n";
 	}
-	oss << "\n\n";
-	Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
+	oss << "]";
+
+	Logger::Write(Logger::MORE, WHT, oss.str());
+}
+
+void			printServer(Webserv wserv)
+{
+	std::vector<Location> locVector;
+	std::ostringstream oss;
+
+	locVector = wserv.getLocationVector();
+	oss << wserv;
+	Logger::Write(Logger::DEBUG, WHT, oss.str());
+
+	for (std::vector<class Location>::const_iterator it2 = locVector.begin(); it2 != locVector.end(); ++it2)
+		printLocation(*it2);
+	oss.str("");
+	oss.clear();
 }
 
 void			printAllServers(std::vector<class Webserv> serverList)
@@ -91,22 +108,8 @@ void			printAllServers(std::vector<class Webserv> serverList)
 	Location loc;
 	Webserv wserv;
 
-	oss << "Print all servers\n";
 	for (std::vector<class Webserv>::const_iterator it = serverList.begin(); it != serverList.end(); ++it)
-	{
-		wserv = *it;
-		locVector = wserv.getLocationVector();
-		oss << wserv;
-		Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
-		for (std::vector<class Location>::const_iterator it2 = locVector.begin(); it2 != locVector.end(); ++it2)
-		{
-			//std::cout << "plop\n";
-			printLocation(*it2);
-			//Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
-		}
-		oss.str("");
-		oss.clear();
-	}
+		printServer(*it);
 }
 
 void			printMap(std::map<std::string, std::string> m, std::string type)
@@ -119,7 +122,7 @@ void			printMap(std::map<std::string, std::string> m, std::string type)
 		oss << std::setw(20) << std::left << it->first << ":" << it->second << "\r\n";
 	}
 	oss << '\n' << "----------\n\n";
-	Logger::Write(Logger::DEBUG, std::string(WHT), oss.str(), true);
+	Logger::Write(Logger::DEBUG, WHT, oss.str());
 }
 
 std::string	safeUrlJoin(std::string url1, std::string url2)
