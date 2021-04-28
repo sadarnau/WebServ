@@ -6,6 +6,8 @@
 # include <unistd.h>
 # include "Request.hpp"
 
+class Request ;
+
 class Cgi
 {
 	private:
@@ -22,6 +24,9 @@ class Cgi
 		Cgi( Cgi const & src );  				//copy
 		~Cgi( void );							//destructor
 		Cgi & operator=( Cgi const & rhs );		//overload operator =
+
+		std::string		processCgi(std::string body);
+
 };
 
 #endif

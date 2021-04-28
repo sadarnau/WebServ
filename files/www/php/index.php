@@ -7,6 +7,8 @@
     <title>A simple php page</title>
 </head>
 <body>
-    <h1><?php echo date('l jS \of F Y h:i:s A'); ?></h1>
+<h1>If you can see the date, php is working </h1>
+<h1><?php echo date('l jS \of F Y h:i:s A'); ?></h1>
+</div>
 </body>
 </html>

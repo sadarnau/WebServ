@@ -76,9 +76,8 @@ void	Response::buildHeader()
 void	Response::processGet()
 {
 	std::string		auto_index = this->_location.getAutoindex();
-	// std::string 	index_page = "/index.html";	// Change to index in conf 
 
-	std::string 	target;
+	Cgi		cgi(this->_req);
 	// Directory Request
 	if (this->isDirectory())
 	{
@@ -108,6 +107,11 @@ void	Response::processGet()
 		this->setHeaders(200, "OK", this->_contentType);
 		std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
 		this->_body = str;
+
+		if (!this->_location.getCgi().empty())
+		{
+			this->_body = cgi.processCgi(this->_body);
+		}
 	}
 	else
 	{

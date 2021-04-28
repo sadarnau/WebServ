@@ -12,7 +12,7 @@
 # include "Request.hpp"
 # include "Utils.hpp"
 # include "Location.hpp"
-
+# include "Cgi.hpp"
 class Request ;
 
 class Response

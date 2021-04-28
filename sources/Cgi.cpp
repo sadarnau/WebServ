@@ -76,12 +76,70 @@ void    Cgi::_initEnv()
 	this->_env["SERVER_SOFTWARE"] = "webserv";
 }
 
-std::string		processCgi()
+std::string		Cgi::processCgi(std::string body)
 {
 	// https://n-pn.fr/t/2318-c--programmation-systeme-execve-fork-et-pipe
-	std::string ret;
+	std::string result;
+	pid_t		pid;
+	int		status;
 
-	return (ret);
+	// save STDIN and STDOUT state 
+	int			stdIn = dup(STDIN_FILENO);
+	int			stdOut = dup(STDOUT_FILENO);
+
+	//creating fd for child execution
+	FILE	*fIn = tmpfile();
+	FILE	*fOut = tmpfile();
+	long	fdIn = fileno(fIn);
+	long	fdOut = fileno(fOut);
+
+	// writing content of body in fdIn
+	write(fdIn, body.c_str(), body.size());
+	//repositioning file offset to start of fdIn 
+	lseek(fdIn, 0, SEEK_SET);
+
+	if ((pid = fork()) == -1)
+	{
+			Logger::Write(Logger::ERROR, RED, "cgi : fork failed");
+	}
+	else if(pid == 0)
+	{
+		// child
+
+		// redirect STDIN and STDOUT to tmp fds
+		dup2(fdIn, STDIN_FILENO);
+		dup2(fdOut, STDOUT_FILENO);
+
+		// execute cgi
+		if(execve(this->_req->getSelectedLocation().getCgi().c_str(), nullptr, this->_envC) == -1)
+			Logger::Write(Logger::ERROR, RED, "cgi : execve failed");
+	}
+	else
+	{
+		// parent
+		char	buffer[1024];
+		int		ret;
+
+		wait(&status);
+		lseek(fdOut, 0, SEEK_SET);
+
+		// read on fdOut to get output
+		while ((ret = read(fdOut, buffer, 1023)) != 0)
+		{
+        	buffer[ret] = 0;
+			result += buffer;
+		}
+	}
+
+	// restore STDIN and STDOUT
+	dup2(stdIn, STDIN_FILENO);
+	dup2(stdOut, STDOUT_FILENO);
+	close(fdIn);
+	close(fdOut);
+	fclose(fIn);
+	fclose(fOut);
+
+	return (result);
 }
 
 
@@ -99,5 +157,10 @@ char	**Cgi::_envToCArray()
 	}
 	res[i] = 0;
 
+	// Print envC
+	// for (int j = 0; res[j]; j++)
+	// {
+	// 	printf("%s\n", res[j]);
+	// }
 	return (res);
 }
