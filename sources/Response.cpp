@@ -174,10 +174,8 @@ bool		Response::autoIndexResponse()
 void		Response::setToErrorPage(int errorNumber)
 {
 	std::ifstream error_page;
-	std::string errorNbrString;          // string which will contain the result
-	std::ostringstream convert;   // stream used for the conversion
-	convert << errorNumber;      // insert the textual representation of 'Number' in the characters in the stream
-	errorNbrString = convert.str();
+	std::string errorNbrString = intToStr(errorNumber);          // string which will contain the result
+
 
 	if (errorNumber == 404)
 	{
