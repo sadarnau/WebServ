@@ -8,9 +8,10 @@ Response::Response(Request *req, int socket)
 	this->_location = req->getSelectedLocation();
 	this->_req = req;
 	this->_socket = socket;
-
 	_httpVersion = "HTTP/1.1";
 
+	this->buildResponse();
+	this->send();
 }
 
 Response::Response( Response const & src )
@@ -275,6 +276,12 @@ std::string	Response::getContentType(std::string target)
 	return ("text/plain");
 }
 
+void Response::logResponse()
+{
+	Logger::Write(Logger::DEBUG, BLU, "response : header\n\n" + this->getHeader() + "\n-------\n");
+	Logger::Write(Logger::MORE, BLU, "response : body\n\n" + this->getBody() + "\n-------\n");
+}
+
 ////////////////////
 // GETTERS / SETTERS
 ////////////////////
@@ -300,6 +307,31 @@ std::string Response::getResponse()
 {
 	return (this->_response);
 }
+
+std::string		Response::getResponseCodeStr()
+{
+	std::ostringstream oss;
+	oss << this->_responseCode;
+	return (oss.str());
+}
+
+int				Response::getResponseCode()
+{
+	return(this->_responseCode);
+}
+
+std::string		Response::getResponseCodeMessage()
+{
+	return (this->_responseCodeMessage);
+}
+
+std::string		Response::getContentLength()
+{
+	std::ostringstream oss;
+	oss << this->_body.size();
+	return (oss.str());
+}
+
 
 std::ostream &	operator<<(std::ostream & o, Response & rhs)
 {

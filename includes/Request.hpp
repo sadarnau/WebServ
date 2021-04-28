@@ -50,7 +50,7 @@ public:
 
 	bool	isValidHeader( std::string header );
 	bool	isRequestMethod( std::string key );
-	void	printRequest();
+	void	logRequest();
 
 	int				getInSock();
 	std::string		getMethod();

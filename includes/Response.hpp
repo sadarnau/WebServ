@@ -54,13 +54,17 @@ public:
 	bool			isIndexPagePresent();
 	bool			isDirectory();
 	std::string		getContentType(std::string target);
+
+	void			logResponse();
 	
 	void			setHeaders( int responseCode, std::string responseCodeMessage, std::string contentType );
 	std::string		getResponse();
 	std::string		getBody();
 	std::string		getHeader();
-
-
+	std::string		getResponseCodeStr();
+	int				getResponseCode();
+	std::string		getResponseCodeMessage();
+	std::string		getContentLength();
 };
 
 std::ostream &	operator<<(std::ostream & o, Response & rhs);

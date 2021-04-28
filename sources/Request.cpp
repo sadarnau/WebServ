@@ -17,7 +17,7 @@ Request::Request(vlocation *locationVector, int inSock, char *buff ) : _inSocket
 	this->selectLocation();
 	this->parseUrl();
 	this->createPath();
-	this->printRequest();
+	this->logRequest();
 	return ;
 }
 
@@ -178,11 +178,11 @@ bool	Request::isRequestMethod(std::string key)
 	return (false);
 }
 
-void	Request::printRequest( void )
+void	Request::logRequest( void )
 {
 	std::ostringstream oss;
 	
-	oss << "\n----------\nREQUEST OBJECT :\n\n" ;
+	oss << "request :\n\n" ;
 	oss << std::setw(30) << "request->method" << " : " << this->_method << std::endl;
 	oss << std::setw(30) << "request->target" << " : " << this->_target << std::endl;
 	oss << std::setw(30) << "request->query" << " : " << this->_queryString << std::endl;
@@ -196,7 +196,7 @@ void	Request::printRequest( void )
 		oss << std::setw(20) << it->first << " : " << it->second << std::endl;
 	}
 	oss << std::endl << std::endl;
-	Logger::Write(Logger::DEBUG, std::string(BLU), oss.str(), true);
+	Logger::Write(Logger::MORE, BLU, oss.str());
 
 	oss.clear();
 	
@@ -211,7 +211,7 @@ void	Request::printRequest( void )
 	oss << this->_buff;
 	oss << "----------\n\n";
 	oss << RESET;
-	Logger::Write(Logger::MORE, std::string(BLU), oss.str(), true);
+	Logger::Write(Logger::MORE, BLU, oss.str());
 
 	return ;
 }
@@ -259,13 +259,9 @@ Location		Request::getSelectedLocation()
 
 std::ostream &	operator<<(std::ostream & o, Request & rhs)
 {
-	o << "In this request we have :\n";
-	o << "Absolute target path : " << rhs.getAbsoluteTargetPath() << "\n";
-	// o << "Relative target path : " << rhs.getRelativeTargetPath() << "\n";
-	o << "Incomming socket : " << rhs.getInSock() << "\n";
-	o << "Methods : " << rhs.getMethod() << "\n";
-	o << "Target : " << rhs.getTarget() << "\n\n";
-	o << "Query : " << rhs.getQueryString() << "\n\n";
+	o << "request : ";
+	o << "[method:" << rhs.getMethod() << "] ";
+	o << "[target:" << rhs.getTarget() << "] ";
 
 	return ( o );
 }
