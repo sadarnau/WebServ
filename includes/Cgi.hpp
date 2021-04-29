@@ -17,6 +17,7 @@ class Cgi
 		void								_initEnv();
 		char								**_envToCArray();
 		Request								*_req;
+		std::string							_result;
 
 	public:
 		// Cgi(Request *req, Location *loc);
@@ -25,7 +26,8 @@ class Cgi
 		~Cgi( void );							//destructor
 		Cgi & operator=( Cgi const & rhs );		//overload operator =
 
-		std::string		processCgi(std::string body);
+		bool		processCgi(std::string body);
+		std::string	getResult();
 
 };
 

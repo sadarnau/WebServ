@@ -76,7 +76,7 @@ void    Cgi::_initEnv()
 	this->_env["SERVER_SOFTWARE"] = "webserv";
 }
 
-std::string		Cgi::processCgi(std::string body)
+bool		Cgi::processCgi(std::string body)
 {
 	// https://n-pn.fr/t/2318-c--programmation-systeme-execve-fork-et-pipe
 	std::string result;
@@ -101,6 +101,7 @@ std::string		Cgi::processCgi(std::string body)
 	if ((pid = fork()) == -1)
 	{
 			Logger::Write(Logger::ERROR, RED, "cgi : fork failed");
+			return false;
 	}
 	else if(pid == 0)
 	{
@@ -112,7 +113,10 @@ std::string		Cgi::processCgi(std::string body)
 
 		// execute cgi
 		if(execve(this->_req->getSelectedLocation().getCgi().c_str(), nullptr, this->_envC) == -1)
+		{
 			Logger::Write(Logger::ERROR, RED, "cgi : execve failed");
+			return false;
+		}
 	}
 	else
 	{
@@ -141,7 +145,9 @@ std::string		Cgi::processCgi(std::string body)
 	fclose(fIn);
 	fclose(fOut);
 
-	return (result);
+	this->_result = result;
+
+	return true;
 }
 
 
@@ -165,4 +171,10 @@ char	**Cgi::_envToCArray()
 	// 	printf("%s\n", res[j]);
 	// }
 	return (res);
+}
+
+
+std::string	Cgi::getResult()
+{
+	return (this->_result);
 }

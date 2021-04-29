@@ -63,7 +63,11 @@ void	Response::buildResponse()
 	if (!this->_location.getCgi().empty())
 	{
 		Cgi		cgi(this->_req);
-		this->setBody(cgi.processCgi(this->_body));
+		
+		if(cgi.processCgi(this->_body))
+			this->setBody(cgi.getResult());
+		else
+			this->setToErrorPage(500);
 	}
 
 	// BUILD HEADER AND RESPONSE
@@ -118,7 +122,8 @@ void	Response::processGet()
 	{
 		this->setToErrorPage(403);
 	}
-	//Here comes the block where you check the file ext and define content_type
+	// Here comes the block where you check the file ext and define content_type
+	// maybe this is called too soon in process
 	if (!this->_isSetToError)
 		this->_contentType = this->getContentType(this->_req->getTarget());
 
@@ -209,10 +214,11 @@ bool		Response::autoIndexResponse()
 ////////////////////
 void		Response::initErrorMap()
 {
-	this->_errorMap[403] = "FORBIDDEN";
-	this->_errorMap[404] = "FILE_NOT_FOUND";
-	this->_errorMap[405] = "METHOD_NOT_ALLOWED";
-	this->_errorMap[500] = "INTERNAL_ERROR";
+	this->_errorMap[403] = "FORBIDDEN";				// you dont have rights to access file
+	this->_errorMap[404] = "FILE_NOT_FOUND";		// target doesnt exist
+	this->_errorMap[405] = "METHOD_NOT_ALLOWED";	// method not supported
+	this->_errorMap[413] = "PAYLOAD_TOO_LARGE";		// client_max_bodysize < requestbody
+	this->_errorMap[500] = "INTERNAL_ERROR";		// smthg had gone wrong internaly, mostly part of cgi
 
 }
 
