@@ -63,7 +63,7 @@ void	Response::buildResponse()
 	if (!this->_location.getCgi().empty())
 	{
 		Cgi		cgi(this->_req);
-		
+
 		if(cgi.processCgi(this->_body))
 			this->setBody(cgi.getResult());
 		else
@@ -124,8 +124,7 @@ void	Response::processGet()
 	}
 	// Here comes the block where you check the file ext and define content_type
 	// maybe this is called too soon in process
-	if (!this->_isSetToError)
-		this->_contentType = this->getContentType(this->_req->getTarget());
+	this->setContentType(this->getContentType(this->_req->getTarget()));
 
 	// Check if the file can be open and create response
 	std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
@@ -149,28 +148,6 @@ void	Response::processPost()
 {
 
 }
-
-////////////////////
-// SET HEADEARS / BODY
-////////////////////
-void	Response::setHeaders(int responseCode, std::string responseCodeMessage, std::string contentType)
-{
-	if (!this->_isSetToError)
-	{
-		this->_responseCode = responseCode;
-		this->_responseCodeMessage = responseCodeMessage;
-		this->_contentType = contentType;
-	}
-}
-
-void	Response::setBody(std::string body)
-{
-	if (!this->_isSetToError)
-	{
-		this->_body = body;
-	}
-}
-
 
 ////////////////////
 // AUTO INDEX
@@ -225,7 +202,7 @@ void		Response::initErrorMap()
 void		Response::setToErrorPage(int errorNumber)
 {
 	std::ifstream error_page;
-	std::string errorNbrString = intToStr(errorNumber);          // string which will contain the result
+	std::string errorNbrString = intToStr(errorNumber);
 
 	this->setHeaders(errorNumber, this->_errorMap[errorNumber], "text/html");
 
@@ -386,7 +363,32 @@ void Response::logResponse()
 }
 
 ////////////////////
-// GETTERS / SETTERS
+// SET HEADEARS / BODY / CONTENT TYPE (protect rewrite for errors)
+////////////////////
+void	Response::setHeaders(int responseCode, std::string responseCodeMessage, std::string contentType)
+{
+	if (!this->_isSetToError)
+	{
+		this->_responseCode = responseCode;
+		this->_responseCodeMessage = responseCodeMessage;
+		this->_contentType = contentType;
+	}
+}
+
+void	Response::setBody(std::string body)
+{
+	if (!this->_isSetToError)
+		this->_body = body;
+}
+
+void	Response::setContentType(std::string contentType)
+{
+	if (!this->_isSetToError)
+		this->_contentType = contentType;
+}
+
+////////////////////
+// GETTERS
 ////////////////////
 std::string Response::getHeader()
 {

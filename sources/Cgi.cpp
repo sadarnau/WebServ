@@ -101,6 +101,12 @@ bool		Cgi::processCgi(std::string body)
 	if ((pid = fork()) == -1)
 	{
 			Logger::Write(Logger::ERROR, RED, "cgi : fork failed");
+			dup2(stdIn, STDIN_FILENO);
+			dup2(stdOut, STDOUT_FILENO);
+			close(fdIn);
+			close(fdOut);
+			fclose(fIn);
+			fclose(fOut);
 			return false;
 	}
 	else if(pid == 0)
@@ -115,6 +121,12 @@ bool		Cgi::processCgi(std::string body)
 		if(execve(this->_req->getSelectedLocation().getCgi().c_str(), nullptr, this->_envC) == -1)
 		{
 			Logger::Write(Logger::ERROR, RED, "cgi : execve failed");
+			dup2(stdIn, STDIN_FILENO);
+			dup2(stdOut, STDOUT_FILENO);
+			close(fdIn);
+			close(fdOut);
+			fclose(fIn);
+			fclose(fOut);
 			return false;
 		}
 	}
@@ -165,11 +177,6 @@ char	**Cgi::_envToCArray()
 	}
 	res[i] = 0;
 
-	// Print envC
-	// for (int j = 0; res[j]; j++)
-	// {
-	// 	printf("%s\n", res[j]);
-	// }
 	return (res);
 }
 

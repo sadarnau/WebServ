@@ -40,9 +40,6 @@ private:
 	void			processGet();
 	void			processPost();
 
-	void			setHeaders( int responseCode, std::string responseCodeMessage, std::string contentType );
-	void			setBody(std::string body);
-
 	bool			autoIndexResponse();
 	std::string		getIndexTarget();
 	bool			isIndexPagePresent();
@@ -56,6 +53,9 @@ private:
 	bool			isValidMethod( std::string key );
 	bool			isValidHttpMethod(std::string key);
 
+	void			setHeaders( int responseCode, std::string responseCodeMessage, std::string contentType );
+	void			setBody(std::string body);
+	void			setContentType(std::string contentType);
 
 public:
 	Response( Request *req, int socket );	//default constructor
