@@ -31,6 +31,7 @@ private:
 	std::string								_body;
 	std::string								_response;
 	std::map<int, std::string>				_errorMap;
+	bool									_isSetToError;
 
 	void			send();
 	void			buildHeader();
@@ -38,6 +39,9 @@ private:
 
 	void			processGet();
 	void			processPost();
+
+	void			setHeaders( int responseCode, std::string responseCodeMessage, std::string contentType );
+	void			setBody(std::string body);
 
 	bool			autoIndexResponse();
 	std::string		getIndexTarget();
@@ -61,7 +65,6 @@ public:
 
 
 	void			logResponse();
-	void			setHeaders( int responseCode, std::string responseCodeMessage, std::string contentType );
 	std::string		getResponse();
 	std::string		getBody();
 	std::string		getHeader();

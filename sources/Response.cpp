@@ -7,10 +7,11 @@ Response::Response(Request *req, int socket)
 {
 	this->initErrorMap();
 
+	this->_isSetToError = false;
 	this->_location = req->getSelectedLocation();
 	this->_req = req;
 	this->_socket = socket;
-	_httpVersion = "HTTP/1.1";
+	this->_httpVersion = "HTTP/1.1";
 
 	this->buildResponse();
 	this->send();
@@ -62,7 +63,7 @@ void	Response::buildResponse()
 	if (!this->_location.getCgi().empty())
 	{
 		Cgi		cgi(this->_req);
-		this->_body = cgi.processCgi(this->_body);
+		this->setBody(cgi.processCgi(this->_body));
 	}
 
 	// BUILD HEADER AND RESPONSE
@@ -80,6 +81,7 @@ void	Response::buildHeader()
 	// Content-Length: 0
 
 	std::ostringstream header;
+
 	header << this->_httpVersion << " " << this->_responseCode << " " << this->_responseCodeMessage << "\n";
 	header << "Content-Type: " << this->_contentType << "\n";
 	header << "Content-Length: " << this->_body.size(); 
@@ -90,7 +92,7 @@ void	Response::buildHeader()
 
 
 ////////////////////
-// GET
+// HTTP METHODS
 ////////////////////
 void	Response::processGet()
 {
@@ -110,16 +112,15 @@ void	Response::processGet()
 		else
 		{
 			this->setToErrorPage(404);
-			return;
 		}
 	}
 	if ((std::strcmp(strerror(errno), "Permission denied")) == 0)
 	{
 		this->setToErrorPage(403);
-		return;
 	}
 	//Here comes the block where you check the file ext and define content_type
-	this->_contentType = this->getContentType(this->_req->getTarget());
+	if (!this->_isSetToError)
+		this->_contentType = this->getContentType(this->_req->getTarget());
 
 	// Check if the file can be open and create response
 	std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
@@ -128,7 +129,7 @@ void	Response::processGet()
 	{
 		this->setHeaders(200, "OK", this->_contentType);
 		std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
-		this->_body = str;
+		this->setBody(str);
 
 	}
 	else
@@ -139,12 +140,30 @@ void	Response::processGet()
 }
 
 
-////////////////////
-// POST
-////////////////////
 void	Response::processPost()
 {
 
+}
+
+////////////////////
+// SET HEADEARS / BODY
+////////////////////
+void	Response::setHeaders(int responseCode, std::string responseCodeMessage, std::string contentType)
+{
+	if (!this->_isSetToError)
+	{
+		this->_responseCode = responseCode;
+		this->_responseCodeMessage = responseCodeMessage;
+		this->_contentType = contentType;
+	}
+}
+
+void	Response::setBody(std::string body)
+{
+	if (!this->_isSetToError)
+	{
+		this->_body = body;
+	}
 }
 
 
@@ -177,7 +196,7 @@ bool		Response::autoIndexResponse()
 		content << "</ul>" << std::endl;
 		
 		content << std::string((std::istreambuf_iterator<char>(content_end)), std::istreambuf_iterator<char>());
-		this->_body = content.str();
+		this->setBody(content.str());
 		return true;
 	}
 
@@ -208,11 +227,12 @@ void		Response::setToErrorPage(int errorNumber)
 	{
 		error_page.open(this->_location.getErrorPage()[errorNbrString]);
 		std::string str((std::istreambuf_iterator<char>(error_page)), std::istreambuf_iterator<char>());
-		this->_body = str;
+		this->setBody(str);
 	}
 	else
-		this->_body = this->generateDefaultErrorPage(errorNbrString, this->_errorMap[errorNumber]);
+		this->setBody(this->generateDefaultErrorPage(errorNbrString, this->_errorMap[errorNumber]));
 
+	this->_isSetToError = true;
 }
 
 std::string		Response::generateDefaultErrorPage(std::string errorNbr, std::string message)
@@ -362,14 +382,6 @@ void Response::logResponse()
 ////////////////////
 // GETTERS / SETTERS
 ////////////////////
-void	Response::setHeaders(int responseCode, std::string responseCodeMessage, std::string contentType)
-{
-	this->_responseCode = responseCode;
-	this->_responseCodeMessage = responseCodeMessage;
-	this->_contentType = contentType;
-}
-
-
 std::string Response::getHeader()
 {
 	return (this->_header);
