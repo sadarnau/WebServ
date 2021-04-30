@@ -2,21 +2,33 @@
 # define CGI_HPP
 
 # include <string>
+# include <map>
+# include <unistd.h>
+# include "Request.hpp"
+
+class Request ;
 
 class Cgi
 {
-    private:
-        std::string     auth_type;
-        std::string     content_length;
-        std::string     content_type;
-        std::string     gateway_interface;
-        std::string     path_info;
-        std::string     path_translated;
-        std::string     query_string;
-        std::string     remote_add;
-        std::string     remote_ident;
-    public:
-        Cgi();
+	private:
+		std::map<std::string, std::string>	_env;
+		char								**_envC;
+
+		void								_initEnv();
+		char								**_envToCArray();
+		Request								*_req;
+		std::string							_result;
+
+	public:
+		// Cgi(Request *req, Location *loc);
+		Cgi(Request *req);
+		Cgi( Cgi const & src );  				//copy
+		~Cgi( void );							//destructor
+		Cgi & operator=( Cgi const & rhs );		//overload operator =
+
+		bool		processCgi(std::string body);
+		std::string	getResult();
+
 };
 
 #endif

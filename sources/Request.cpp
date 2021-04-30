@@ -47,10 +47,21 @@ Request & Request::operator=( Request const & rhs)
 void	Request::parseRequest(std::string req)
 {
 	std::string				line;
-    std::string				value;
     std::string				key;
+    std::string				value;
+    std::string				message;
+
 	std::istringstream		streamReq(req);
 
+	// handle first line
+	std::getline(streamReq, line);
+	std::stringstream	ss(line);
+	ss >> key >> value >> message;										
+	this->_method = key;
+	this->_target = value;
+	this->_message = message;
+
+	// handle rest of request
 	while (std::getline(streamReq, line))
     {
 		std::stringstream	ss(line);
@@ -59,19 +70,11 @@ void	Request::parseRequest(std::string req)
 		if(ss.fail())											// if value extraction failed, break while loop
 			break;
 
-		if (this->isRequestMethod(key))							// handle method line
-		{
-			this->_method = key;
-			this->_target = value;
-		}
-		else													// handle anything else (= headers)
-		{
-			key = key.substr(0, key.length() - 1);				// delete char ':' at the end of key
-			if (this->isValidHeader(key))
-				this->_headers[key] = value;
-			else
-				this->_skippedHeaders.push_back(key);
-		}
+		key = key.substr(0, key.length() - 1);				// delete char ':' at the end of key
+		if (this->isValidHeader(key))
+			this->_headers[key] = value;
+		else
+			this->_skippedHeaders.push_back(key);
 	}
 }
 
@@ -165,19 +168,6 @@ bool	Request::isValidHeader(std::string header)
 	return (false);
 }
 
-bool	Request::isRequestMethod(std::string key)
-{
-	std::string listOfAcceptedMethods[8] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE"}; // see https://tools.ietf.org/html/rfc7231 - RFC 7231
-	std::vector<std::string> acceptedMethods;
-	acceptedMethods.assign(listOfAcceptedMethods, listOfAcceptedMethods + 8);
-
-	for (std::vector<std::string>::iterator it = acceptedMethods.begin(); it != acceptedMethods.end(); ++it)
-		if (key == *it)
-			return (true);
-
-	return (false);
-}
-
 void	Request::logRequest( void )
 {
 	std::ostringstream oss;
@@ -255,6 +245,11 @@ std::string		Request::getQueryString()
 Location		Request::getSelectedLocation()
 {
 	return (this->_selectedLocation);
+}
+
+std::map<std::string, std::string>	Request::getHeaders()
+{
+	return(this->_headers);
 }
 
 std::ostream &	operator<<(std::ostream & o, Request & rhs)

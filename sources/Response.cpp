@@ -5,10 +5,13 @@
 ////////////////////
 Response::Response(Request *req, int socket)
 {
+	this->initErrorMap();
+
+	this->_isSetToError = false;
 	this->_location = req->getSelectedLocation();
 	this->_req = req;
 	this->_socket = socket;
-	_httpVersion = "HTTP/1.1";
+	this->_httpVersion = "HTTP/1.1";
 
 	this->buildResponse();
 	this->send();
@@ -44,13 +47,34 @@ void	Response::buildResponse()
 {
 	std::string		requestMethod = this->_req->getMethod();
 
+	// METHODS
+	if (!this->isValidMethod(requestMethod))
+	{
+		this->setToErrorPage(405);
+		return ;
+	}
+
 	if (requestMethod == "GET")
 		this->processGet();
 	else if (requestMethod == "POST")
 		this->processPost();
 
+	// CGI
+	if (!this->_location.getCgi().empty())
+	{
+		Cgi		cgi(this->_req);
+
+		if(cgi.processCgi(this->_body))
+			this->setBody(cgi.getResult());
+		else
+			this->setToErrorPage(500);
+	}
+
+	// BUILD HEADER AND RESPONSE
 	this->buildHeader();
 	this->_response = this->_header + this->_body;
+
+
 }
 
 void	Response::buildHeader()
@@ -61,9 +85,10 @@ void	Response::buildHeader()
 	// Content-Length: 0
 
 	std::ostringstream header;
+
 	header << this->_httpVersion << " " << this->_responseCode << " " << this->_responseCodeMessage << "\n";
 	header << "Content-Type: " << this->_contentType << "\n";
-	header << "Content-Length: " << this->_body.size(); 
+	header << "Content-Length: " << this->_body.size();
 
 	header << "\n\n";						//End of header
 	this->_header = header.str();
@@ -71,34 +96,25 @@ void	Response::buildHeader()
 
 
 ////////////////////
-// GET
+// HTTP METHODS
 ////////////////////
 void	Response::processGet()
 {
 	std::string		auto_index = this->_location.getAutoindex();
-	// std::string 	index_page = "/index.html";	// Change to index in conf 
 
-	std::string 	target;
 	// Directory Request
 	if (this->isDirectory())
 	{
 		if (this->isIndexPagePresent())
-		{
 			this->_req->updateTarget(this->getIndexTarget());
-		}
 		else if(auto_index == "on" && this->autoIndexResponse())  //autoIndexResponse return true on success
-		{
-			return ;
-		}
-		else
-		{
-			this->setToErrorPage(404);
-			return;
-		}
+				return ;
 	}
-	
-	//Here comes the block where you check the file ext and define content_type
-	this->_contentType = this->getContentType(this->_req->getTarget());
+	this->checkErrors();
+
+	// Here comes the block where you check the file ext and define content_type
+	// maybe this is called too soon in process
+	this->setContentType(this->getContentType(this->_req->getTarget()));
 
 	// Check if the file can be open and create response
 	std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
@@ -107,25 +123,18 @@ void	Response::processGet()
 	{
 		this->setHeaders(200, "OK", this->_contentType);
 		std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
-		this->_body = str;
-	}
-	else
-	{
-		this->setToErrorPage(404);
-	}
+		this->setBody(str);
 
+	}
+	this->checkErrors();
 	f.close();
 }
 
 
-////////////////////
-// POST
-////////////////////
 void	Response::processPost()
 {
 
 }
-
 
 ////////////////////
 // AUTO INDEX
@@ -156,7 +165,7 @@ bool		Response::autoIndexResponse()
 		content << "</ul>" << std::endl;
 		
 		content << std::string((std::istreambuf_iterator<char>(content_end)), std::istreambuf_iterator<char>());
-		this->_body = content.str();
+		this->setBody(content.str());
 		return true;
 	}
 
@@ -167,31 +176,106 @@ bool		Response::autoIndexResponse()
 ////////////////////
 // ERRORS
 ////////////////////
+
+void		Response::checkErrors()
+{
+	std::string errorMessage = strerror(errno);
+
+	if (errno != 0 && !this->_isSetToError) // if _isSetToErro is dont want to print other errno
+	{
+		Logger::Write(Logger::DEBUG, RED, "strerror(errno) : " + errorMessage);
+		if (errorMessage == "Permission denied")
+			this->setToErrorPage(403);
+		if (errorMessage == "No such file or directory")
+			this->setToErrorPage(404);
+
+		errno = 0;
+	}
+}
+
+void		Response::initErrorMap()
+{
+	this->_errorMap[403] = "FORBIDDEN";				// you dont have rights to access file
+	this->_errorMap[404] = "FILE_NOT_FOUND";		// target doesnt exist
+	this->_errorMap[405] = "METHOD_NOT_ALLOWED";	// method not supported
+	this->_errorMap[413] = "PAYLOAD_TOO_LARGE";		// client_max_bodysize < requestbody
+	this->_errorMap[500] = "INTERNAL_ERROR";		// smthg had gone wrong internaly, mostly part of cgi
+
+}
+
 void		Response::setToErrorPage(int errorNumber)
 {
 	std::ifstream error_page;
-	std::string errorNbrString;          // string which will contain the result
-	std::ostringstream convert;   // stream used for the conversion
-	convert << errorNumber;      // insert the textual representation of 'Number' in the characters in the stream
-	errorNbrString = convert.str();
+	std::string errorNbrString = intToStr(errorNumber);
 
-	if (errorNumber == 404)
+	this->setHeaders(errorNumber, this->_errorMap[errorNumber], "text/html");
+
+	if(!this->_location.getErrorPage()[errorNbrString].empty())
 	{
-		this->setHeaders(404, "FILE_NOT_FOUND", "text/html");
-
-		if(this->_location.getErrorPage()[errorNbrString].empty())
-			error_page.open("files/default_pages/custom_404.html");
-		else
-			error_page.open(this->_location.getErrorPage()[errorNbrString]);
+		error_page.open(this->_location.getErrorPage()[errorNbrString]);
+		std::string str((std::istreambuf_iterator<char>(error_page)), std::istreambuf_iterator<char>());
+		this->setBody(str);
 	}
+	else
+		this->setBody(this->generateDefaultErrorPage(errorNbrString, this->_errorMap[errorNumber]));
 
-	std::string str((std::istreambuf_iterator<char>(error_page)), std::istreambuf_iterator<char>());
-	this->_body = str;
+	this->_isSetToError = true;
+}
+
+std::string		Response::generateDefaultErrorPage(std::string errorNbr, std::string message)
+{
+	std::ifstream content_1("files/default_pages/default_error_1.html");
+	std::ifstream content_2("files/default_pages/default_error_2.html");
+	std::ifstream content_3("files/default_pages/default_error_3.html");
+	std::ostringstream body;
+
+	body << std::string((std::istreambuf_iterator<char>(content_1)), std::istreambuf_iterator<char>());
+	body << "error " << errorNbr;
+	body << std::string((std::istreambuf_iterator<char>(content_2)), std::istreambuf_iterator<char>());
+	body << "<h1>" << errorNbr << "</h1>";
+	body << "<p>" << message << "</p>";
+	body << std::string((std::istreambuf_iterator<char>(content_3)), std::istreambuf_iterator<char>());
+
+	return(body.str());
 }
 
 ////////////////////
 // UTILS
 ////////////////////
+
+bool	Response::isValidMethod(std::string key)
+{
+	
+	std::vector<std::string> acceptedMethods = this->_location.getAcceptedMethod();
+
+	// check if method is include in http 1.1
+	if (!isValidHttpMethod(key))
+		return (false);
+
+	// if empty = accept all methods
+	if (acceptedMethods.empty())
+		return (true);
+
+	for (std::vector<std::string>::iterator it = acceptedMethods.begin(); it != acceptedMethods.end(); ++it)
+		if (key == *it)
+			return (true);
+
+	return (false);
+}
+
+bool	Response::isValidHttpMethod(std::string key)
+{
+	std::string listOfvalidHttpMethods[8] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE"}; // see https://tools.ietf.org/html/rfc7231 - RFC 7231
+	std::vector<std::string> validHttpMethods;
+	validHttpMethods.assign(listOfvalidHttpMethods, listOfvalidHttpMethods + 8);
+
+	for (std::vector<std::string>::iterator it = validHttpMethods.begin(); it != validHttpMethods.end(); ++it)
+		if (key == *it)
+			return (true);
+
+	return (false);
+}
+
 std::string	Response::getIndexTarget()
 {
 	std::vector<std::string> vIndex = this->_location.getIndex();
@@ -283,16 +367,33 @@ void Response::logResponse()
 }
 
 ////////////////////
-// GETTERS / SETTERS
+// SET HEADEARS / BODY / CONTENT TYPE (protect rewrite for errors)
 ////////////////////
 void	Response::setHeaders(int responseCode, std::string responseCodeMessage, std::string contentType)
 {
-	this->_responseCode = responseCode;
-	this->_responseCodeMessage = responseCodeMessage;
-	this->_contentType = contentType;
+	if (!this->_isSetToError)
+	{
+		this->_responseCode = responseCode;
+		this->_responseCodeMessage = responseCodeMessage;
+		this->_contentType = contentType;
+	}
 }
 
+void	Response::setBody(std::string body)
+{
+	if (!this->_isSetToError)
+		this->_body = body;
+}
 
+void	Response::setContentType(std::string contentType)
+{
+	if (!this->_isSetToError)
+		this->_contentType = contentType;
+}
+
+////////////////////
+// GETTERS
+////////////////////
 std::string Response::getHeader()
 {
 	return (this->_header);

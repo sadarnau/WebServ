@@ -22,5 +22,6 @@ void			            printAllServers(std::vector<Webserv> serverList);
 void			            printServer( Webserv wserv );
 std::string                 safeUrlJoin(std::string url1, std::string url2);
 std::vector<std::string>	concatToVector(std::string toParse);
+std::string					intToStr(int i);
 
 #endif

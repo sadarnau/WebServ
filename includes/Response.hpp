@@ -12,6 +12,7 @@
 # include "Request.hpp"
 # include "Utils.hpp"
 # include "Location.hpp"
+# include "Cgi.hpp"
 
 class Request ;
 
@@ -20,25 +21,17 @@ class Response
 private:
 	Request									*_req;
 	int										_socket;
-
 	Location 								_location;
-
 	std::string 							_httpVersion;
 	int										_responseCode;
 	std::string								_responseCodeMessage;
-
 	std::string								_contentType;
 	std::map<std::string, std::string>		_headers;
-
 	std::string								_header;
 	std::string								_body;
 	std::string								_response;
-
-public:
-	Response( Request *req, int socket );	//default constructor
-	Response( Response const & src );  					//copy
-	~Response( void );									//destructor
-	Response & operator=( Response const & rhs );		//overload operator =
+	std::map<int, std::string>				_errorMap;
+	bool									_isSetToError;
 
 	void			send();
 	void			buildHeader();
@@ -49,15 +42,30 @@ public:
 
 	bool			autoIndexResponse();
 	std::string		getIndexTarget();
-	void			setToErrorPage(int errorNumber);
-
 	bool			isIndexPagePresent();
+
+	void			checkErrors();
+	void			initErrorMap();
+	void			setToErrorPage( int errorNumber );
+	std::string		generateDefaultErrorPage(std::string errorNbr, std::string message);
+
 	bool			isDirectory();
-	std::string		getContentType(std::string target);
+	std::string		getContentType( std::string target );
+	bool			isValidMethod( std::string key );
+	bool			isValidHttpMethod(std::string key);
+
+	void			setHeaders( int responseCode, std::string responseCodeMessage, std::string contentType );
+	void			setBody(std::string body);
+	void			setContentType(std::string contentType);
+
+public:
+	Response( Request *req, int socket );	//default constructor
+	Response( Response const & src );  					//copy
+	~Response( void );									//destructor
+	Response & operator=( Response const & rhs );		//overload operator =
+
 
 	void			logResponse();
-	
-	void			setHeaders( int responseCode, std::string responseCodeMessage, std::string contentType );
 	std::string		getResponse();
 	std::string		getBody();
 	std::string		getHeader();
@@ -67,6 +75,6 @@ public:
 	std::string		getContentLength();
 };
 
-std::ostream &	operator<<(std::ostream & o, Response & rhs);
+std::ostream &	operator<<( std::ostream & o, Response & rhs );
 
 #endif

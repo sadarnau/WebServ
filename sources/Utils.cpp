@@ -154,3 +154,10 @@ std::vector<std::string>	concatToVector(std::string toParse)
 
 	return (result);
 }
+
+std::string					intToStr(int i)
+{
+	std::ostringstream convert;   // stream used for the conversion
+	convert << i;      // insert the textual representation of 'Number' in the characters in the stream
+	return (convert.str());
+}
