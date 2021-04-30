@@ -44,6 +44,7 @@ private:
 	std::string		getIndexTarget();
 	bool			isIndexPagePresent();
 
+	void			checkErrors();
 	void			initErrorMap();
 	void			setToErrorPage( int errorNumber );
 	std::string		generateDefaultErrorPage(std::string errorNbr, std::string message);

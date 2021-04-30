@@ -88,7 +88,7 @@ void	Response::buildHeader()
 
 	header << this->_httpVersion << " " << this->_responseCode << " " << this->_responseCodeMessage << "\n";
 	header << "Content-Type: " << this->_contentType << "\n";
-	header << "Content-Length: " << this->_body.size(); 
+	header << "Content-Length: " << this->_body.size();
 
 	header << "\n\n";						//End of header
 	this->_header = header.str();
@@ -106,22 +106,12 @@ void	Response::processGet()
 	if (this->isDirectory())
 	{
 		if (this->isIndexPagePresent())
-		{
 			this->_req->updateTarget(this->getIndexTarget());
-		}
 		else if(auto_index == "on" && this->autoIndexResponse())  //autoIndexResponse return true on success
-		{
 				return ;
-		}
-		else
-		{
-			this->setToErrorPage(404);
-		}
 	}
-	if ((std::strcmp(strerror(errno), "Permission denied")) == 0)
-	{
-		this->setToErrorPage(403);
-	}
+	this->checkErrors();
+
 	// Here comes the block where you check the file ext and define content_type
 	// maybe this is called too soon in process
 	this->setContentType(this->getContentType(this->_req->getTarget()));
@@ -136,10 +126,7 @@ void	Response::processGet()
 		this->setBody(str);
 
 	}
-	else
-	{
-		this->setToErrorPage(404);
-	}
+	this->checkErrors();
 	f.close();
 }
 
@@ -189,6 +176,23 @@ bool		Response::autoIndexResponse()
 ////////////////////
 // ERRORS
 ////////////////////
+
+void		Response::checkErrors()
+{
+	std::string errorMessage = strerror(errno);
+
+	if (errno != 0 && !this->_isSetToError) // if _isSetToErro is dont want to print other errno
+	{
+		Logger::Write(Logger::DEBUG, RED, errorMessage);
+		if (errorMessage == "Permission denied")
+			this->setToErrorPage(403);
+		if (errorMessage == "No such file or directory")
+			this->setToErrorPage(404);
+
+		errno = 0;
+	}
+}
+
 void		Response::initErrorMap()
 {
 	this->_errorMap[403] = "FORBIDDEN";				// you dont have rights to access file
