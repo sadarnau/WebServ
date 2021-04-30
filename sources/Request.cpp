@@ -112,9 +112,8 @@ void	Request::selectLocation()
 			}
 		}
 	}
-
 	this->_urlTargetPath = this->_target;
-	
+
 	// delete location in target (ex: if location is /salut and target /salut/index.html, target become /index.html) - not in case of default loc /
 	if (this->_selectedLocation.getPath() != "/")
 		this->_target = this->_target.substr(this->_selectedLocation.getPath().size(), this->_target.size());
@@ -134,6 +133,8 @@ void	Request::parseUrl()
 		//query separator is found
 		this->_queryString = this->_target.substr(i + 1, this->_target.size() - 2); // i + 1 to skip &, so size - (1 + '&')
 		this->_target = this->_target.substr(0, i);
+
+		this->_urlTargetPath = this->_urlTargetPath.substr(0, this->_urlTargetPath.find("?"));
 	}
 }
 

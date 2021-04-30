@@ -46,7 +46,7 @@ void    Cgi::_initEnv()
 	this->_env["CONTENT_TYPE"] = reqHeaders["Content-Type"];
 	this->_env["GATEWAY_INTERFACE"] = "CGI/1.1";
 
-	this->_env["PATH_INFO"] =  this->_req->getTarget() + this->_req->getQueryString();
+	this->_env["PATH_INFO"] =  this->_req->getTarget();
 	// Le chemin supplémentaire du script tel que donné par le client. Par exemple, si le serveur héberge le script « /cgi-bin/monscript.cgi » 
 	// et que le client demande l'url « http://serveur.org/cgi-bin/monscript.cgi/marecherche », alors PATH_INFO contiendra « marecherche ».
 
@@ -65,9 +65,9 @@ void    Cgi::_initEnv()
 	// Le nom d'utilisateur du client, si le script est protégé et si le serveur supporte l'identification.
 
 	this->_env["REQUEST_METHOD"] = this->_req->getMethod();
-	this->_env["REQUEST_URI"] = this->_req->getUrlTargetPath() + "?" + this->_req->getQueryString();
+	this->_env["REQUEST_URI"] = this->_req->getUrlTargetPath() + "&" + this->_req->getQueryString();
 
-	this->_env["SCRIPT_NAME"] = this->_req->getUrlTargetPath() + this->_req->getSelectedLocation().getCgi();
+	this->_env["SCRIPT_NAME"] = this->_req->getUrlTargetPath();
 	// Le chemin virtuel vers le script étant exécuté. Exemple : « /cgi-bin/script.cgi »
 
 	this->_env["SERVER_NAME"] = ip;
@@ -78,6 +78,7 @@ void    Cgi::_initEnv()
 
 bool		Cgi::processCgi(std::string body)
 {
+	this->logCgi();
 	// https://n-pn.fr/t/2318-c--programmation-systeme-execve-fork-et-pipe
 	std::string result;
 	pid_t		pid;
@@ -100,9 +101,7 @@ bool		Cgi::processCgi(std::string body)
 
 	if ((pid = fork()) == -1)
 	{
-			Logger::Write(Logger::ERROR, RED, "cgi : fork failed");
-			dup2(stdIn, STDIN_FILENO);
-			dup2(stdOut, STDOUT_FILENO);
+			Logger::Write(Logger::ERROR, RED, "cgi : fork failed");			
 			close(fdIn);
 			close(fdOut);
 			fclose(fIn);
@@ -120,13 +119,15 @@ bool		Cgi::processCgi(std::string body)
 		// execute cgi
 		if(execve(this->_req->getSelectedLocation().getCgi().c_str(), nullptr, this->_envC) == -1)
 		{
-			Logger::Write(Logger::ERROR, RED, "cgi : execve failed");
+						
 			dup2(stdIn, STDIN_FILENO);
 			dup2(stdOut, STDOUT_FILENO);
 			close(fdIn);
 			close(fdOut);
 			fclose(fIn);
 			fclose(fOut);
+			Logger::Write(Logger::ERROR, RED, "cgi : execve failed : " + std::string(strerror(errno)));
+
 			return false;
 		}
 	}
@@ -180,6 +181,10 @@ char	**Cgi::_envToCArray()
 	return (res);
 }
 
+void								Cgi::logCgi()
+{
+	printMap(this->_env, "cgi::_env\n");
+}
 
 std::string	Cgi::getResult()
 {

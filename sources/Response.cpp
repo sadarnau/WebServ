@@ -133,7 +133,32 @@ void	Response::processGet()
 
 void	Response::processPost()
 {
+	std::string		auto_index = this->_location.getAutoindex();
 
+	// Directory Request
+	if (this->isDirectory())
+	{
+		if (this->isIndexPagePresent())
+			this->_req->updateTarget(this->getIndexTarget());
+		else if(auto_index == "on" && this->autoIndexResponse())  //autoIndexResponse return true on success
+				return ;
+	}
+	this->checkErrors();
+
+	this->setContentType(this->getContentType(this->_req->getTarget()));
+
+	// Check if the file can be open and create response
+	std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
+
+	if (f.good())
+	{
+		this->setHeaders(200, "OK", this->_contentType);
+		std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
+		this->setBody(str);
+
+	}
+	this->checkErrors();
+	f.close();
 }
 
 ////////////////////

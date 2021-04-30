@@ -18,6 +18,8 @@ class Cgi
 		char								**_envToCArray();
 		Request								*_req;
 		std::string							_result;
+		
+		void								logCgi();
 
 	public:
 		// Cgi(Request *req, Location *loc);
