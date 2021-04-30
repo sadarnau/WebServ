@@ -183,7 +183,7 @@ void		Response::checkErrors()
 
 	if (errno != 0 && !this->_isSetToError) // if _isSetToErro is dont want to print other errno
 	{
-		Logger::Write(Logger::DEBUG, RED, errorMessage);
+		Logger::Write(Logger::DEBUG, RED, "strerror(errno) : " + errorMessage);
 		if (errorMessage == "Permission denied")
 			this->setToErrorPage(403);
 		if (errorMessage == "No such file or directory")
