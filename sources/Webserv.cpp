@@ -111,8 +111,12 @@ void	Webserv::handleRequest( int socket )
 	int ret = read( socket , buff, 1024);	// to protect
 	
 	buff[ret] = 0;	// realy usefull ?
+	this->_buff = buff;
+}
 
-	Request		request(&this->_locationVector, socket, buff);
+void	Webserv::sendResponse( int socket )
+{
+	Request		request(&this->_locationVector, socket, this->_buff);
 	Logger::Write(Logger::INFO, BLU, "server[" + std::to_string(this->_serverNb) + "] : request received [method: " + request.getMethod() + "] [location: " + request.getSelectedLocation().getPath() + "] [target: " + request.getTarget() + "]");
 	Response	response(&request, socket);
 	Logger::Write(Logger::INFO, BLU, "server[" + std::to_string(this->_serverNb) + "] : resonse sent [code: " + response.getResponseCodeStr() + "] [message: " + response.getResponseCodeMessage() + "] [content length: " + response.getContentLength()+ "]");

@@ -14,6 +14,7 @@ private:
 	fd_set					_master_fd;
 	std::vector<Webserv>	_serverList;
 	std::vector<int>		_fdList;
+	std::vector<int>		_fdReady;	//test
 	Config					_config;
 	int						_nbServ;
 
@@ -28,6 +29,8 @@ public:
 	int									initialization( std::string fileName );
 	int									lanchServices( void );
 	void								addSocketToMaster( int socket );
+	int									findInVector( int socket, std::vector<int> _fdReady );
+	void								setWritingSet( fd_set *writefds );
 
 	std::map<std::string, std::string>	getMap( void );
 	fd_set								getMasterSet( void );
