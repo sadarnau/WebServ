@@ -230,6 +230,11 @@ std::string		Request::getMethod()
 	return (this->_method);
 }
 
+std::string		Request::getBody()
+{
+	return (this->_body);
+}
+
 std::string		Request::getTarget()
 {
 	return (this->_target);

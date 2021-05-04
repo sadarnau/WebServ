@@ -13,8 +13,9 @@ class Cgi
 	private:
 		std::map<std::string, std::string>	_env;
 		char								**_envC;
-
+		char								**_argC;
 		void								_initEnv();
+		void								_initArgC();
 		char								**_envToCArray();
 		Request								*_req;
 		std::string							_result;

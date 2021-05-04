@@ -54,6 +54,7 @@ public:
 	void								logRequest();
 	int									getInSock();
 	std::string							getMethod();
+	std::string							getBody();
 	std::string							getTarget();
 	std::string							getUrlTargetPath();
 	std::string							getAbsoluteTargetPath();

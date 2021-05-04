@@ -5,7 +5,7 @@
 ////////////////////
 Response::Response(Request *req, int socket)
 {
-	this->initErrorMap();
+	this->initResponseMessageMap();
 
 	this->_isSetToError = false;
 	this->_location = req->getSelectedLocation();
@@ -86,11 +86,11 @@ void	Response::buildHeader()
 
 	std::ostringstream header;
 
-	header << this->_httpVersion << " " << this->_responseCode << " " << this->_responseCodeMessage << "\n";
+	header << this->_httpVersion << " " << this->_responseCode << " " << this->_responseMessages[this->_responseCode] << "\n";
 	header << "Content-Type: " << this->_contentType << "\n";
 	header << "Content-Length: " << this->_body.size();
 
-	header << "\n\n";						//End of header
+	header << "\r\n\r\n";						//End of header
 	this->_header = header.str();
 }
 
@@ -121,7 +121,8 @@ void	Response::processGet()
 
 	if (f.good())
 	{
-		this->setHeaders(200, "OK", this->_contentType);
+		this->setResponseCode(200);
+		this->setContentType(this->_contentType);
 		std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
 		this->setBody(str);
 
@@ -152,7 +153,8 @@ void	Response::processPost()
 
 	if (f.good())
 	{
-		this->setHeaders(200, "OK", this->_contentType);
+		this->setResponseCode(200);
+		this->setContentType(this->_contentType);
 		std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
 		this->setBody(str);
 
@@ -171,7 +173,8 @@ bool		Response::autoIndexResponse()
 
 	if ((directory = opendir(this->_req->getAbsoluteTargetPath().c_str())))
 	{
-		setHeaders(200, "OK", "text/html");
+		this->setResponseCode(200);
+		this->setContentType("text/html");
 
 		std::ifstream content_start("files/default_pages/auto_index_start.html");
 		std::ostringstream content;
@@ -201,6 +204,16 @@ bool		Response::autoIndexResponse()
 ////////////////////
 // ERRORS
 ////////////////////
+void		Response::initResponseMessageMap()
+{
+	this->_responseMessages[200] = "OK";					// OKKKKK
+	this->_responseMessages[403] = "FORBIDDEN";				// you dont have rights to access file
+	this->_responseMessages[404] = "FILE_NOT_FOUND";		// target doesnt exist
+	this->_responseMessages[405] = "METHOD_NOT_ALLOWED";	// method not supported
+	this->_responseMessages[413] = "PAYLOAD_TOO_LARGE";		// client_max_bodysize < requestbody
+	this->_responseMessages[500] = "INTERNAL_ERROR";		// smthg had gone wrong internaly, mostly part of cgi
+
+}
 
 void		Response::checkErrors()
 {
@@ -218,23 +231,13 @@ void		Response::checkErrors()
 	}
 }
 
-void		Response::initErrorMap()
-{
-	this->_errorMap[403] = "FORBIDDEN";				// you dont have rights to access file
-	this->_errorMap[404] = "FILE_NOT_FOUND";		// target doesnt exist
-	this->_errorMap[405] = "METHOD_NOT_ALLOWED";	// method not supported
-	this->_errorMap[413] = "PAYLOAD_TOO_LARGE";		// client_max_bodysize < requestbody
-	this->_errorMap[500] = "INTERNAL_ERROR";		// smthg had gone wrong internaly, mostly part of cgi
-
-}
-
 void		Response::setToErrorPage(int errorNumber)
 {
 	std::ifstream error_page;
 	std::string errorNbrString = intToStr(errorNumber);
 
-	this->setHeaders(errorNumber, this->_errorMap[errorNumber], "text/html");
-
+	this->setResponseCode(errorNumber);
+	this->setContentType("text/html");
 	if(!this->_location.getErrorPage()[errorNbrString].empty())
 	{
 		error_page.open(this->_location.getErrorPage()[errorNbrString]);
@@ -242,7 +245,7 @@ void		Response::setToErrorPage(int errorNumber)
 		this->setBody(str);
 	}
 	else
-		this->setBody(this->generateDefaultErrorPage(errorNbrString, this->_errorMap[errorNumber]));
+		this->setBody(this->generateDefaultErrorPage(errorNbrString, this->_responseMessages[errorNumber]));
 
 	this->_isSetToError = true;
 }
@@ -392,16 +395,12 @@ void Response::logResponse()
 }
 
 ////////////////////
-// SET HEADEARS / BODY / CONTENT TYPE (protect rewrite for errors)
+// SET RESPONSE / BODY / CONTENT TYPE (protect rewrite for errors)
 ////////////////////
-void	Response::setHeaders(int responseCode, std::string responseCodeMessage, std::string contentType)
+void	Response::setResponseCode(int responseCode)
 {
 	if (!this->_isSetToError)
-	{
 		this->_responseCode = responseCode;
-		this->_responseCodeMessage = responseCodeMessage;
-		this->_contentType = contentType;
-	}
 }
 
 void	Response::setBody(std::string body)
@@ -448,7 +447,7 @@ int				Response::getResponseCode()
 
 std::string		Response::getResponseCodeMessage()
 {
-	return (this->_responseCodeMessage);
+	return (this->_responseMessages[this->_responseCode]);
 }
 
 std::string		Response::getContentLength()

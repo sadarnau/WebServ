@@ -24,13 +24,12 @@ private:
 	Location 								_location;
 	std::string 							_httpVersion;
 	int										_responseCode;
-	std::string								_responseCodeMessage;
 	std::string								_contentType;
 	std::map<std::string, std::string>		_headers;
 	std::string								_header;
 	std::string								_body;
 	std::string								_response;
-	std::map<int, std::string>				_errorMap;
+	std::map<int, std::string>				_responseMessages;
 	bool									_isSetToError;
 
 	void			send();
@@ -45,7 +44,7 @@ private:
 	bool			isIndexPagePresent();
 
 	void			checkErrors();
-	void			initErrorMap();
+	void			initResponseMessageMap();
 	void			setToErrorPage( int errorNumber );
 	std::string		generateDefaultErrorPage(std::string errorNbr, std::string message);
 
@@ -54,7 +53,7 @@ private:
 	bool			isValidMethod( std::string key );
 	bool			isValidHttpMethod(std::string key);
 
-	void			setHeaders( int responseCode, std::string responseCodeMessage, std::string contentType );
+	void			setResponseCode( int responseCode );
 	void			setBody(std::string body);
 	void			setContentType(std::string contentType);
 

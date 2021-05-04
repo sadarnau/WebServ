@@ -6,6 +6,7 @@ Cgi::Cgi(Request *req)
 	this->_req = req;
 	this->_initEnv();
 	this->_envC = this->_envToCArray();
+	this->_initArgC();
 }
 
 Cgi::Cgi( Cgi const & src )
@@ -65,7 +66,7 @@ void    Cgi::_initEnv()
 	// Le nom d'utilisateur du client, si le script est protégé et si le serveur supporte l'identification.
 
 	this->_env["REQUEST_METHOD"] = this->_req->getMethod();
-	this->_env["REQUEST_URI"] = this->_req->getUrlTargetPath() + "&" + this->_req->getQueryString();
+	this->_env["REQUEST_URI"] = this->_req->getUrlTargetPath();
 
 	this->_env["SCRIPT_NAME"] = this->_req->getUrlTargetPath();
 	// Le chemin virtuel vers le script étant exécuté. Exemple : « /cgi-bin/script.cgi »
@@ -76,10 +77,33 @@ void    Cgi::_initEnv()
 	this->_env["SERVER_SOFTWARE"] = "webserv";
 }
 
+void		Cgi::_initArgC()
+{
+	this->_argC = new char*[3];
+
+	this->_argC[0] = new char[this->_req->getSelectedLocation().getCgi().size() + 1];
+	this->_argC[0] = std::strcpy(this->_argC[0], this->_req->getSelectedLocation().getCgi().c_str());
+
+	this->_argC[1] = new char[this->_req->getAbsoluteTargetPath().size() + 1];
+	this->_argC[1] = std::strcpy(this->_argC[1], this->_req->getAbsoluteTargetPath().c_str());
+
+	this->_argC[2] = 0;
+
+	for (int i = 0; this->_argC[i]; i++)
+		printf("%s\n", this->_argC[i]);
+
+}
+
 bool		Cgi::processCgi(std::string body)
 {
 	this->logCgi();
+	(void)body;
 	// https://n-pn.fr/t/2318-c--programmation-systeme-execve-fork-et-pipe
+
+	// https://www.oreilly.com/openbook/cgi/ch04_02.html
+	//	If the protocol is GET, read the query string from QUERY_STRING and/or the extra path information from PATH_INFO.
+	//	If the protocol is POST, determine the size of the request using CONTENT_LENGTH and read that amount of data from the standard input.
+
 	std::string result;
 	pid_t		pid;
 	int		status;
@@ -95,7 +119,7 @@ bool		Cgi::processCgi(std::string body)
 	int		fdOut = fileno(fOut);
 
 	// writing content of body in fdIn
-	write(fdIn, body.c_str(), body.size());
+	write(fdIn, this->_req->getBody().c_str(), this->_req->getBody().size());
 	//repositioning file offset to start of fdIn 
 	lseek(fdIn, 0, SEEK_SET);
 
@@ -117,7 +141,7 @@ bool		Cgi::processCgi(std::string body)
 		dup2(fdOut, STDOUT_FILENO);
 
 		// execute cgi
-		if(execve(this->_req->getSelectedLocation().getCgi().c_str(), nullptr, this->_envC) == -1)
+		if(execve(this->_req->getSelectedLocation().getCgi().c_str(), this->_argC, this->_envC) == -1)
 		{
 						
 			dup2(stdIn, STDIN_FILENO);
