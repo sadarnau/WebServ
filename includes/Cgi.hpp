@@ -4,7 +4,10 @@
 # include <string>
 # include <map>
 # include <unistd.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 # include "Request.hpp"
+
 
 class Request ;
 

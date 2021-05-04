@@ -15,6 +15,7 @@
 class Webserv ;
 
 std::string 	            getTimeHMS(void);
+std::string 	            getDate(void);
 void 			            splitStringToVector(std::string line, std::vector<std::string> &split);
 void			            printMap(std::map<std::string, std::string> m, std::string type);
 void						printLocation(Location loc);

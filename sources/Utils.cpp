@@ -18,6 +18,21 @@ std::string 	getTimeHMS(void)
 	return (date);
 }
 
+std::string 	getDate(void)
+{
+    struct timeval 	tv;
+    struct tm 		time;
+    struct timezone tz;
+    char 			buffer[1000];
+    std::string 	date;
+
+    gettimeofday(&tv, &tz);
+    strptime(std::to_string(tv.tv_sec).c_str(), "%s", &time);
+    strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S CEST", &time);
+    date = buffer;
+	return (date);
+}
+
 void 			splitStringToVector(std::string line, std::vector<std::string> &split)
 {
 	std::string res;

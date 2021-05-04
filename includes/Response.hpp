@@ -32,23 +32,25 @@ private:
 	std::map<int, std::string>				_responseMessages;
 	bool									_isSetToError;
 
-	void			send();
-	void			buildHeader();
-	void			buildResponse();
+	void			send(void);
+	void			buildHeader(void);
+	void			buildResponse(void);
 
-	void			processGet();
-	void			processPost();
+	void			processGet(void);
+	void			processPost(void);
+	void			processOption(void);
+	void			processTrace(void);
 
-	bool			autoIndexResponse();
-	std::string		getIndexTarget();
-	bool			isIndexPagePresent();
+	bool			autoIndexResponse(void);
+	std::string		getIndexTarget(void);
+	bool			isIndexPagePresent(void);
 
-	void			checkErrors();
-	void			initResponseMessageMap();
+	void			checkErrors(void);
+	void			initResponseMessageMap(void);
 	void			setToErrorPage( int errorNumber );
 	std::string		generateDefaultErrorPage(std::string errorNbr, std::string message);
 
-	bool			isDirectory();
+	bool			isDirectory(void);
 	std::string		getContentType( std::string target );
 	bool			isValidMethod( std::string key );
 	bool			isValidHttpMethod(std::string key);
@@ -64,14 +66,14 @@ public:
 	Response & operator=( Response const & rhs );		//overload operator =
 
 
-	void			logResponse();
-	std::string		getResponse();
-	std::string		getBody();
-	std::string		getHeader();
-	std::string		getResponseCodeStr();
-	int				getResponseCode();
-	std::string		getResponseCodeMessage();
-	std::string		getContentLength();
+	void			logResponse(void);
+	std::string		getResponse(void);
+	std::string		getBody(void);
+	std::string		getHeader(void);
+	std::string		getResponseCodeStr(void);
+	int				getResponseCode(void);
+	std::string		getResponseCodeMessage(void);
+	std::string		getContentLength(void);
 };
 
 std::ostream &	operator<<( std::ostream & o, Response & rhs );

@@ -58,6 +58,10 @@ void	Response::buildResponse()
 		this->processGet();
 	else if (requestMethod == "POST")
 		this->processPost();
+	else if (requestMethod == "OPTIONS")
+		this->processOption();
+	else if (requestMethod == "TRACE")
+		this->processTrace();
 
 	// CGI
 	if (!this->_location.getCgi().empty())
@@ -85,13 +89,20 @@ void	Response::buildHeader()
 	// Content-Length: 0
 
 	std::ostringstream header;
-
 	header << this->_httpVersion << " " << this->_responseCode << " " << this->_responseMessages[this->_responseCode] << "\n";
-	header << "Content-Type: " << this->_contentType << "\n";
-	header << "Content-Length: " << this->_body.size();
-
-	header << "\r\n\r\n";						//End of header
+	/*header << "Content-Type: " << this->_contentType << "\n";
+	header << "Content-Length: " << this->_body.size();*/
+	this->_headers["Content-Type"] = this->_contentType;
+	this->_headers["Content-Length"] = std::to_string(this->_body.size());
+	this->_headers["Server"] = std::string("Webserv");
+	this->_headers["Date"] = getDate();
+	std::map<std::string, std::string> tmpHeaders = this->_headers;
+	for (std::map<std::string, std::string>::const_iterator it = tmpHeaders.begin(); it != tmpHeaders.end(); it++)
+		header << it->first << ": " << it->second << "\r\n";
+	header << "\r\n";						//End of header
 	this->_header = header.str();
+	Logger::Write(Logger::DEBUG, BLU, "response : header\n\n" + this->_header + "\n-------\n");
+
 }
 
 
@@ -161,6 +172,33 @@ void	Response::processPost()
 	}
 	this->checkErrors();
 	f.close();
+}
+
+void	Response::processOption()
+{
+	std::string allow;
+	std::vector<std::string> acceptedMethods = this->_location.getAcceptedMethod();
+
+	if (acceptedMethods.empty())
+		allow = std::string("GET, HEAD, POST, PUT, TRACE, OPTIONS, DELETE");
+	else
+	{
+		for (std::vector<std::string>::const_iterator it = acceptedMethods.begin(); it != acceptedMethods.end(); it++)
+		{
+			allow += *it;
+			if (it != acceptedMethods.end() - 1)
+				allow += ", ";
+		}
+	}
+	this->_headers["Allow"] = allow;
+	this->setResponseCode(200);
+	this->setContentType(this->_contentType);
+}
+
+void	Response::processTrace(void)
+{
+	this->setResponseCode(200);
+	this->setContentType("message/html");
 }
 
 ////////////////////
