@@ -27,6 +27,7 @@ private:
 	std::string							_method;
 	std::string							_target;
 	std::string							_message;
+	std::string							_body;
 	std::string							_urlTargetPath;
 	std::string							_absoluteTargetPath;
 	std::map<std::string, std::string>	_headers;

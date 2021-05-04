@@ -46,15 +46,21 @@ Request & Request::operator=( Request const & rhs)
 ////////////////////
 void	Request::parseRequest(std::string req)
 {
+	std::string				header;
+	std::string				body;
+
+	header = req.substr(0, req.find("\r\n\r\n"));
+	body = req.substr(req.find("\r\n\r\n") + 4, req.length());
+
+	// parse header
 	std::string				line;
     std::string				key;
     std::string				value;
     std::string				message;
-
-	std::istringstream		streamReq(req);
+	std::istringstream		streamHeader(header);
 
 	// handle first line
-	std::getline(streamReq, line);
+	std::getline(streamHeader, line);
 	std::stringstream	ss(line);
 	ss >> key >> value >> message;										
 	this->_method = key;
@@ -62,7 +68,7 @@ void	Request::parseRequest(std::string req)
 	this->_message = message;
 
 	// handle rest of request
-	while (std::getline(streamReq, line))
+	while (std::getline(streamHeader, line))
     {
 		std::stringstream	ss(line);
 		ss >> key >> value;										// set the variables
@@ -76,6 +82,8 @@ void	Request::parseRequest(std::string req)
 		else
 			this->_skippedHeaders.push_back(key);
 	}
+
+	this->_body = body;
 }
 
 
@@ -177,6 +185,7 @@ void	Request::logRequest( void )
 	oss << std::setw(30) << "request->method" << " : " << this->_method << std::endl;
 	oss << std::setw(30) << "request->target" << " : " << this->_target << std::endl;
 	oss << std::setw(30) << "request->query" << " : " << this->_queryString << std::endl;
+	oss << std::setw(30) << "request->body" << " : " << this->_body << std::endl;
 	oss << std::setw(30) << "request->urlTargetPath " << " : " << this->_urlTargetPath << std::endl;
 	oss << std::setw(30) << "request->absoluteTargetPath " << " : " << this->_absoluteTargetPath << std::endl;
 	oss << std::setw(30) << "selectedLocation.getPath() " << " : " << this->_selectedLocation.getPath() << std::endl << std::endl;
