@@ -58,10 +58,14 @@ void	Response::buildResponse()
 		this->processGet();
 	else if (requestMethod == "POST")
 		this->processPost();
-	else if (requestMethod == "OPTIONS")
+	else if (requestMethod == "PUT")
 		this->processOption();
 	else if (requestMethod == "TRACE")
 		this->processTrace();
+	else if (requestMethod == "OPTIONS")
+		this->processTrace();
+	else if (requestMethod == "DELETE")
+		this->processDelete();
 
 	// CGI
 	if (!this->_location.getCgi().empty())
@@ -174,6 +178,14 @@ void	Response::processPost()
 	f.close();
 }
 
+
+void	Response::processPut(void)
+{
+	//std::string toWrite(this->_req.getBody());
+
+
+}
+
 void	Response::processOption()
 {
 	std::string allow;
@@ -200,6 +212,24 @@ void	Response::processTrace(void)
 	this->setResponseCode(200);
 	this->setContentType("message/html");
 }
+
+void	Response::processDelete(void)
+{
+	std::ifstream	f(this->_req->getAbsoluteTargetPath());
+
+	std::cout << "\n\npath : " << this->_req->getAbsoluteTargetPath().c_str() << "\n\n";
+	if (f.good())
+	{
+		std::cout << "\n\npath : " << this->_req->getAbsoluteTargetPath().c_str() << "\n\n";
+		if (std::remove(this->_req->getAbsoluteTargetPath().c_str()) == 0)
+			this->_responseCode = 204;
+		else
+			this->_responseCode = 202;
+	}
+	else
+		this->checkErrors();
+}
+
 
 ////////////////////
 // AUTO INDEX
@@ -245,6 +275,9 @@ bool		Response::autoIndexResponse()
 void		Response::initResponseMessageMap()
 {
 	this->_responseMessages[200] = "OK";					// OKKKKK
+	this->_responseMessages[201] = "Created";				// Created
+	this->_responseMessages[202] = "Accepted";				// Accepted
+	this->_responseMessages[204] = "No content";			// No content
 	this->_responseMessages[403] = "FORBIDDEN";				// you dont have rights to access file
 	this->_responseMessages[404] = "FILE_NOT_FOUND";		// target doesnt exist
 	this->_responseMessages[405] = "METHOD_NOT_ALLOWED";	// method not supported
@@ -331,7 +364,7 @@ bool	Response::isValidMethod(std::string key)
 
 bool	Response::isValidHttpMethod(std::string key)
 {
-	std::string listOfvalidHttpMethods[8] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE"}; // see https://tools.ietf.org/html/rfc7231 - RFC 7231
+	std::string listOfvalidHttpMethods[8] = {"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "TRACE"}; // see https://tools.ietf.org/html/rfc7231 - RFC 7231
 	std::vector<std::string> validHttpMethods;
 	validHttpMethods.assign(listOfvalidHttpMethods, listOfvalidHttpMethods + 8);
 

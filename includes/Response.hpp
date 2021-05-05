@@ -5,8 +5,10 @@
 # include <iostream>
 # include <sstream>
 # include <fstream>
+# include <algorithm>
 # include <sys/types.h>
 # include <dirent.h>
+# include <unistd.h>
 # include "Logger.hpp"
 # include "Webserv.hpp"
 # include "Request.hpp"
@@ -38,7 +40,9 @@ private:
 
 	void			processGet(void);
 	void			processPost(void);
+	void			processPut(void);
 	void			processOption(void);
+	void			processDelete(void);
 	void			processTrace(void);
 
 	bool			autoIndexResponse(void);
