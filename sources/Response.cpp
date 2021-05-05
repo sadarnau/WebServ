@@ -50,6 +50,7 @@ void	Response::buildResponse()
 	// METHODS
 	if (!this->isValidMethod(requestMethod))
 	{
+		std::cout << "not valid\n\n";
 		this->setToErrorPage(405);
 		return ;
 	}
@@ -176,9 +177,35 @@ void	Response::processPost()
 
 void	Response::processPut(void)
 {
-	//std::string toWrite(this->_req.getBody());
+	std::string 	toWrite(this->_req->getBody());
+	std::string		path(this->_req->getAbsoluteTargetPath());
+	std::ofstream	file;
 
-
+	if (isPathAFile(path))
+	{
+		file.open(path);
+		if (!file.is_open())
+			this->setResponseCode(403);
+		else
+		{
+			file << toWrite;
+			file.close();
+			this->setResponseCode(200);
+		}
+	}
+	else
+	{
+		file.open(path, std::ofstream::out | std::ofstream::trunc);
+		if (!file.is_open())
+			this->setResponseCode(403);
+		else
+		{
+			file << toWrite;
+			file.close();
+			this->setResponseCode(201);
+		}
+	}
+	//this->_body = "";
 }
 
 void	Response::processOptions()
@@ -199,6 +226,7 @@ void	Response::processOptions()
 	}
 
 	this->_headers["Allow"] = allow;
+	//this->_body = "";
 	this->setResponseCode(200);
 }
 
@@ -206,6 +234,7 @@ void	Response::processTrace(void)
 {
 	this->setResponseCode(200);
 	this->setContentType("message/html");
+	//this->_body = "";
 }
 
 void	Response::processDelete(void)
@@ -221,6 +250,7 @@ void	Response::processDelete(void)
 	}
 	else
 		this->checkErrors();
+	//this->_body = "";
 }
 
 
@@ -340,13 +370,13 @@ bool	Response::isValidMethod(std::string key)
 	
 	std::vector<std::string> acceptedMethods = this->_location.getAcceptedMethod();
 
-	// check if method is include in http 1.1
-	if (!isValidHttpMethod(key))
-		return (false);
-
 	// if empty = accept all methods
 	if (acceptedMethods.empty())
 		return (true);
+	
+	// check if method is include in http 1.1
+	if (!isValidHttpMethod(key))
+		return (false);
 
 	for (std::vector<std::string>::iterator it = acceptedMethods.begin(); it != acceptedMethods.end(); ++it)
 		if (key == *it)
@@ -359,7 +389,7 @@ bool	Response::isValidHttpMethod(std::string key)
 {
 	std::string listOfvalidHttpMethods[8] = {"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "TRACE"}; // see https://tools.ietf.org/html/rfc7231 - RFC 7231
 	std::vector<std::string> validHttpMethods;
-	validHttpMethods.assign(listOfvalidHttpMethods, listOfvalidHttpMethods + 8);
+	validHttpMethods.assign(listOfvalidHttpMethods, listOfvalidHttpMethods + 7);
 
 	for (std::vector<std::string>::iterator it = validHttpMethods.begin(); it != validHttpMethods.end(); ++it)
 		if (key == *it)

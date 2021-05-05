@@ -18,6 +18,18 @@ std::string 	getTimeHMS(void)
 	return (date);
 }
 
+bool			isPathAFile(std::string path)
+{
+	struct stat s;
+
+	if (stat(path.c_str(), &s) == 0 )
+	{
+		if (s.st_mode & S_IFREG)
+			return (true);
+	}
+	return (false);
+}
+
 std::string 	getDate(void)
 {
     struct timeval 	tv;
