@@ -59,11 +59,11 @@ void	Response::buildResponse()
 	else if (requestMethod == "POST")
 		this->processPost();
 	else if (requestMethod == "PUT")
-		this->processOption();
+		this->processPut();
 	else if (requestMethod == "TRACE")
 		this->processTrace();
 	else if (requestMethod == "OPTIONS")
-		this->processTrace();
+		this->processOptions();
 	else if (requestMethod == "DELETE")
 		this->processDelete();
 
@@ -97,7 +97,10 @@ void	Response::buildHeader()
 	std::map<std::string, std::string> tmpHeaders = this->_headers;
 
 	for (std::map<std::string, std::string>::const_iterator it = tmpHeaders.begin(); it != tmpHeaders.end(); it++)
-		header << it->first << ": " << it->second << "\r\n";
+	{
+		if (!it->second.empty())
+			header << it->first << ": " << it->second << "\r\n";
+	}
 
 	header << "\r\n";						//End of header
 
@@ -178,7 +181,7 @@ void	Response::processPut(void)
 
 }
 
-void	Response::processOption()
+void	Response::processOptions()
 {
 	std::string allow;
 	std::vector<std::string> acceptedMethods = this->_location.getAcceptedMethod();
