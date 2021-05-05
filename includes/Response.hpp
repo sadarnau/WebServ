@@ -34,34 +34,34 @@ private:
 	std::map<int, std::string>				_responseMessages;
 	bool									_isSetToError;
 
-	void			send(void);
-	void			buildHeader(void);
-	void			buildResponse(void);
+	void			send( void );
+	void			buildHeader( void );
+	void			buildResponse( void );
 
-	void			processGet(void);
-	void			processPost(void);
-	void			processPut(void);
-	void			processOption(void);
-	void			processDelete(void);
-	void			processTrace(void);
+	void			processGet( void );
+	void			processPost( void );
+	void			processPut( void );
+	void			processOption( void );
+	void			processDelete( void );
+	void			processTrace( void );
 
-	bool			autoIndexResponse(void);
-	std::string		getIndexTarget(void);
-	bool			isIndexPagePresent(void);
+	bool			autoIndexResponse( void );
+	std::string		getIndexTarget( void );
+	bool			isIndexPagePresent( void );
 
-	void			checkErrors(void);
-	void			initResponseMessageMap(void);
+	void			checkErrors( void );
+	void			initResponseMessageMap( void );
 	void			setToErrorPage( int errorNumber );
-	std::string		generateDefaultErrorPage(std::string errorNbr, std::string message);
+	std::string		generateDefaultErrorPage( std::string errorNbr, std::string message );
 
-	bool			isDirectory(void);
+	bool			isDirectory( void );
 	std::string		getContentType( std::string target );
 	bool			isValidMethod( std::string key );
-	bool			isValidHttpMethod(std::string key);
+	bool			isValidHttpMethod( std::string key );
 
 	void			setResponseCode( int responseCode );
-	void			setBody(std::string body);
-	void			setContentType(std::string contentType);
+	void			setBody( std::string body );
+	void			setContentType( std::string contentType );
 
 public:
 	Response( Request *req, int socket );	//default constructor
@@ -80,6 +80,6 @@ public:
 	std::string		getContentLength(void);
 };
 
-std::ostream &	operator<<( std::ostream & o, Response & rhs );
+std::ostream		&operator<<( std::ostream & o, Response & rhs );
 
 #endif

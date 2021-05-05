@@ -134,10 +134,8 @@ void	Response::processGet()
 	if (f.good())
 	{
 		this->setResponseCode(200);
-		this->setContentType(this->_contentType);
 		std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
 		this->setBody(str);
-
 	}
 	this->checkErrors();
 	f.close();
@@ -166,10 +164,8 @@ void	Response::processPost()
 	if (f.good())
 	{
 		this->setResponseCode(200);
-		this->setContentType(this->_contentType);
 		std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
 		this->setBody(str);
-
 	}
 	this->checkErrors();
 	f.close();
