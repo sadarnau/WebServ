@@ -134,7 +134,7 @@ void	Response::processGet()
 	f.close();
 
 	// CGI
-	if (!this->_location.getCgi().empty())
+	if (!this->_location.getCgiPath().empty())
 	{
 		Cgi		cgi(this->_req);
 
@@ -175,7 +175,7 @@ void	Response::processPost()
 	f.close();
 
 	// CGI
-	if (!this->_location.getCgi().empty())
+	if (!this->_location.getCgiPath().empty())
 	{
 		Cgi		cgi(this->_req);
 
@@ -320,7 +320,7 @@ void		Response::checkErrors()
 {
 	std::string errorMessage = strerror(errno);
 
-	if (errno != 0 && !this->_isSetToError) // if _isSetToErro is dont want to print other errno
+	if (errno != 0 && !this->_isSetToError) // if _isSetToError is true we dont want to print other errno
 	{
 		Logger::Write(Logger::DEBUG, RED, "strerror(errno) : " + errorMessage);
 		if (errorMessage == "Permission denied")

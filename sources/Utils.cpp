@@ -82,7 +82,8 @@ void		printLocation(Location loc)
 	oss << "[server_name: " << loc.getServerName() << "]";
 	oss << "[client_max_body_size: " << loc.getClientMaxBodySize() << "]";
 	oss << "[root: " << loc.getRoot() << "]";
-	oss << "[cgi: " << loc.getCgi() << "]";
+	oss << "[cgi_path: " << loc.getCgiPath() << "]";
+	oss << "[cgi_Ext: " << loc.getCgiExt() << "]";
 	oss << "[autoindex: " << loc.getAutoindex() << "]";
 	oss << "[index: ";
 	vec = loc.getIndex();

@@ -81,8 +81,8 @@ void		Cgi::_initArgC()
 {
 	this->_argC = new char*[3];
 
-	this->_argC[0] = new char[this->_req->getSelectedLocation().getCgi().size() + 1];
-	this->_argC[0] = std::strcpy(this->_argC[0], this->_req->getSelectedLocation().getCgi().c_str());
+	this->_argC[0] = new char[this->_req->getSelectedLocation().getCgiPath().size() + 1];
+	this->_argC[0] = std::strcpy(this->_argC[0], this->_req->getSelectedLocation().getCgiPath().c_str());
 
 	this->_argC[1] = new char[this->_req->getAbsoluteTargetPath().size() + 1];
 	this->_argC[1] = std::strcpy(this->_argC[1], this->_req->getAbsoluteTargetPath().c_str());
@@ -141,7 +141,7 @@ bool		Cgi::processCgi(std::string body)
 		dup2(fdOut, STDOUT_FILENO);
 
 		// execute cgi
-		if(execve(this->_req->getSelectedLocation().getCgi().c_str(), this->_argC, this->_envC) == -1)
+		if(execve(this->_req->getSelectedLocation().getCgiPath().c_str(), this->_argC, this->_envC) == -1)
 		{
 						
 			dup2(stdIn, STDIN_FILENO);
@@ -150,7 +150,7 @@ bool		Cgi::processCgi(std::string body)
 			close(fdOut);
 			fclose(fIn);
 			fclose(fOut);
-			Logger::Write(Logger::ERROR, RED, "cgi : execve failed : " + std::string(strerror(errno)));
+			Logger::Write(Logger::ERROR, RED, "cgi : in child : execve failed : " + std::string(strerror(errno)));
 
 			return false;
 		}
