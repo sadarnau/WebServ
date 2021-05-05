@@ -81,32 +81,29 @@ void	Response::buildResponse()
 	// BUILD HEADER AND RESPONSE
 	this->buildHeader();
 	this->_response = this->_header + this->_body;
-
-
 }
 
 void	Response::buildHeader()
 {
-	// Minimal header accepted :
-	// HTTP/1.1 200 OK
-	// Content-Type: text/html
-	// Content-Length: 0
-
 	std::ostringstream header;
-	header << this->_httpVersion << " " << this->_responseCode << " " << this->_responseMessages[this->_responseCode] << "\n";
-	/*header << "Content-Type: " << this->_contentType << "\n";
-	header << "Content-Length: " << this->_body.size();*/
+
+	header << this->_httpVersion << " " << this->_responseCode << " " << this->_responseMessages[this->_responseCode] << "\r\n";
+
 	this->_headers["Content-Type"] = this->_contentType;
 	this->_headers["Content-Length"] = std::to_string(this->_body.size());
 	this->_headers["Server"] = std::string("Webserv");
 	this->_headers["Date"] = getDate();
+
 	std::map<std::string, std::string> tmpHeaders = this->_headers;
+
 	for (std::map<std::string, std::string>::const_iterator it = tmpHeaders.begin(); it != tmpHeaders.end(); it++)
 		header << it->first << ": " << it->second << "\r\n";
-	header << "\r\n";						//End of header
-	this->_header = header.str();
-	Logger::Write(Logger::DEBUG, BLU, "response : header\n\n" + this->_header + "\n-------\n");
 
+	header << "\r\n";						//End of header
+
+	this->_header = header.str();
+
+	Logger::Write(Logger::DEBUG, BLU, "response : header\n\n" + this->_header + "\n-------\n");
 }
 
 
@@ -178,7 +175,6 @@ void	Response::processPost()
 	f.close();
 }
 
-
 void	Response::processPut(void)
 {
 	//std::string toWrite(this->_req.getBody());
@@ -202,6 +198,7 @@ void	Response::processOption()
 				allow += ", ";
 		}
 	}
+
 	this->_headers["Allow"] = allow;
 	this->setResponseCode(200);
 	this->setContentType(this->_contentType);
@@ -222,9 +219,9 @@ void	Response::processDelete(void)
 	{
 		std::cout << "\n\npath : " << this->_req->getAbsoluteTargetPath().c_str() << "\n\n";
 		if (std::remove(this->_req->getAbsoluteTargetPath().c_str()) == 0)
-			this->_responseCode = 204;
+			this->setResponseCode(204);
 		else
-			this->_responseCode = 202;
+			this->setResponseCode(202);
 	}
 	else
 		this->checkErrors();
