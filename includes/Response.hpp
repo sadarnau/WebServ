@@ -70,14 +70,14 @@ public:
 	Response & operator=( Response const & rhs );		//overload operator =
 
 
-	void			logResponse(void);
-	std::string		getResponse(void);
-	std::string		getBody(void);
-	std::string		getHeader(void);
-	std::string		getResponseCodeStr(void);
-	int				getResponseCode(void);
-	std::string		getResponseCodeMessage(void);
-	std::string		getContentLength(void);
+	void			logResponse( void );
+	std::string		getResponse( void );
+	std::string		getBody( void );
+	std::string		getHeader( void );
+	std::string		getResponseCodeStr( void );
+	int				getResponseCode( void );
+	std::string		getResponseCodeMessage( void );
+	std::string		getContentLength( void );
 };
 
 std::ostream		&operator<<( std::ostream & o, Response & rhs );
