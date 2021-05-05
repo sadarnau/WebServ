@@ -196,7 +196,7 @@ void	Response::processPut(void)
 	{
 		file.open(path);
 		if (!file.is_open())
-			this->setResponseCode(403);
+			this->checkErrors();
 		else
 		{
 			file << toWrite;
@@ -208,7 +208,7 @@ void	Response::processPut(void)
 	{
 		file.open(path, std::ofstream::out | std::ofstream::trunc);
 		if (!file.is_open())
-			this->setResponseCode(403);
+			this->checkErrors();
 		else
 		{
 			file << toWrite;
@@ -216,7 +216,6 @@ void	Response::processPut(void)
 			this->setResponseCode(201);
 		}
 	}
-	//this->_body = "";
 }
 
 void	Response::processOptions()
@@ -237,7 +236,6 @@ void	Response::processOptions()
 	}
 
 	this->_headers["Allow"] = allow;
-	//this->_body = "";
 	this->setResponseCode(200);
 }
 
@@ -245,7 +243,6 @@ void	Response::processTrace(void)
 {
 	this->setResponseCode(200);
 	this->setContentType("message/html");
-	//this->_body = "";
 }
 
 void	Response::processDelete(void)
@@ -261,7 +258,6 @@ void	Response::processDelete(void)
 	}
 	else
 		this->checkErrors();
-	//this->_body = "";
 }
 
 
