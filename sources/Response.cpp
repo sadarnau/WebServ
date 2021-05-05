@@ -124,24 +124,29 @@ void	Response::processGet()
 	// Check if the file can be open and create response
 	std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
 
-	if (f.good())
-	{
-		this->setResponseCode(200);
-		std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
-		this->setBody(str);
-	}
-	this->checkErrors();
-	f.close();
-
 	// CGI
-	if (!this->_location.getCgiPath().empty())
+	// CGI
+	if (!this->_location.getCgiPath().empty() && (this->_location.getCgiExt() == getExtension(this->_req->getTarget())))
 	{
 		Cgi		cgi(this->_req);
 
-		if(cgi.processCgi(this->_body))
+		if(cgi.processCgi())
+		{
 			this->setBody(cgi.getResult());
+			this->setResponseCode(200);
+		}
 		else
 			this->setToErrorPage(500);
+	}
+	else{
+		if (f.good())
+		{
+			this->setResponseCode(200);
+			std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
+			this->setBody(str);
+		}
+		this->checkErrors();
+		f.close();
 	}
 }
 
@@ -160,30 +165,34 @@ void	Response::processPost()
 	}
 	this->checkErrors();
 
-	this->setContentType(this->getContentType(this->_req->getTarget()));
-
-	// Check if the file can be open and create response
-	std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
-
-	if (f.good())
-	{
-		this->setResponseCode(200);
-		std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
-		this->setBody(str);
-	}
-	this->checkErrors();
-	f.close();
-
 	// CGI
-	if (!this->_location.getCgiPath().empty())
+	if (!this->_location.getCgiPath().empty() && (this->_location.getCgiExt() == getExtension(this->_req->getTarget())))
 	{
 		Cgi		cgi(this->_req);
 
-		if(cgi.processCgi(this->_body))
+		if(cgi.processCgi())
+		{
 			this->setBody(cgi.getResult());
+			this->setResponseCode(200);
+		}
 		else
 			this->setToErrorPage(500);
 	}
+	else
+	{
+		std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
+
+		if (f.good())
+		{
+			this->setResponseCode(200);
+			std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
+			this->setBody(str);
+		}
+		this->checkErrors();
+		f.close();
+	}
+	this->setContentType(this->getContentType(this->_req->getTarget()));
+
 }
 
 void	Response::processPut(void)
@@ -320,6 +329,9 @@ void		Response::checkErrors()
 {
 	std::string errorMessage = strerror(errno);
 
+	if (errorMessage == "Not a directory")
+		return ;
+
 	if (errno != 0 && !this->_isSetToError) // if _isSetToError is true we dont want to print other errno
 	{
 		Logger::Write(Logger::DEBUG, RED, "strerror(errno) : " + errorMessage);
@@ -378,15 +390,6 @@ bool	Response::isValidMethod(std::string key)
 	std::vector<std::string> acceptedMethods = this->_location.getAcceptedMethod();
 	std::ostringstream oss;
 
-
-	oss << "[accepted_method: ";
-	if (!acceptedMethods.empty())
-	{
-		for (std::vector<std::string>::const_iterator it = acceptedMethods.begin(); it != acceptedMethods.end(); ++it)
-			oss << *it << " ";
-	}
-	oss << "]\n";
-	std::cout << oss.str();
 	// if empty = accept all methods
 	if (acceptedMethods.empty())
 		return (true);

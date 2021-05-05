@@ -1,6 +1,5 @@
 #include "Cgi.hpp"
 
-// Cgi::Cgi(Request *req, Location *loc)
 Cgi::Cgi(Request *req)
 {
 	this->_req = req;
@@ -9,14 +8,14 @@ Cgi::Cgi(Request *req)
 	this->_initArgC();
 }
 
-Cgi::Cgi( Cgi const & src )
+Cgi::Cgi(Cgi const &src)
 {
 	*this = src;
 	return ;
 }
 
 
-Cgi::~Cgi()
+Cgi::~Cgi(void)
 {
 	//delete _envCFormat;
 	if (this->_envC)
@@ -27,14 +26,83 @@ Cgi::~Cgi()
 	}
 }
 
-Cgi & Cgi::operator=( Cgi const & rhs)
+Cgi & Cgi::operator=(Cgi const &rhs)
 {
 	(void)rhs;
 	// this->??? = rhs.???;
 	return ( *this );
 }
 
-void    Cgi::_initEnv()
+
+bool		Cgi::processCgi(void)
+{
+	Logger::Write(Logger::DEBUG, YEL, "call to cgi " + this->_req->getSelectedLocation().getCgiPath());
+
+	std::string result;
+	pid_t		pid;
+	int			status;
+	int			stdIn = dup(STDIN_FILENO);
+	int			stdOut = dup(STDOUT_FILENO);
+	FILE		*fIn = tmpfile();
+	FILE		*fOut = tmpfile();
+	int			fdIn = fileno(fIn);
+	int			fdOut = fileno(fOut);
+
+	// writing content of body in fdIn
+	write(fdIn, this->_req->getBody().c_str(), this->_req->getBody().size());
+	lseek(fdIn, 0, SEEK_SET);
+
+	if ((pid = fork()) == -1)
+	{
+			Logger::Write(Logger::ERROR, RED, "cgi : fork failed");
+			this->_closeFd(fIn, fOut, fdIn, fdOut);
+			return false;
+	}
+	else if(pid == 0)
+	{
+		dup2(fdIn, STDIN_FILENO);
+		dup2(fdOut, STDOUT_FILENO);
+
+		if(execve(this->_req->getSelectedLocation().getCgiPath().c_str(), this->_argC, this->_envC) == -1)
+		{		
+			dup2(stdIn, STDIN_FILENO);
+			dup2(stdOut, STDOUT_FILENO);
+
+			this->_closeFd(fIn, fOut, fdIn, fdOut);
+			Logger::Write(Logger::ERROR, RED, "cgi : in child : execve failed : " + std::string(strerror(errno)));
+			return false;
+		}
+	}
+	else
+	{
+		char	buffer[1024];
+		int		ret;
+
+		wait(&status);
+		lseek(fdOut, 0, SEEK_SET);
+
+		// read on fdOut to get output
+		while ((ret = read(fdOut, buffer, 1023)) != 0)
+		{
+        	buffer[ret] = 0;
+			this->_result += buffer;
+		}
+	}
+
+	dup2(stdIn, STDIN_FILENO);
+	dup2(stdOut, STDOUT_FILENO);
+
+	this->_closeFd(fIn, fOut, fdIn, fdOut);
+	
+	return true;
+}
+
+
+
+////////////////////
+// INIT
+////////////////////
+void    	Cgi::_initEnv(void)
 {
 	std::string listen = this->_req->getSelectedLocation().getListen();
 	std::string port = listen.substr(listen.find(":") + 1 , listen.size());
@@ -46,16 +114,9 @@ void    Cgi::_initEnv()
 	this->_env["CONTENT_LENGTH"] = reqHeaders["Content-Length"];
 	this->_env["CONTENT_TYPE"] = reqHeaders["Content-Type"];
 	this->_env["GATEWAY_INTERFACE"] = "CGI/1.1";
-
 	this->_env["PATH_INFO"] =  this->_req->getTarget();
-	// Le chemin supplémentaire du script tel que donné par le client. Par exemple, si le serveur héberge le script « /cgi-bin/monscript.cgi » 
-	// et que le client demande l'url « http://serveur.org/cgi-bin/monscript.cgi/marecherche », alors PATH_INFO contiendra « marecherche ».
-
 	this->_env["PATH_TRANSLATED"] = this->_req->getAbsoluteTargetPath();
-	// Contient le chemin demandé par le client après que les conversions virtuel → physique ont été faites par le serveur.
-
 	this->_env["QUERY_STRING"] = this->_req->getQueryString();
-
 	this->_env["REMOTE_ADDR"] = "";
 	// L'adresse IP du client.
 
@@ -66,18 +127,17 @@ void    Cgi::_initEnv()
 	// Le nom d'utilisateur du client, si le script est protégé et si le serveur supporte l'identification.
 
 	this->_env["REQUEST_METHOD"] = this->_req->getMethod();
-	this->_env["REQUEST_URI"] = this->_req->getUrlTargetPath();
-
+	this->_env["REQUEST_URI"] = this->_req->getUrlTargetPath() + "?" + this->_req->getQueryString();
 	this->_env["SCRIPT_NAME"] = this->_req->getUrlTargetPath();
-	// Le chemin virtuel vers le script étant exécuté. Exemple : « /cgi-bin/script.cgi »
 
 	this->_env["SERVER_NAME"] = ip;
 	this->_env["SERVER_PORT"] = port;
 	this->_env["SERVER_PROTOCOL"] = "HTTP/1.1";
 	this->_env["SERVER_SOFTWARE"] = "webserv";
+	this->_env["REDIRECT_STATUS"] = "200";
 }
 
-void		Cgi::_initArgC()
+void		Cgi::_initArgC(void)
 {
 	this->_argC = new char*[3];
 
@@ -88,107 +148,20 @@ void		Cgi::_initArgC()
 	this->_argC[1] = std::strcpy(this->_argC[1], this->_req->getAbsoluteTargetPath().c_str());
 
 	this->_argC[2] = 0;
-
-	for (int i = 0; this->_argC[i]; i++)
-		printf("%s\n", this->_argC[i]);
-
 }
 
-bool		Cgi::processCgi(std::string body)
+////////////////////
+// UTILS
+////////////////////
+void		Cgi::_closeFd(FILE *fIn, FILE *fOut, int fdIn, int fdOut)
 {
-	this->logCgi();
-	(void)body;
-	// https://n-pn.fr/t/2318-c--programmation-systeme-execve-fork-et-pipe
-
-	// https://www.oreilly.com/openbook/cgi/ch04_02.html
-	//	If the protocol is GET, read the query string from QUERY_STRING and/or the extra path information from PATH_INFO.
-	//	If the protocol is POST, determine the size of the request using CONTENT_LENGTH and read that amount of data from the standard input.
-
-	std::string result;
-	pid_t		pid;
-	int		status;
-
-	// save STDIN and STDOUT state 
-	int			stdIn = dup(STDIN_FILENO);
-	int			stdOut = dup(STDOUT_FILENO);
-
-	//creating fd for child execution
-	FILE	*fIn = tmpfile();
-	FILE	*fOut = tmpfile();
-	int		fdIn = fileno(fIn);
-	int		fdOut = fileno(fOut);
-
-	// writing content of body in fdIn
-	write(fdIn, this->_req->getBody().c_str(), this->_req->getBody().size());
-	//repositioning file offset to start of fdIn 
-	lseek(fdIn, 0, SEEK_SET);
-
-	if ((pid = fork()) == -1)
-	{
-			Logger::Write(Logger::ERROR, RED, "cgi : fork failed");			
-			close(fdIn);
-			close(fdOut);
-			fclose(fIn);
-			fclose(fOut);
-			return false;
-	}
-	else if(pid == 0)
-	{
-		// child
-
-		// redirect STDIN and STDOUT to tmp fds
-		dup2(fdIn, STDIN_FILENO);
-		dup2(fdOut, STDOUT_FILENO);
-
-		// execute cgi
-		if(execve(this->_req->getSelectedLocation().getCgiPath().c_str(), this->_argC, this->_envC) == -1)
-		{
-						
-			dup2(stdIn, STDIN_FILENO);
-			dup2(stdOut, STDOUT_FILENO);
-			close(fdIn);
-			close(fdOut);
-			fclose(fIn);
-			fclose(fOut);
-			Logger::Write(Logger::ERROR, RED, "cgi : in child : execve failed : " + std::string(strerror(errno)));
-
-			return false;
-		}
-	}
-	else
-	{
-		// parent
-		char	buffer[1024];
-		int		ret;
-
-		wait(&status);
-		lseek(fdOut, 0, SEEK_SET);
-
-		// read on fdOut to get output
-		while ((ret = read(fdOut, buffer, 1023)) != 0)
-		{
-        	buffer[ret] = 0;
-			result += buffer;
-		}
-	}
-
-	// restore STDIN and STDOUT
-	dup2(stdIn, STDIN_FILENO);
-	dup2(stdOut, STDOUT_FILENO);
-
-	//close fds
 	close(fdIn);
 	close(fdOut);
 	fclose(fIn);
 	fclose(fOut);
-
-	this->_result = result;
-
-	return true;
 }
 
-
-char	**Cgi::_envToCArray()
+char		**Cgi::_envToCArray(void)
 {
 	char    **res = new char*[this->_env.size() + 1];
 	int     i = 0;
@@ -205,11 +178,14 @@ char	**Cgi::_envToCArray()
 	return (res);
 }
 
-void								Cgi::logCgi()
+void		Cgi::logCgi(void)
 {
 	printMap(this->_env, "cgi::_env\n");
 }
 
+////////////////////
+// GETTERS / SETTERS
+////////////////////
 std::string	Cgi::getResult()
 {
 	return (this->_result);

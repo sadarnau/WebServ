@@ -185,7 +185,13 @@ std::vector<std::string>	concatToVector(std::string toParse)
 
 std::string					intToStr(int i)
 {
-	std::ostringstream convert;   // stream used for the conversion
-	convert << i;      // insert the textual representation of 'Number' in the characters in the stream
+	std::ostringstream convert;
+	convert << i;
 	return (convert.str());
+}
+
+std::string					getExtension(std::string target)
+{
+	std::string ext = target.substr(target.find("."), target.length());
+	return ext;
 }

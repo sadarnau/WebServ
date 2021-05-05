@@ -8,11 +8,12 @@ Request::Request( void )
 	return ;
 }
 
-Request::Request(vlocation *locationVector, int inSock, char *buff ) : _inSocket(inSock)
+Request::Request(vlocation *locationVector, int inSock, char *buff )
 {
+	this->_inSocket = inSock;
 	this->_locationVector = locationVector;
-	std::string	tmp(buff);	//convert char* to std::string
-	this->_buff = tmp;
+	this->_buff = buff;
+
 	this->parseRequest(this->_buff);
 	this->selectLocation();
 	this->parseUrl();
@@ -90,13 +91,6 @@ void	Request::parseRequest(std::string req)
 ////////////////////
 // UTILS
 ////////////////////
-
-void			Request::updateTarget(std::string target)
-{
-	this->_target = target;
-	this->createPath();
-}
-
 void	Request::selectLocation()
 {
 	// iter through locations
@@ -146,6 +140,11 @@ void	Request::parseUrl()
 	}
 }
 
+void			Request::updateTarget(std::string target)
+{
+	this->_target = target;
+	this->createPath();
+}
 
 void	Request::createPath()
 {

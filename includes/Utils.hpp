@@ -28,5 +28,7 @@ std::string                 safeUrlJoin(std::string url1, std::string url2);
 std::vector<std::string>	concatToVector(std::string toParse);
 std::string					intToStr(int i);
 bool						isPathAFile(std::string path);
+std::string					getExtension(std::string target);
+
 
 #endif

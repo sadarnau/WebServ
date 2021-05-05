@@ -14,16 +14,17 @@ class Request ;
 class Cgi
 {
 	private:
+		Request								*_req;
 		std::map<std::string, std::string>	_env;
 		char								**_envC;
 		char								**_argC;
-		void								_initEnv();
-		void								_initArgC();
-		char								**_envToCArray();
-		Request								*_req;
 		std::string							_result;
 		
-		void								logCgi();
+		void								_initEnv(void);
+		void								_initArgC(void);
+		char								**_envToCArray(void);
+		void								_closeFd(FILE *fIn, FILE *fOut, int fdIn, int fdOut);
+
 
 	public:
 		// Cgi(Request *req, Location *loc);
@@ -32,8 +33,9 @@ class Cgi
 		~Cgi( void );							//destructor
 		Cgi & operator=( Cgi const & rhs );		//overload operator =
 
-		bool		processCgi(std::string body);
-		std::string	getResult();
+		bool								processCgi(void);
+		std::string							getResult(void);
+		void								logCgi();
 
 };
 
