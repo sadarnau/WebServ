@@ -41,7 +41,7 @@ private:
 	void			processGet( void );
 	void			processPost( void );
 	void			processPut( void );
-	void			processOption( void );
+	void			processOptions( void );
 	void			processDelete( void );
 	void			processTrace( void );
 
