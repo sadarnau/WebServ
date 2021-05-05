@@ -25,12 +25,17 @@ Location::Location(std::map<std::string, std::string> locationMap) : _listen("")
 			this->_root = it->second;
 		else if (!it->first.compare("autoindex"))
 			this->_autoindex = it->second;
-		else if (!it->first.compare("cgi"))
+		else if (!it->first.compare("cgi_path"))
 			this->_cgiPath = it->second;
+		else if (!it->first.compare("cgi_ext"))
+			this->_cgiExt = it->second;
 		else if (!it->first.compare("index"))
 			this->_index = concatToVector(it->second);
 		else if (!it->first.compare("accepted_method"))
-			this->_acceptedMethod = concatToVector(it->second);
+		{
+			if (it->second.size())
+				this->_acceptedMethod = concatToVector(it->second);
+		}
 		else
 			this->_errorPage[it->first] = it->second;
 	}

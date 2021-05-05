@@ -376,7 +376,17 @@ bool	Response::isValidMethod(std::string key)
 {
 	
 	std::vector<std::string> acceptedMethods = this->_location.getAcceptedMethod();
+	std::ostringstream oss;
 
+
+	oss << "[accepted_method: ";
+	if (!acceptedMethods.empty())
+	{
+		for (std::vector<std::string>::const_iterator it = acceptedMethods.begin(); it != acceptedMethods.end(); ++it)
+			oss << *it << " ";
+	}
+	oss << "]\n";
+	std::cout << oss.str();
 	// if empty = accept all methods
 	if (acceptedMethods.empty())
 		return (true);

@@ -4,6 +4,7 @@
 # include <string>
 # include <vector>
 # include <map>
+# include <iostream>
 //# include "Utils.hpp"
 
 std::vector<std::string>	concatToVector(std::string toParse);

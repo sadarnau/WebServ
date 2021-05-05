@@ -69,11 +69,6 @@ void	Config::checkFile( std::string fileName )
 	}	//exeption a faire, probleme a l'ouverture
 
 	std::getline(this->f, line);
-	/*if (line.compare("server {"))
-	{
-		Logger::Error("Must start by \"server {\"\n");
-		throw (std::exception());	//exeption a faire, conf non valide
-	}*/
 
 	return ;
 }
@@ -173,7 +168,8 @@ void	Config::initLocationMap(std::map<std::string, std::string> & newLoc, std::s
 	newLoc["root"] = "/files/www";
 	newLoc["autoindex"] = "off";
 	newLoc["index"] = "";
-	newLoc["cgi"] = "";
+	newLoc["cgi_path"] = "";
+	newLoc["cgi_ext"] = "";
 }
 
 void	Config::addConfigToLocation(std::map<std::string, std::string> newLoc)
@@ -209,8 +205,10 @@ void	Config::newLocationConfig( std::string path )
 			newLoc["autoindex"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("index") && split.size() == 2 && this->checkSemiColon(split.back()))
 			newLoc["index"] = split[1].substr(0, split[1].size() - 1);
-		else if (!split[0].compare("cgi") && split.size() == 2 && this->checkSemiColon(split.back()))
-			newLoc["cgi"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("cgi_path") && split.size() == 2 && this->checkSemiColon(split.back()))
+			newLoc["cgi_path"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("cgi_ext") && split.size() == 2 && this->checkSemiColon(split.back()))
+			newLoc["cgi_ext"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("client_max_body_size") && split.size() == 2 && this->checkSemiColon(split.back()))
 			newLoc["client_max_body_size"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("error_page") && split.size() == 3 && this->checkSemiColon(split.back()))
