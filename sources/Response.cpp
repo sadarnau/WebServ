@@ -68,17 +68,6 @@ void	Response::buildResponse()
 	else if (requestMethod == "DELETE")
 		this->processDelete();
 
-	// CGI
-	if (!this->_location.getCgi().empty())
-	{
-		Cgi		cgi(this->_req);
-
-		if(cgi.processCgi(this->_body))
-			this->setBody(cgi.getResult());
-		else
-			this->setToErrorPage(500);
-	}
-
 	// BUILD HEADER AND RESPONSE
 	this->buildHeader();
 	this->_response = this->_header + this->_body;
@@ -143,6 +132,17 @@ void	Response::processGet()
 	}
 	this->checkErrors();
 	f.close();
+
+	// CGI
+	if (!this->_location.getCgi().empty())
+	{
+		Cgi		cgi(this->_req);
+
+		if(cgi.processCgi(this->_body))
+			this->setBody(cgi.getResult());
+		else
+			this->setToErrorPage(500);
+	}
 }
 
 
@@ -173,6 +173,17 @@ void	Response::processPost()
 	}
 	this->checkErrors();
 	f.close();
+
+	// CGI
+	if (!this->_location.getCgi().empty())
+	{
+		Cgi		cgi(this->_req);
+
+		if(cgi.processCgi(this->_body))
+			this->setBody(cgi.getResult());
+		else
+			this->setToErrorPage(500);
+	}
 }
 
 void	Response::processPut(void)
