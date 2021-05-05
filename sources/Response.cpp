@@ -201,7 +201,6 @@ void	Response::processOption()
 
 	this->_headers["Allow"] = allow;
 	this->setResponseCode(200);
-	this->setContentType(this->_contentType);
 }
 
 void	Response::processTrace(void)
@@ -272,9 +271,9 @@ bool		Response::autoIndexResponse()
 void		Response::initResponseMessageMap()
 {
 	this->_responseMessages[200] = "OK";					// OKKKKK
-	this->_responseMessages[201] = "Created";				// Created
-	this->_responseMessages[202] = "Accepted";				// Accepted
-	this->_responseMessages[204] = "No content";			// No content
+	this->_responseMessages[201] = "CREATED";				// Created
+	this->_responseMessages[202] = "ACCEPTED";				// Accepted
+	this->_responseMessages[204] = "NO_CONTENT";			// No content
 	this->_responseMessages[403] = "FORBIDDEN";				// you dont have rights to access file
 	this->_responseMessages[404] = "FILE_NOT_FOUND";		// target doesnt exist
 	this->_responseMessages[405] = "METHOD_NOT_ALLOWED";	// method not supported
@@ -332,7 +331,7 @@ std::string		Response::generateDefaultErrorPage(std::string errorNbr, std::strin
 	body << "<p>" << message << "</p>";
 	body << std::string((std::istreambuf_iterator<char>(content_3)), std::istreambuf_iterator<char>());
 
-	return(body.str());
+	return (body.str());
 }
 
 ////////////////////
