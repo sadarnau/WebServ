@@ -106,7 +106,7 @@ void	Response::buildHeader()
 
 	this->_header = header.str();
 
-	Logger::Write(Logger::DEBUG, BLU, "response : header\n\n" + this->_header + "\n-------\n");
+	Logger::Write(Logger::MORE, BLU, "response : header\n\n" + this->_header + "\n-------\n");
 }
 
 
@@ -212,10 +212,8 @@ void	Response::processDelete(void)
 {
 	std::ifstream	f(this->_req->getAbsoluteTargetPath());
 
-	std::cout << "\n\npath : " << this->_req->getAbsoluteTargetPath().c_str() << "\n\n";
 	if (f.good())
 	{
-		std::cout << "\n\npath : " << this->_req->getAbsoluteTargetPath().c_str() << "\n\n";
 		if (std::remove(this->_req->getAbsoluteTargetPath().c_str()) == 0)
 			this->setResponseCode(204);
 		else
