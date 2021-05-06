@@ -99,7 +99,7 @@ int		Webserv::acceptConexion( void )
 	}
 	
 	fcntl(socket, F_SETFL, O_NONBLOCK);
-	
+
 	this->_fdList.push_back(socket);
 
 	return (socket);
@@ -107,18 +107,43 @@ int		Webserv::acceptConexion( void )
 
 void	Webserv::handleRequest( int socket )
 {
-	// consider socket like a stream, the request can be send in multiple packets (for big request)
-	// so this version is KO
-
+	// char tmp[1024];
+	// int ret;
 	this->_buff.clear();
-	char tmp[1024];
-	int ret;
 
-	while ((ret = read( socket , tmp, 1024)) > 0)	// to protect
+	int ret;
+	struct timeval now , beginning;
+	char chunk_data[128];
+	double timediff;
+	 
+	gettimeofday(&beginning , NULL);
+	 
+	while(1)
 	{
-		tmp[ret] = 0;	//usefull ?
-		this->_buff = this->_buff + tmp;
+		gettimeofday(&now , NULL);
+		timediff = (now.tv_sec - beginning.tv_sec) + 1e-6 * (now.tv_usec - beginning.tv_usec);
+	 
+		if(timediff > 0.5 ) // (0.5 is timeout)
+			break;
+
+		memset(chunk_data , 0, 128);  //clear the variable
+		if((ret = recv(socket, chunk_data, 128, 0) ) < 0) //to do : if = 0, client closed fd
+		{
+			//if nothing is received we wait 0.1 second before trying again
+			usleep(100000);
+		}
+		else
+		{
+			this->_buff = this->_buff + chunk_data;
+			gettimeofday(&beginning , NULL);
+		}
 	}
+
+	// while ((ret = read( socket , tmp, 1024)) > 0)	// to protect
+	// {
+	// 	tmp[ret] = 0;	//usefull ?
+	// 	this->_buff = this->_buff + tmp;
+	// }
 }
 
 void	Webserv::sendResponse( int socket )
