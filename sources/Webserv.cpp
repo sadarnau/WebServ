@@ -109,7 +109,7 @@ void	Webserv::handleRequest( int socket )
 
 	char buff[1024];						// 1024 ????
 	int ret = read( socket , buff, 1024);	// to protect
-	
+
 	buff[ret] = 0;	// realy usefull ?
 	this->_buff = buff;
 }
