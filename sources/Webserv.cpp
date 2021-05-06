@@ -111,7 +111,7 @@ void	Webserv::handleRequest( int socket )
 	// so this version is KO
 
 	this->_buff.clear();
-	char tmp[10240];
+	char tmp[1024];
 	int ret;
 
 	while ((ret = read( socket , tmp, 1024)) > 0)	// to protect
