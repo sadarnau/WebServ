@@ -197,20 +197,21 @@ void	Request::logRequest( void )
 	oss << std::endl << std::endl;
 	Logger::Write(Logger::MORE, BLU, oss.str());
 
-	oss.clear();
-	
+
+	std::ostringstream oss2;
+
 	//SKIPPED HEADERS
-	oss << std::endl << "Skipped headers : ";
+	oss2 << std::endl << "Skipped headers : ";
 	for (std::vector<std::string>::iterator it = this->_skippedHeaders.begin(); it != this->_skippedHeaders.end(); ++it)
-		oss << " " << *it;
-	oss << std::endl << std::endl;
+		oss2 << " " << *it;
+	oss2 << std::endl << std::endl;
 	
 	// RAW REQUEST
-	oss << "Raw request :" << std::endl << std::endl;
-	oss << this->_buff;
-	oss << "----------\n\n";
-	oss << RESET;
-	Logger::Write(Logger::MORE, BLU, oss.str());
+	oss2 << "Raw request :" << std::endl << std::endl;
+	oss2 << this->_buff;
+	oss2 << "----------\n\n";
+	oss2 << RESET;
+	Logger::Write(Logger::MORE, BLU, oss2.str());
 
 	return ;
 }

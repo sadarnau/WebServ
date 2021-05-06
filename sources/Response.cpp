@@ -57,6 +57,8 @@ void	Response::buildResponse()
 
 	if (requestMethod == "GET")
 		this->processGet();
+	if (requestMethod == "HEAD")
+		this->processGet();
 	else if (requestMethod == "POST")
 		this->processPost();
 	else if (requestMethod == "PUT")
@@ -70,7 +72,12 @@ void	Response::buildResponse()
 
 	// BUILD HEADER AND RESPONSE
 	this->buildHeader();
-	this->_response = this->_header + this->_body;
+
+	if (requestMethod == "HEAD")
+		this->_response = this->_header;
+	else
+		this->_response = this->_header + this->_body;
+
 }
 
 void	Response::buildHeader()
@@ -149,7 +156,6 @@ void	Response::processGet()
 		f.close();
 	}
 }
-
 
 void	Response::processPost()
 {
@@ -407,7 +413,7 @@ bool	Response::isValidMethod(std::string key)
 
 bool	Response::isValidHttpMethod(std::string key)
 {
-	std::string listOfvalidHttpMethods[8] = {"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "TRACE"}; // see https://tools.ietf.org/html/rfc7231 - RFC 7231
+	std::string listOfvalidHttpMethods[7] = {"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "TRACE"}; // see https://tools.ietf.org/html/rfc7231 - RFC 7231
 	std::vector<std::string> validHttpMethods;
 	validHttpMethods.assign(listOfvalidHttpMethods, listOfvalidHttpMethods + 7);
 
