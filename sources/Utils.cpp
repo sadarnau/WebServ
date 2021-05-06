@@ -123,20 +123,18 @@ void			printServer(Webserv wserv)
 	oss << wserv;
 	Logger::Write(Logger::DEBUG, WHT, oss.str());
 
-	for (std::vector<class Location>::const_iterator it2 = locVector.begin(); it2 != locVector.end(); ++it2)
+	for (std::vector<Location>::const_iterator it2 = locVector.begin(); it2 != locVector.end(); ++it2)
 		printLocation(*it2);
 	oss.str("");
 	oss.clear();
 }
 
-void			printAllServers(std::vector<class Webserv> serverList)
+void			printAllServers(std::vector<Webserv> serverList)
 {
-	std::ostringstream oss;
-	std::vector<Location> locVector;
-	Location loc;
-	Webserv wserv;
+	std::cout << serverList[0].getServerNb() << "\n\n";
+	std::cout << serverList[1].getServerNb() << "\n\n";
 
-	for (std::vector<class Webserv>::const_iterator it = serverList.begin(); it != serverList.end(); ++it)
+	for (std::vector<Webserv>::const_iterator it = serverList.begin(); it != serverList.end(); ++it)
 		printServer(*it);
 }
 

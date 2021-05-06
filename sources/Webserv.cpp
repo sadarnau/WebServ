@@ -107,6 +107,8 @@ void	Webserv::handleRequest( int socket )
 	// consider socket like a stream, the request can be send in multiple packets (for big request)
 	// so this version is KO
 
+	std::cout << this->getServerNb() << "\n\n";
+
 	char buff[1024];						// 1024 ????
 	int ret = read( socket , buff, 1024);	// to protect
 
