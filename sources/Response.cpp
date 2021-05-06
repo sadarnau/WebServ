@@ -407,7 +407,7 @@ bool	Response::isValidMethod(std::string key)
 
 bool	Response::isValidHttpMethod(std::string key)
 {
-	std::string listOfvalidHttpMethods[8] = {"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "TRACE"}; // see https://tools.ietf.org/html/rfc7231 - RFC 7231
+	std::string listOfvalidHttpMethods[7] = {"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "TRACE"}; // see https://tools.ietf.org/html/rfc7231 - RFC 7231
 	std::vector<std::string> validHttpMethods;
 	validHttpMethods.assign(listOfvalidHttpMethods, listOfvalidHttpMethods + 7);
 
