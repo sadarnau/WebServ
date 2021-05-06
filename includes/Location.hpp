@@ -4,6 +4,7 @@
 # include <string>
 # include <vector>
 # include <map>
+# include <iostream>
 //# include "Utils.hpp"
 
 std::vector<std::string>	concatToVector(std::string toParse);
@@ -17,7 +18,8 @@ class Location
 		std::string							_serverName;
 		std::string							_clientMaxBodySize;
 		std::string							_root;
-		std::string							_cgi;
+		std::string							_cgiPath;
+		std::string							_cgiExt;
 		std::string							_autoindex;
 		std::vector<std::string>			_index;
 		std::vector<std::string>			_acceptedMethod;
@@ -35,7 +37,8 @@ class Location
 		std::string							getServerName(void);
 		std::string							getClientMaxBodySize(void);
 		std::string							getRoot(void);
-		std::string							getCgi(void);
+		std::string							getCgiPath(void);
+		std::string							getCgiExt(void);
 		std::string							getAutoindex(void);
 		std::vector<std::string>			getIndex(void);
 		std::vector<std::string>			getAcceptedMethod(void);

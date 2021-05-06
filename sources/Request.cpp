@@ -8,11 +8,12 @@ Request::Request( void )
 	return ;
 }
 
-Request::Request(vlocation *locationVector, int inSock, char *buff ) : _inSocket(inSock)
+Request::Request(vlocation *locationVector, int inSock, char *buff )
 {
+	this->_inSocket = inSock;
 	this->_locationVector = locationVector;
-	std::string	tmp(buff);	//convert char* to std::string
-	this->_buff = tmp;
+	this->_buff = buff;
+
 	this->parseRequest(this->_buff);
 	this->selectLocation();
 	this->parseUrl();
@@ -46,15 +47,21 @@ Request & Request::operator=( Request const & rhs)
 ////////////////////
 void	Request::parseRequest(std::string req)
 {
+	std::string				header;
+	std::string				body;
+
+	header = req.substr(0, req.find("\r\n\r\n"));
+	body = req.substr(req.find("\r\n\r\n") + 4, req.length());
+
+	// parse header
 	std::string				line;
     std::string				key;
     std::string				value;
     std::string				message;
-
-	std::istringstream		streamReq(req);
+	std::istringstream		streamHeader(header);
 
 	// handle first line
-	std::getline(streamReq, line);
+	std::getline(streamHeader, line);
 	std::stringstream	ss(line);
 	ss >> key >> value >> message;										
 	this->_method = key;
@@ -62,7 +69,7 @@ void	Request::parseRequest(std::string req)
 	this->_message = message;
 
 	// handle rest of request
-	while (std::getline(streamReq, line))
+	while (std::getline(streamHeader, line))
     {
 		std::stringstream	ss(line);
 		ss >> key >> value;										// set the variables
@@ -76,19 +83,14 @@ void	Request::parseRequest(std::string req)
 		else
 			this->_skippedHeaders.push_back(key);
 	}
+
+	this->_body = body;
 }
 
 
 ////////////////////
 // UTILS
 ////////////////////
-
-void			Request::updateTarget(std::string target)
-{
-	this->_target = target;
-	this->createPath();
-}
-
 void	Request::selectLocation()
 {
 	// iter through locations
@@ -112,9 +114,8 @@ void	Request::selectLocation()
 			}
 		}
 	}
-
 	this->_urlTargetPath = this->_target;
-	
+
 	// delete location in target (ex: if location is /salut and target /salut/index.html, target become /index.html) - not in case of default loc /
 	if (this->_selectedLocation.getPath() != "/")
 		this->_target = this->_target.substr(this->_selectedLocation.getPath().size(), this->_target.size());
@@ -134,9 +135,16 @@ void	Request::parseUrl()
 		//query separator is found
 		this->_queryString = this->_target.substr(i + 1, this->_target.size() - 2); // i + 1 to skip &, so size - (1 + '&')
 		this->_target = this->_target.substr(0, i);
+
+		this->_urlTargetPath = this->_urlTargetPath.substr(0, this->_urlTargetPath.find("?"));
 	}
 }
 
+void			Request::updateTarget(std::string target)
+{
+	this->_target = target;
+	this->createPath();
+}
 
 void	Request::createPath()
 {
@@ -176,6 +184,7 @@ void	Request::logRequest( void )
 	oss << std::setw(30) << "request->method" << " : " << this->_method << std::endl;
 	oss << std::setw(30) << "request->target" << " : " << this->_target << std::endl;
 	oss << std::setw(30) << "request->query" << " : " << this->_queryString << std::endl;
+	oss << std::setw(30) << "request->body" << " : " << this->_body << std::endl;
 	oss << std::setw(30) << "request->urlTargetPath " << " : " << this->_urlTargetPath << std::endl;
 	oss << std::setw(30) << "request->absoluteTargetPath " << " : " << this->_absoluteTargetPath << std::endl;
 	oss << std::setw(30) << "selectedLocation.getPath() " << " : " << this->_selectedLocation.getPath() << std::endl << std::endl;
@@ -218,6 +227,11 @@ int		Request::getInSock( void )
 std::string		Request::getMethod()
 {
 	return (this->_method);
+}
+
+std::string		Request::getBody()
+{
+	return (this->_body);
 }
 
 std::string		Request::getTarget()

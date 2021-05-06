@@ -5,7 +5,7 @@
 ////////////////////
 Response::Response(Request *req, int socket)
 {
-	this->initErrorMap();
+	this->initResponseMessageMap();
 
 	this->_isSetToError = false;
 	this->_location = req->getSelectedLocation();
@@ -50,6 +50,7 @@ void	Response::buildResponse()
 	// METHODS
 	if (!this->isValidMethod(requestMethod))
 	{
+		std::cout << "not valid\n\n";
 		this->setToErrorPage(405);
 		return ;
 	}
@@ -58,40 +59,44 @@ void	Response::buildResponse()
 		this->processGet();
 	else if (requestMethod == "POST")
 		this->processPost();
-
-	// CGI
-	if (!this->_location.getCgi().empty())
-	{
-		Cgi		cgi(this->_req);
-
-		if(cgi.processCgi(this->_body))
-			this->setBody(cgi.getResult());
-		else
-			this->setToErrorPage(500);
-	}
+	else if (requestMethod == "PUT")
+		this->processPut();
+	else if (requestMethod == "TRACE")
+		this->processTrace();
+	else if (requestMethod == "OPTIONS")
+		this->processOptions();
+	else if (requestMethod == "DELETE")
+		this->processDelete();
 
 	// BUILD HEADER AND RESPONSE
 	this->buildHeader();
 	this->_response = this->_header + this->_body;
-
-
 }
 
 void	Response::buildHeader()
 {
-	// Minimal header accepted :
-	// HTTP/1.1 200 OK
-	// Content-Type: text/html
-	// Content-Length: 0
-
 	std::ostringstream header;
 
-	header << this->_httpVersion << " " << this->_responseCode << " " << this->_responseCodeMessage << "\n";
-	header << "Content-Type: " << this->_contentType << "\n";
-	header << "Content-Length: " << this->_body.size();
+	header << this->_httpVersion << " " << this->_responseCode << " " << this->_responseMessages[this->_responseCode] << "\r\n";
 
-	header << "\n\n";						//End of header
+	this->_headers["Content-Type"] = this->_contentType;
+	this->_headers["Content-Length"] = std::to_string(this->_body.size());
+	this->_headers["Server"] = std::string("Webserv");
+	this->_headers["Date"] = getDate();
+
+	std::map<std::string, std::string> tmpHeaders = this->_headers;
+
+	for (std::map<std::string, std::string>::const_iterator it = tmpHeaders.begin(); it != tmpHeaders.end(); it++)
+	{
+		if (!it->second.empty())
+			header << it->first << ": " << it->second << "\r\n";
+	}
+
+	header << "\r\n";						//End of header
+
 	this->_header = header.str();
+
+	Logger::Write(Logger::MORE, BLU, "response : header\n\n" + this->_header + "\n-------\n");
 }
 
 
@@ -119,22 +124,151 @@ void	Response::processGet()
 	// Check if the file can be open and create response
 	std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
 
-	if (f.good())
+	// CGI
+	// CGI
+	if (!this->_location.getCgiPath().empty() && (this->_location.getCgiExt() == getExtension(this->_req->getTarget())))
 	{
-		this->setHeaders(200, "OK", this->_contentType);
-		std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
-		this->setBody(str);
+		Cgi		cgi(this->_req);
 
+		if(cgi.processCgi())
+		{
+			this->setBody(cgi.getResult());
+			this->setResponseCode(200);
+		}
+		else
+			this->setToErrorPage(500);
 	}
-	this->checkErrors();
-	f.close();
+	else{
+		if (f.good())
+		{
+			this->setResponseCode(200);
+			std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
+			this->setBody(str);
+		}
+		this->checkErrors();
+		f.close();
+	}
 }
 
 
 void	Response::processPost()
 {
+	std::string		auto_index = this->_location.getAutoindex();
+
+	// Directory Request
+	if (this->isDirectory())
+	{
+		if (this->isIndexPagePresent())
+			this->_req->updateTarget(this->getIndexTarget());
+		else if(auto_index == "on" && this->autoIndexResponse())  //autoIndexResponse return true on success
+				return ;
+	}
+	this->checkErrors();
+
+	// CGI
+	if (!this->_location.getCgiPath().empty() && (this->_location.getCgiExt() == getExtension(this->_req->getTarget())))
+	{
+		Cgi		cgi(this->_req);
+
+		if(cgi.processCgi())
+		{
+			this->setBody(cgi.getResult());
+			this->setResponseCode(200);
+		}
+		else
+			this->setToErrorPage(500);
+	}
+	else
+	{
+		std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
+
+		if (f.good())
+		{
+			this->setResponseCode(200);
+			std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
+			this->setBody(str);
+		}
+		this->checkErrors();
+		f.close();
+	}
+	this->setContentType(this->getContentType(this->_req->getTarget()));
 
 }
+
+void	Response::processPut(void)
+{
+	std::string 	toWrite(this->_req->getBody());
+	std::string		path(this->_req->getAbsoluteTargetPath());
+	std::ofstream	file;
+
+	if (isPathAFile(path))
+	{
+		file.open(path);
+		if (!file.is_open())
+			this->checkErrors();
+		else
+		{
+			file << toWrite;
+			file.close();
+			this->setResponseCode(200);
+		}
+	}
+	else
+	{
+		file.open(path, std::ofstream::out | std::ofstream::trunc);
+		if (!file.is_open())
+			this->checkErrors();
+		else
+		{
+			file << toWrite;
+			file.close();
+			this->setResponseCode(201);
+		}
+	}
+}
+
+void	Response::processOptions()
+{
+	std::string allow;
+	std::vector<std::string> acceptedMethods = this->_location.getAcceptedMethod();
+
+	if (acceptedMethods.empty())
+		allow = std::string("GET, HEAD, POST, PUT, TRACE, OPTIONS, DELETE");
+	else
+	{
+		for (std::vector<std::string>::const_iterator it = acceptedMethods.begin(); it != acceptedMethods.end(); it++)
+		{
+			allow += *it;
+			if (it != acceptedMethods.end() - 1)
+				allow += ", ";
+		}
+	}
+
+	this->_headers["Allow"] = allow;
+	this->setResponseCode(200);
+}
+
+void	Response::processTrace(void)
+{
+	this->setResponseCode(200);
+	this->setContentType("message/html");
+}
+
+void	Response::processDelete(void)
+{
+	std::ifstream	f(this->_req->getAbsoluteTargetPath());
+
+	if (f.good())
+	{
+		if (std::remove(this->_req->getAbsoluteTargetPath().c_str()) == 0)
+			this->setResponseCode(204);
+		else
+			this->setResponseCode(202);
+	}
+	else
+		this->checkErrors();
+}
+
 
 ////////////////////
 // AUTO INDEX
@@ -146,7 +280,8 @@ bool		Response::autoIndexResponse()
 
 	if ((directory = opendir(this->_req->getAbsoluteTargetPath().c_str())))
 	{
-		setHeaders(200, "OK", "text/html");
+		this->setResponseCode(200);
+		this->setContentType("text/html");
 
 		std::ifstream content_start("files/default_pages/auto_index_start.html");
 		std::ostringstream content;
@@ -176,12 +311,28 @@ bool		Response::autoIndexResponse()
 ////////////////////
 // ERRORS
 ////////////////////
+void		Response::initResponseMessageMap()
+{
+	this->_responseMessages[200] = "OK";					// OKKKKK
+	this->_responseMessages[201] = "CREATED";				// Created
+	this->_responseMessages[202] = "ACCEPTED";				// Accepted
+	this->_responseMessages[204] = "NO_CONTENT";			// No content
+	this->_responseMessages[403] = "FORBIDDEN";				// you dont have rights to access file
+	this->_responseMessages[404] = "FILE_NOT_FOUND";		// target doesnt exist
+	this->_responseMessages[405] = "METHOD_NOT_ALLOWED";	// method not supported
+	this->_responseMessages[413] = "PAYLOAD_TOO_LARGE";		// client_max_bodysize < requestbody
+	this->_responseMessages[500] = "INTERNAL_ERROR";		// smthg had gone wrong internaly, mostly part of cgi
+
+}
 
 void		Response::checkErrors()
 {
 	std::string errorMessage = strerror(errno);
 
-	if (errno != 0 && !this->_isSetToError) // if _isSetToErro is dont want to print other errno
+	if (errorMessage == "Not a directory")
+		return ;
+
+	if (errno != 0 && !this->_isSetToError) // if _isSetToError is true we dont want to print other errno
 	{
 		Logger::Write(Logger::DEBUG, RED, "strerror(errno) : " + errorMessage);
 		if (errorMessage == "Permission denied")
@@ -193,23 +344,13 @@ void		Response::checkErrors()
 	}
 }
 
-void		Response::initErrorMap()
-{
-	this->_errorMap[403] = "FORBIDDEN";				// you dont have rights to access file
-	this->_errorMap[404] = "FILE_NOT_FOUND";		// target doesnt exist
-	this->_errorMap[405] = "METHOD_NOT_ALLOWED";	// method not supported
-	this->_errorMap[413] = "PAYLOAD_TOO_LARGE";		// client_max_bodysize < requestbody
-	this->_errorMap[500] = "INTERNAL_ERROR";		// smthg had gone wrong internaly, mostly part of cgi
-
-}
-
 void		Response::setToErrorPage(int errorNumber)
 {
 	std::ifstream error_page;
 	std::string errorNbrString = intToStr(errorNumber);
 
-	this->setHeaders(errorNumber, this->_errorMap[errorNumber], "text/html");
-
+	this->setResponseCode(errorNumber);
+	this->setContentType("text/html");
 	if(!this->_location.getErrorPage()[errorNbrString].empty())
 	{
 		error_page.open(this->_location.getErrorPage()[errorNbrString]);
@@ -217,7 +358,7 @@ void		Response::setToErrorPage(int errorNumber)
 		this->setBody(str);
 	}
 	else
-		this->setBody(this->generateDefaultErrorPage(errorNbrString, this->_errorMap[errorNumber]));
+		this->setBody(this->generateDefaultErrorPage(errorNbrString, this->_responseMessages[errorNumber]));
 
 	this->_isSetToError = true;
 }
@@ -236,7 +377,7 @@ std::string		Response::generateDefaultErrorPage(std::string errorNbr, std::strin
 	body << "<p>" << message << "</p>";
 	body << std::string((std::istreambuf_iterator<char>(content_3)), std::istreambuf_iterator<char>());
 
-	return(body.str());
+	return (body.str());
 }
 
 ////////////////////
@@ -247,14 +388,15 @@ bool	Response::isValidMethod(std::string key)
 {
 	
 	std::vector<std::string> acceptedMethods = this->_location.getAcceptedMethod();
-
-	// check if method is include in http 1.1
-	if (!isValidHttpMethod(key))
-		return (false);
+	std::ostringstream oss;
 
 	// if empty = accept all methods
 	if (acceptedMethods.empty())
 		return (true);
+	
+	// check if method is include in http 1.1
+	if (!isValidHttpMethod(key))
+		return (false);
 
 	for (std::vector<std::string>::iterator it = acceptedMethods.begin(); it != acceptedMethods.end(); ++it)
 		if (key == *it)
@@ -265,9 +407,9 @@ bool	Response::isValidMethod(std::string key)
 
 bool	Response::isValidHttpMethod(std::string key)
 {
-	std::string listOfvalidHttpMethods[8] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE"}; // see https://tools.ietf.org/html/rfc7231 - RFC 7231
+	std::string listOfvalidHttpMethods[8] = {"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "TRACE"}; // see https://tools.ietf.org/html/rfc7231 - RFC 7231
 	std::vector<std::string> validHttpMethods;
-	validHttpMethods.assign(listOfvalidHttpMethods, listOfvalidHttpMethods + 8);
+	validHttpMethods.assign(listOfvalidHttpMethods, listOfvalidHttpMethods + 7);
 
 	for (std::vector<std::string>::iterator it = validHttpMethods.begin(); it != validHttpMethods.end(); ++it)
 		if (key == *it)
@@ -367,16 +509,12 @@ void Response::logResponse()
 }
 
 ////////////////////
-// SET HEADEARS / BODY / CONTENT TYPE (protect rewrite for errors)
+// SET RESPONSE / BODY / CONTENT TYPE (protect rewrite for errors)
 ////////////////////
-void	Response::setHeaders(int responseCode, std::string responseCodeMessage, std::string contentType)
+void	Response::setResponseCode(int responseCode)
 {
 	if (!this->_isSetToError)
-	{
 		this->_responseCode = responseCode;
-		this->_responseCodeMessage = responseCodeMessage;
-		this->_contentType = contentType;
-	}
 }
 
 void	Response::setBody(std::string body)
@@ -423,7 +561,7 @@ int				Response::getResponseCode()
 
 std::string		Response::getResponseCodeMessage()
 {
-	return (this->_responseCodeMessage);
+	return (this->_responseMessages[this->_responseCode]);
 }
 
 std::string		Response::getContentLength()

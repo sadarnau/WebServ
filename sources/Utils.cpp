@@ -18,6 +18,33 @@ std::string 	getTimeHMS(void)
 	return (date);
 }
 
+bool			isPathAFile(std::string path)
+{
+	struct stat s;
+
+	if (stat(path.c_str(), &s) == 0 )
+	{
+		if (s.st_mode & S_IFREG)
+			return (true);
+	}
+	return (false);
+}
+
+std::string 	getDate(void)
+{
+    struct timeval 	tv;
+    struct tm 		time;
+    struct timezone tz;
+    char 			buffer[1000];
+    std::string 	date;
+
+    gettimeofday(&tv, &tz);
+    strptime(std::to_string(tv.tv_sec).c_str(), "%s", &time);
+    strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S CEST", &time);
+    date = buffer;
+	return (date);
+}
+
 void 			splitStringToVector(std::string line, std::vector<std::string> &split)
 {
 	std::string res;
@@ -55,7 +82,8 @@ void		printLocation(Location loc)
 	oss << "[server_name: " << loc.getServerName() << "]";
 	oss << "[client_max_body_size: " << loc.getClientMaxBodySize() << "]";
 	oss << "[root: " << loc.getRoot() << "]";
-	oss << "[cgi: " << loc.getCgi() << "]";
+	oss << "[cgi_path: " << loc.getCgiPath() << "]";
+	oss << "[cgi_Ext: " << loc.getCgiExt() << "]";
 	oss << "[autoindex: " << loc.getAutoindex() << "]";
 	oss << "[index: ";
 	vec = loc.getIndex();
@@ -157,7 +185,13 @@ std::vector<std::string>	concatToVector(std::string toParse)
 
 std::string					intToStr(int i)
 {
-	std::ostringstream convert;   // stream used for the conversion
-	convert << i;      // insert the textual representation of 'Number' in the characters in the stream
+	std::ostringstream convert;
+	convert << i;
 	return (convert.str());
+}
+
+std::string					getExtension(std::string target)
+{
+	std::string ext = target.substr(target.find("."), target.length());
+	return ext;
 }

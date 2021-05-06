@@ -27,6 +27,7 @@ private:
 	std::string							_method;
 	std::string							_target;
 	std::string							_message;
+	std::string							_body;
 	std::string							_urlTargetPath;
 	std::string							_absoluteTargetPath;
 	std::map<std::string, std::string>	_headers;
@@ -53,6 +54,7 @@ public:
 	void								logRequest();
 	int									getInSock();
 	std::string							getMethod();
+	std::string							getBody();
 	std::string							getTarget();
 	std::string							getUrlTargetPath();
 	std::string							getAbsoluteTargetPath();

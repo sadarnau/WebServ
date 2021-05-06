@@ -5,7 +5,7 @@ Location::Location(void)
 	this->_isSet = false;
 }
 
-Location::Location(std::map<std::string, std::string> locationMap) : _listen(""), _path(""), _serverName(""), _clientMaxBodySize(""), _root(""), _cgi(""), _autoindex("")
+Location::Location(std::map<std::string, std::string> locationMap) : _listen(""), _path(""), _serverName(""), _clientMaxBodySize(""), _root(""), _cgiPath(""), _autoindex("")
 {
 	this->_isSet = true;
 	this->_index.clear();
@@ -25,12 +25,17 @@ Location::Location(std::map<std::string, std::string> locationMap) : _listen("")
 			this->_root = it->second;
 		else if (!it->first.compare("autoindex"))
 			this->_autoindex = it->second;
-		else if (!it->first.compare("cgi"))
-			this->_cgi = it->second;
+		else if (!it->first.compare("cgi_path"))
+			this->_cgiPath = it->second;
+		else if (!it->first.compare("cgi_ext"))
+			this->_cgiExt = it->second;
 		else if (!it->first.compare("index"))
 			this->_index = concatToVector(it->second);
 		else if (!it->first.compare("accepted_method"))
-			this->_acceptedMethod = concatToVector(it->second);
+		{
+			if (it->second.size())
+				this->_acceptedMethod = concatToVector(it->second);
+		}
 		else
 			this->_errorPage[it->first] = it->second;
 	}
@@ -52,7 +57,8 @@ Location &Location::operator=(const Location &rhs)
 	this->_serverName = rhs._serverName;
 	this->_clientMaxBodySize = rhs._clientMaxBodySize;
 	this->_root = rhs._root;
-	this->_cgi = rhs._cgi;
+	this->_cgiPath = rhs._cgiPath;
+	this->_cgiExt = rhs._cgiExt;
 	this->_autoindex = rhs._autoindex;
 	this->_index = rhs._index;
 	this->_acceptedMethod = rhs._acceptedMethod;
@@ -86,9 +92,14 @@ std::string		Location::getRoot(void)
 	return (this->_root);
 }
 
-std::string		Location::getCgi(void)
+std::string		Location::getCgiPath(void)
 {
-	return (this->_cgi);
+	return (this->_cgiPath);
+}
+
+std::string		Location::getCgiExt(void)
+{
+	return (this->_cgiExt);
 }
 
 std::string		Location::getAutoindex(void)

@@ -4,20 +4,27 @@
 # include <string>
 # include <map>
 # include <unistd.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 # include "Request.hpp"
+
 
 class Request ;
 
 class Cgi
 {
 	private:
+		Request								*_req;
 		std::map<std::string, std::string>	_env;
 		char								**_envC;
-
-		void								_initEnv();
-		char								**_envToCArray();
-		Request								*_req;
+		char								**_argC;
 		std::string							_result;
+		
+		void								_initEnv(void);
+		void								_initArgC(void);
+		char								**_envToCArray(void);
+		void								_closeFd(FILE *fIn, FILE *fOut, int fdIn, int fdOut);
+
 
 	public:
 		// Cgi(Request *req, Location *loc);
@@ -26,8 +33,9 @@ class Cgi
 		~Cgi( void );							//destructor
 		Cgi & operator=( Cgi const & rhs );		//overload operator =
 
-		bool		processCgi(std::string body);
-		std::string	getResult();
+		bool								processCgi(void);
+		std::string							getResult(void);
+		void								logCgi();
 
 };
 
