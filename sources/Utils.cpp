@@ -107,7 +107,7 @@ void		printLocation(Location loc)
 	if (!mapstr.empty())
 	{
 		for (std::map<std::string, std::string>::const_iterator it = mapstr.begin(); it != mapstr.end(); ++it)
-			oss << it->first << " " << it->second << "\n";
+			oss << it->first << " " << it->second << " ";
 	}
 	oss << "]";
 
