@@ -131,9 +131,6 @@ void			printServer(Webserv wserv)
 
 void			printAllServers(std::vector<Webserv> serverList)
 {
-	std::cout << serverList[0].getServerNb() << "\n\n";
-	std::cout << serverList[1].getServerNb() << "\n\n";
-
 	for (std::vector<Webserv>::const_iterator it = serverList.begin(); it != serverList.end(); ++it)
 		printServer(*it);
 }
