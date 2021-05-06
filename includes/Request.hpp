@@ -43,7 +43,7 @@ private:
 
 public:
 	Request( void );								//default constructor
-	Request( vlocation *_locationVector, int inSock, char *buff );					//constructor
+	Request( vlocation *_locationVector, int inSock, std::string buff );					//constructor
 	Request( Request const & src );  				//copy
 	~Request( void );								//destructor
 	Request & operator=( Request const & rhs );		//overload operator =

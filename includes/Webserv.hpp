@@ -22,7 +22,7 @@ class Webserv
 private:
 
 	int						fd;
-	char *					_buff; // test
+	std::string				_buff; // test
 	std::vector<int>		_fdList;
 	struct sockaddr_in		address;
 	std::string				_listen;

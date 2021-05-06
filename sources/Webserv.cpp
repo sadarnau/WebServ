@@ -30,6 +30,7 @@ Webserv & Webserv::operator=( Webserv const & rhs)
 	this->address = rhs.address;
 	this->_listen = rhs._listen;
 	this->_locationVector = rhs._locationVector;
+	this->_serverNb = rhs._serverNb;
 
 	return ( *this );
 }
@@ -107,12 +108,11 @@ void	Webserv::handleRequest( int socket )
 	// consider socket like a stream, the request can be send in multiple packets (for big request)
 	// so this version is KO
 
-	std::cout << this->getServerNb() << "\n\n";
-
 	char buff[1024];						// 1024 ????
 	int ret = read( socket , buff, 1024);	// to protect
 
 	buff[ret] = 0;	// realy usefull ?
+	
 	this->_buff = buff;
 }
 

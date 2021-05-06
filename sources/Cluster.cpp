@@ -96,20 +96,6 @@ int								Cluster::lanchServices( void )
 		// 		this->_fdReady.push_back(*it);
 		// }
 
-		// for (int i = 0; i < this->_nbServ; i++)
-		// {
-		// 	std::vector<int> list = this->_serverList[i].getFdList();
-		// 	for (std::vector<int>::iterator it = list.begin(); it != list.end(); it++)
-		// 	{
-		// 		if (FD_ISSET(*it, &copyMasterSet))
-		// 		{
-		// 			this->_serverList[i].handleRequest(*it);
-		// 			if(FD_ISSET(*it, &writingSet))
-		// 				this->_serverList[i].sendResponse(*it);
-		// 		}
-		// 	}
-		// }
-
 		for(int i = 0; i < this->_nbServ; i++)
 		{
 			std::vector<int> list = this->_serverList[i].getFdList();

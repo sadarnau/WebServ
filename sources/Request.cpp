@@ -8,7 +8,7 @@ Request::Request( void )
 	return ;
 }
 
-Request::Request(vlocation *locationVector, int inSock, char *buff )
+Request::Request(vlocation *locationVector, int inSock, std::string buff )
 {
 	this->_inSocket = inSock;
 	this->_locationVector = locationVector;
