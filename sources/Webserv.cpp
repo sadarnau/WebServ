@@ -97,7 +97,9 @@ int		Webserv::acceptConexion( void )
 		Logger::Write(Logger::ERROR, RED, "error : accepting a new connection");
 		exit(1); // not ouf du tout...
 	}
-
+	
+	fcntl(socket, F_SETFL, O_NONBLOCK);
+	
 	this->_fdList.push_back(socket);
 
 	return (socket);
@@ -108,12 +110,15 @@ void	Webserv::handleRequest( int socket )
 	// consider socket like a stream, the request can be send in multiple packets (for big request)
 	// so this version is KO
 
-	char buff[1024];						// 1024 ????
-	int ret = read( socket , buff, 1024);	// to protect
+	this->_buff.clear();
+	char tmp[10240];
+	int ret;
 
-	buff[ret] = 0;	// realy usefull ?
-	
-	this->_buff = buff;
+	while ((ret = read( socket , tmp, 1024)) > 0)	// to protect
+	{
+		tmp[ret] = 0;	//usefull ?
+		this->_buff = this->_buff + tmp;
+	}
 }
 
 void	Webserv::sendResponse( int socket )

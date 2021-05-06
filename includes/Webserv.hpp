@@ -7,6 +7,7 @@
 # include "Config.hpp"
 # include "Location.hpp"
 # include <unistd.h>		//read function
+# include <fcntl.h>
 # include <arpa/inet.h>		//inet_addr function
 # include <string>
 # include <iostream>

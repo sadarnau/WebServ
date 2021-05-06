@@ -9,7 +9,7 @@
 class Cluster
 {
 private:
-	
+
 	int						_maxFd;
 	fd_set					_master_fd;
 	std::vector<Webserv>	_serverList;
