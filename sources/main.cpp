@@ -9,73 +9,97 @@
 
 static int serverFd;
 
-void		handle_signal(int sig_num)
-{
-	Logger::Write(Logger::INFO, GRN, "See you\n");
-	if (sig_num == SIGINT)
-		close(serverFd);
-}
+// void		handle_signal(int sig_num)
+// {
+// 	Logger::Write(Logger::INFO, GRN, "See you\n");
+// 	if (sig_num == SIGINT)
+// 		close(serverFd);
+// }
 
-int main(int ac, char *av[])
+bool	setLoggerMode(std::string mode)
 {
-	Cluster cluster;
-	if (ac == 3)
-	{
-		std::string str(av[2]);
-		if (!str.compare("more"))
-		{
+		if (mode == "more")
 			Logger::Start(Logger::MORE);
-			Logger::Write(Logger::MORE, GRN, "Logger in MORE mod");
-		}
-		else if (!str.compare("debug"))
-		{
+		else if (mode == "debug")
 			Logger::Start(Logger::DEBUG);
-			Logger::Write(Logger::DEBUG, GRN, "Logger in DEBUG mod");
-		}
-		else if (!str.compare("info"))
-		{
+		else if (mode == "info")
 			Logger::Start(Logger::INFO);
-			Logger::Write(Logger::INFO, GRN, "Logger in INFO mod");
-		}
-		else if (!str.compare("error"))
-		{
+		else if (mode == "error")
 			Logger::Start(Logger::ERROR);
-			Logger::Write(Logger::ERROR, GRN, "Logger in ERROR mod");
-		}
-		else if (!str.compare("none"))
-		{
+		else if (mode == "none")
 			Logger::Start(Logger::NONE);
-			Logger::Write(Logger::NONE, GRN, "Logger in NONE mod");
-		}
 		else
 		{
-			Logger::Start(Logger::DEBUG);
-			Logger::Write(Logger::DEBUG, GRN, "Logger in DEBUG mod");
+			std::cerr << mode << " is not a valid mode for --log.\nTry -l [none, error, [info], debug, more]" << std::endl;
+			return (false);
 		}
+		Logger::Write(Logger::INFO, GRN, "Logger in < " + mode + " > mode");
 
-	}
-	else
-	{
-		Logger::Start(Logger::DEBUG);
-		Logger::Write(Logger::DEBUG, GRN, "Logger in DEBUG mod");
-	}
+		return (true);
+}
 
-	if (ac > 3)
+void	showUsage(std::string name)
+{
+    std::cerr << "Usage: " << name << " <option> PATH_TO_CONF\n"
+              << "Options:\n"
+              << "\t-h,--help\tShow this help message\n"
+              << "\t-l,--log MODE\tSpecify the logger mode [none, error, [info], debug, more]"
+              << std::endl;
+}
+
+int main(int argc, char *argv[])
+{
+    if (argc > 4) {
+        showUsage(argv[0]);
+        return 1;
+    }
+
+    std::string conf = "files/default.conf";
+    std::string mode = "info";
+
+    for (int i = 1; i < argc; ++i)
 	{
-		Logger::Write(Logger::ERROR, std::string(RED), "Only two/three args allowed\n\n");
+        std::string arg = argv[i];
+        if ((arg == "-h") || (arg == "--help"))
+		{
+            showUsage(argv[0]);
+            return 0;
+        }
+		else if ((arg == "-l") || (arg == "--log"))
+		{
+            if (i + 1 < argc)
+                mode = argv[++i];
+			else
+			{
+    		    std::cerr << "--logger option requires one argument." << std::endl << std::endl;
+				showUsage(argv[0]);
+                return 1;
+            }  
+        }
+		else
+            conf = argv[i];
+    }
+
+	if(!setLoggerMode(mode))
+		return (1);
+
+	Logger::Write(Logger::INFO, YEL, "configuration file : " + conf);
+	Cluster cluster;
+
+	try
+	{
+		if (cluster.initialization(conf))
+			return (1);
+
+		if (cluster.lanchServices())
+			return (1); // exception ??
+	}
+	catch(const std::exception& e)
+	{
 		return 1;
 	}
-	else if (ac == 2 || ac == 3)
-	{
-		if (cluster.initialization(av[1]))
-			return (1);
-	}
-	else
-		if (cluster.initialization("files/default.conf"))
-			return (1);
+	
 
-	if (cluster.lanchServices())
-		return (1); // exception ??
 
 	// std::vector<int> list = cluster.getFdList();
 	// for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
