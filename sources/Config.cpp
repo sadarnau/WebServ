@@ -36,6 +36,12 @@ void	Config::initConfigMap(void)
 	this->_configMap["listen"] = "127.0.0.1:8080";
 	this->_configMap["server_name"] = "";
 	this->_configMap["client_max_body_size"] = "";
+	this->_configMap["accepted_method"] = "";
+	this->_configMap["root"] = "";
+	this->_configMap["autoindex"] = "off";
+	this->_configMap["index"] = "";
+	this->_configMap["cgi_path"] = "";
+	this->_configMap["cgi_ext"] = "";
 }
 
 void	Config::parseFile( std::string fileName )
@@ -111,10 +117,22 @@ void	Config::createServerMap( void )
 		}
 		else if (!split[0].compare("server_name") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 			this->_configMap["server_name"] = split[1].substr(0, split[1].size() - 1);
+  		else if (!split[0].compare("accepted_method") && split.size() == 2 && this->checkSemiColon(split.back()))
+			this->_configMap["accepted_method"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("client_max_body_size") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 			this->_configMap["client_max_body_size"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("error_page") && split.size() == 3 && this->checkSemiColon(split.back()) && inServerConfig)
 			this->_configMap[split[1]] = split[2].substr(0, split[2].size() - 1);
+		else if (!split[0].compare("root") && split.size() == 2 && this->checkSemiColon(split.back()))
+			this->_configMap["root"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("autoindex") && split.size() == 2 && this->checkSemiColon(split.back()))
+			this->_configMap["autoindex"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("index") && split.size() == 2 && this->checkSemiColon(split.back()))
+			this->_configMap["index"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("cgi_path") && split.size() == 2 && this->checkSemiColon(split.back()))
+			this->_configMap["cgi_path"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("cgi_ext") && split.size() == 2 && this->checkSemiColon(split.back()))
+			this->_configMap["cgi_ext"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("location") && split.size() == 3 && !split[2].compare("{") && inServerConfig)
 		{
 			if (!split[1].compare("/"))
@@ -164,12 +182,6 @@ void	Config::createServerMap( void )
 void	Config::initLocationMap(std::map<std::string, std::string> & newLoc, std::string path)
 {
 	newLoc["path"] = path;
-	newLoc["accepted_method"] = "";
-	newLoc["root"] = "/files/www";
-	newLoc["autoindex"] = "off";
-	newLoc["index"] = "";
-	newLoc["cgi_path"] = "";
-	newLoc["cgi_ext"] = "";
 }
 
 void	Config::addConfigToLocation(std::map<std::string, std::string> newLoc)
