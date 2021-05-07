@@ -3,12 +3,7 @@
 ////////////////////
 // COPLIEN'S
 ////////////////////
-Request::Request( void )
-{
-	return ;
-}
-
-Request::Request(vlocation *locationVector, int inSock, std::string buff )
+Request::Request(vlocation *locationVector, int inSock, std::string buff)
 {
 	this->_inSocket = inSock;
 	this->_locationVector = locationVector;
@@ -21,18 +16,18 @@ Request::Request(vlocation *locationVector, int inSock, std::string buff )
 	return ;
 }
 
-Request::Request( Request const & src )
+Request::Request(Request const & src)
 {
 	*this = src;
 	return ;
 }
 
-Request::~Request( void )
+Request::~Request(void)
 {
 	return ;
 }
 
-Request & Request::operator=( Request const & rhs)
+Request & Request::operator=(Request const & rhs)
 {
     this->_buff = rhs._buff;
 	this->_inSocket = rhs._inSocket;
@@ -90,7 +85,7 @@ void	Request::parseRequest(std::string req)
 ////////////////////
 // UTILS
 ////////////////////
-void	Request::selectLocation()
+void	Request::selectLocation(void)
 {
 	// iter through locations
 	for (vlocation::iterator it = this->_locationVector->begin() ; it != this->_locationVector->end(); ++it)
@@ -124,7 +119,7 @@ void	Request::selectLocation()
 		this->_target.insert(0, "/");
 }
 
-void	Request::parseUrl()
+void	Request::parseUrl(void)
 {
 	int i;
 
@@ -145,7 +140,7 @@ void			Request::updateTarget(std::string target)
 	this->createPath();
 }
 
-void	Request::createPath()
+void	Request::createPath(void)
 {
 	//Create absolute path
 	if (this->_selectedLocation.getRoot().front() == '/')
@@ -178,53 +173,54 @@ bool	Request::isValidHeader(std::string header)
 ////////////////////
 // GETTERS / SETTERS
 ////////////////////
-int		Request::getInSock( void )
+int		Request::getInSock(void)
 {
 	return (this->_inSocket);
 }
 
-std::string		Request::getMethod()
+std::string		Request::getMethod(void)
 {
 	return (this->_method);
 }
 
-std::string		Request::getBody()
+std::string		Request::getBody(void)
 {
 	return (this->_body);
 }
 
-std::string		Request::getTarget()
+std::string		Request::getTarget(void)
 {
 	return (this->_target);
 }
 
-std::string		Request::getUrlTargetPath()
+std::string		Request::getUrlTargetPath(void)
 {
 	return (this->_urlTargetPath);
 }
 
-std::string		Request::getAbsoluteTargetPath()
+std::string		Request::getAbsoluteTargetPath(void)
 {
 	return (this->_absoluteTargetPath);
 }
 
-std::string		Request::getQueryString()
+std::string		Request::getQueryString(void)
 {
 	return (this->_queryString);
 }
 
-
-
-Location		Request::getSelectedLocation()
+Location		Request::getSelectedLocation(void)
 {
 	return (this->_selectedLocation);
 }
 
-std::map<std::string, std::string>	Request::getHeaders()
+std::map<std::string, std::string>	Request::getHeaders(void)
 {
 	return(this->_headers);
 }
 
+////////////////////
+// LOG
+////////////////////
 void	Request::logRequest(int serverNbr)
 {
 	Logger::Write(Logger::INFO, BLU, "server[" + std::to_string(serverNbr) +
@@ -247,7 +243,6 @@ void	Request::logRequest(int serverNbr)
 		oss << std::setw(20) << it->first << " : " << it->second << std::endl;
 	}
 	Logger::Write(Logger::DEBUG, WHT, oss.str());
-
 
 	std::ostringstream oss2;
 

@@ -42,11 +42,10 @@ private:
 	void								createPath(void);
 
 public:
-	Request( void );								//default constructor
-	Request( vlocation *_locationVector, int inSock, std::string buff );					//constructor
-	Request( Request const & src );  				//copy
-	~Request( void );								//destructor
-	Request & operator=( Request const & rhs );		//overload operator =
+	Request( vlocation *_locationVector, int inSock, std::string buff );
+	Request( Request const & src );
+	~Request( void );
+	Request & operator=( Request const & rhs );
 
 	bool	isValidHeader( std::string header );
 

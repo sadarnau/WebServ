@@ -17,33 +17,33 @@ Response::Response(Request *req, int socket)
 	this->send();
 }
 
-Response::Response( Response const & src )
+Response::Response(Response const & src)
 {
 	*this = src;
 	return ;
 }
 
-Response::~Response( void )
+Response::~Response(void)
 {
 	return ;
 }
 
-Response & Response::operator=( Response const & rhs)
+Response & Response::operator=(Response const & rhs)
 {
 	(void)rhs;
-	return ( *this );
+	return (*this);
 }
 
 
 ////////////////////
 // METHODS
 ////////////////////
-void	Response::send()
+void	Response::send(void)
 {
 	write(this->_socket, this->_response.c_str() , this->_response.length());	//to protect
 }
 
-void	Response::buildResponse()
+void	Response::buildResponse(void)
 {
 	std::string		requestMethod = this->_req->getMethod();
 
@@ -80,7 +80,7 @@ void	Response::buildResponse()
 
 }
 
-void	Response::buildHeader()
+void	Response::buildHeader(void)
 {
 	std::ostringstream header;
 
@@ -106,7 +106,7 @@ void	Response::buildHeader()
 ////////////////////
 // HTTP METHODS
 ////////////////////
-void	Response::processGet()
+void	Response::processGet(void)
 {
 	std::string		auto_index = this->_location.getAutoindex();
 
@@ -152,7 +152,7 @@ void	Response::processGet()
 	}
 }
 
-void	Response::processPost()
+void	Response::processPost(void)
 {
 	std::string		auto_index = this->_location.getAutoindex();
 
@@ -228,7 +228,7 @@ void	Response::processPut(void)
 	}
 }
 
-void	Response::processOptions()
+void	Response::processOptions(void)
 {
 	std::string allow;
 	std::vector<std::string> acceptedMethods = this->_location.getAcceptedMethod();
@@ -274,7 +274,7 @@ void	Response::processDelete(void)
 ////////////////////
 // AUTO INDEX
 ////////////////////
-bool		Response::autoIndexResponse()
+bool		Response::autoIndexResponse(void)
 {
 	DIR *directory;
 	struct dirent *dircontent;
@@ -312,7 +312,7 @@ bool		Response::autoIndexResponse()
 ////////////////////
 // ERRORS
 ////////////////////
-void		Response::initResponseMessageMap()
+void		Response::initResponseMessageMap(void)
 {
 	this->_responseMessages[200] = "OK";					// OKKKKK
 	this->_responseMessages[201] = "CREATED";				// Created
@@ -326,7 +326,7 @@ void		Response::initResponseMessageMap()
 
 }
 
-void		Response::checkErrors()
+void		Response::checkErrors(void)
 {
 	std::string errorMessage = strerror(errno);
 
@@ -335,7 +335,7 @@ void		Response::checkErrors()
 
 	if (errno != 0 && !this->_isSetToError) // if _isSetToError is true we dont want to print other errno
 	{
-		Logger::Write(Logger::DEBUG, RED, "strerror(errno) : " + errorMessage);
+		Logger::Write(Logger::DEBUG, RED, "strerror(errno) : " + intToStr(errno) + " " + errorMessage);
 		if (errorMessage == "Permission denied")
 			this->setToErrorPage(403);
 		if (errorMessage == "No such file or directory")
@@ -419,7 +419,7 @@ bool	Response::isValidHttpMethod(std::string key)
 	return (false);
 }
 
-std::string	Response::getIndexTarget()
+std::string	Response::getIndexTarget(void)
 {
 	std::vector<std::string> vIndex = this->_location.getIndex();
 
@@ -443,7 +443,7 @@ std::string	Response::getIndexTarget()
 	return (this->_req->getTarget());
 }
 
-bool		Response::isIndexPagePresent()
+bool		Response::isIndexPagePresent(void)
 {
 	std::vector<std::string> vIndex = this->_location.getIndex();
 	if (vIndex.empty())
@@ -464,7 +464,7 @@ bool		Response::isIndexPagePresent()
 	return (false);
 }
 
-bool		Response::isDirectory()
+bool		Response::isDirectory(void)
 {
 	DIR *directory;
 
@@ -527,45 +527,48 @@ void	Response::setContentType(std::string contentType)
 ////////////////////
 // GETTERS
 ////////////////////
-std::string Response::getHeader()
+std::string Response::getHeader(void)
 {
 	return (this->_header);
 }
 
-std::string Response::getBody()
+std::string Response::getBody(void)
 {
 	return (this->_body);
 }
 
-std::string Response::getResponse()
+std::string Response::getResponse(void)
 {
 	return (this->_response);
 }
 
-std::string		Response::getResponseCodeStr()
+std::string		Response::getResponseCodeStr(void)
 {
 	std::ostringstream oss;
 	oss << this->_responseCode;
 	return (oss.str());
 }
 
-int				Response::getResponseCode()
+int				Response::getResponseCode(void)
 {
 	return(this->_responseCode);
 }
 
-std::string		Response::getResponseCodeMessage()
+std::string		Response::getResponseCodeMessage(void)
 {
 	return (this->_responseMessages[this->_responseCode]);
 }
 
-std::string		Response::getContentLength()
+std::string		Response::getContentLength(void)
 {
 	std::ostringstream oss;
 	oss << this->_body.size();
 	return (oss.str());
 }
 
+////////////////////
+// LOG
+////////////////////
 void Response::logResponse(int serverNbr)
 {
 	Logger::Write(Logger::INFO, BLU, "server[" + std::to_string(serverNbr) + "] : response sent [code: " +
