@@ -9,10 +9,10 @@ Request::Request(vlocation *locationVector, int inSock, std::string buff)
 	this->_locationVector = locationVector;
 	this->_buff = buff;
 
-	this->parseRequest(this->_buff);
-	this->selectLocation();
-	this->parseUrl();
-	this->createPath();
+	this->_parseRequest(this->_buff);
+	this->_selectLocation();
+	this->_parseUrl();
+	this->_createPath();
 	return ;
 }
 
@@ -39,7 +39,7 @@ Request & Request::operator=(Request const & rhs)
 ////////////////////
 // PARSE
 ////////////////////
-void	Request::parseRequest(std::string req)
+void	Request::_parseRequest(std::string req)
 {
 	std::string				header;
 	std::string				body;
@@ -72,7 +72,7 @@ void	Request::parseRequest(std::string req)
 			break;
 
 		key = key.substr(0, key.length() - 1);				// delete char ':' at the end of key
-		if (this->isValidHeader(key))
+		if (this->_isValidHeader(key))
 			this->_headers[key] = value;
 		else
 			this->_skippedHeaders.push_back(key);
@@ -85,7 +85,7 @@ void	Request::parseRequest(std::string req)
 ////////////////////
 // UTILS
 ////////////////////
-void	Request::selectLocation(void)
+void	Request::_selectLocation(void)
 {
 	// iter through locations
 	for (vlocation::iterator it = this->_locationVector->begin() ; it != this->_locationVector->end(); ++it)
@@ -119,7 +119,7 @@ void	Request::selectLocation(void)
 		this->_target.insert(0, "/");
 }
 
-void	Request::parseUrl(void)
+void	Request::_parseUrl(void)
 {
 	int i;
 
@@ -137,10 +137,10 @@ void	Request::parseUrl(void)
 void			Request::updateTarget(std::string target)
 {
 	this->_target = target;
-	this->createPath();
+	this->_createPath();
 }
 
-void	Request::createPath(void)
+void	Request::_createPath(void)
 {
 	//Create absolute path
 	if (this->_selectedLocation.getRoot().front() == '/')
@@ -154,7 +154,7 @@ void	Request::createPath(void)
 	}
 }
 
-bool	Request::isValidHeader(std::string header)
+bool	Request::_isValidHeader(std::string header)
 {
 	std::string listOfAcceptedHeaders[18] = {"Accept-Charsets", "Accept-Language", "Allow", "Authorization", "Content-Language",
 												"Content-Length", "Content-Location", "Content-Type", "Date", "Host", "Last-Modified",

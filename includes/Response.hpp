@@ -64,10 +64,10 @@ private:
 	void			setContentType(std::string contentType);
 
 public:
-	Response( Request *req, int socket );	//default constructor
-	Response( Response const & src );  					//copy
-	~Response( void );									//destructor
-	Response & operator=( Response const & rhs );		//overload operator =
+	Response(Request *req, int socket);
+	Response(Response const & src);
+	~Response(void);
+	Response & operator=(Response const & rhs);
 
 	std::string		getResponse(void);
 	std::string		getBody(void);

@@ -35,19 +35,18 @@ private:
 	std::string							_queryString;
 	Location							_selectedLocation;
 
-	void								parseRequest(std::string req);
+	void								_parseRequest(std::string req);
 
-	void								parseUrl(void);
-	void								selectLocation(void);
-	void								createPath(void);
+	void								_parseUrl(void);
+	void								_selectLocation(void);
+	void								_createPath(void);
+	bool								_isValidHeader(std::string header);
 
 public:
-	Request( vlocation *_locationVector, int inSock, std::string buff );
-	Request( Request const & src );
-	~Request( void );
-	Request & operator=( Request const & rhs );
-
-	bool	isValidHeader( std::string header );
+	Request(vlocation *_locationVector, int inSock, std::string buff);
+	Request(Request const & src);
+	~Request(void);
+	Request & operator=(Request const & rhs);
 
 	void								updateTarget(std::string target);
 	int									getInSock(void);
