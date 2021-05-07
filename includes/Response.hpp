@@ -38,8 +38,7 @@ private:
 	void			buildHeader(void);
 	void			buildResponse(void);
 
-	void			processGet(void);
-	void			processPost(void);
+	void			processGetPostHead(void);
 	void			processPut(void);
 	void			processOptions(void);
 	void			processDelete(void);

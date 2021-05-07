@@ -7,7 +7,7 @@
 #include <list>
 #include <csignal>
 
-static int serverFd;
+// static int serverFd;
 
 // void		handle_signal(int sig_num)
 // {
