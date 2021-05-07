@@ -110,7 +110,7 @@ void    	Cgi::_initEnv(void)
 
 	// https://fr.wikipedia.org/wiki/Variables_d%27environnement_CGI
 	std::map<std::string, std::string>	reqHeaders = this->_req->getHeaders();
-	this->_env["AUTH_TYPE"] = reqHeaders["Authorization"];
+	this->_env["AUTH_TYPE"] = reqHeaders["WWW-Authenticate"];
 	this->_env["CONTENT_LENGTH"] = reqHeaders["Content-Length"];
 	this->_env["CONTENT_TYPE"] = reqHeaders["Content-Type"];
 	this->_env["GATEWAY_INTERFACE"] = "CGI/1.1";
@@ -120,10 +120,10 @@ void    	Cgi::_initEnv(void)
 	this->_env["REMOTE_ADDR"] = "";
 	// L'adresse IP du client.
 
-	this->_env["REMOTE_IDENT"] = "";
+	this->_env["REMOTE_IDENT"] = reqHeaders[""];
 	// Nom d'utilisateur (distant) du client faisant la requête. Le serveur doit supporter l'identification RFC 931. Cette variable devrait être utilisée à des fins de journaux seulement.
-
-	this->_env["REMOTE_USER"] = "";
+	if (!reqHeaders["WWW-Authenticate"].empty())
+		this->_env["REMOTE_USER"] = reqHeaders["Authorization"];
 	// Le nom d'utilisateur du client, si le script est protégé et si le serveur supporte l'identification.
 
 	this->_env["REQUEST_METHOD"] = this->_req->getMethod();
