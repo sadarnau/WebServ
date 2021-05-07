@@ -47,11 +47,10 @@ void	Response::buildResponse(void)
 {
 	std::string		requestMethod = this->_req->getMethod();
 	errno = 0;
-	
+
 	// METHODS
 	if (!this->isValidMethod(requestMethod))
 	{
-		std::cout << "not valid\n\n";
 		this->setToErrorPage(405);
 		return ;
 	}
