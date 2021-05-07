@@ -210,6 +210,6 @@ void					Webserv::logWebserv()
 
 	Logger::Write(Logger::DEBUG, WHT, oss.str());
 
-	for (std::vector<Location>::const_iterator it2 = this->_locationVector.begin(); it2 != this->_locationVector.end(); ++it2)
-		printLocation(*it2);
+	for (std::vector<Location>::iterator it2 = this->_locationVector.begin(); it2 != this->_locationVector.end(); ++it2)
+		it2->logLocation();
 }

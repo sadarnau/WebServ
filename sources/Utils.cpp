@@ -70,50 +70,6 @@ void 			splitStringToVector(std::string line, std::vector<std::string> &split)
 	delete[] str;
 }
 
-void		printLocation(Location loc)
-{
-	std::ostringstream oss;
-	std::vector<std::string> vec;
-	std::map<std::string, std::string> mapstr;
-
-	oss << "location ";
-	oss << "[path: " << loc.getPath() << "] : ";
-	oss << "[listen: " << loc.getListen() << "]";
-	oss << "[server_name: " << loc.getServerName() << "]";
-	oss << "[client_max_body_size: " << loc.getClientMaxBodySize() << "]";
-	oss << "[root: " << loc.getRoot() << "]";
-	oss << "[cgi_path: " << loc.getCgiPath() << "]";
-	oss << "[cgi_Ext: " << loc.getCgiExt() << "]";
-	oss << "[autoindex: " << loc.getAutoindex() << "]";
-	oss << "[index: ";
-	vec = loc.getIndex();
-	if (!vec.empty())
-	{
-		for (std::vector<std::string>::const_iterator it = vec.begin(); it != vec.end(); ++it)
-			oss << *it << " ";
-	}
-	oss << "[accepted_method: ";
-	vec = loc.getAcceptedMethod();
-	if (!vec.empty())
-	{
-		for (std::vector<std::string>::const_iterator it = vec.begin(); it != vec.end(); ++it)
-			oss << *it << " ";
-	}
-	oss << "]";
-
-	mapstr = loc.getErrorPage();
-
-	oss << "[error_pages :";
-	if (!mapstr.empty())
-	{
-		for (std::map<std::string, std::string>::const_iterator it = mapstr.begin(); it != mapstr.end(); ++it)
-			oss << it->first << " " << it->second << " ";
-	}
-	oss << "]";
-
-	Logger::Write(Logger::MORE, WHT, oss.str());
-}
-
 void			printMap(std::map<std::string, std::string> m, std::string type)
 {
 	std::ostringstream oss;

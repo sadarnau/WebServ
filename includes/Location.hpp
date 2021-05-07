@@ -5,9 +5,7 @@
 # include <vector>
 # include <map>
 # include <iostream>
-//# include "Utils.hpp"
-
-std::vector<std::string>	concatToVector(std::string toParse);
+# include "Utils.hpp"
 
 class Location
 {
@@ -44,6 +42,8 @@ class Location
 		std::vector<std::string>			getAcceptedMethod(void);
 		std::map<std::string, std::string>	getErrorPage(void);
 		bool								isSet(void);
+
+		void								logLocation(void);
 };
 
 #endif

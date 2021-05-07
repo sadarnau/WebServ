@@ -11,9 +11,7 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <unistd.h>
-# include "Location.hpp"
 # include "Logger.hpp"
-# include "Webserv.hpp"
 
 class Webserv ;
 
@@ -21,7 +19,6 @@ std::string 	            getTimeHMS(void);
 std::string 	            getDate(void);
 void 			            splitStringToVector(std::string line, std::vector<std::string> &split);
 void			            printMap(std::map<std::string, std::string> m, std::string type);
-void						printLocation(Location loc);
 std::string                 safeUrlJoin(std::string url1, std::string url2);
 std::vector<std::string>	concatToVector(std::string toParse);
 std::string					intToStr(int i);
