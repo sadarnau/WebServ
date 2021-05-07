@@ -76,7 +76,7 @@ void	Response::buildResponse()
 	if (requestMethod == "HEAD")
 		this->_response = this->_header;
 	else
-		this->_response = this->_header + this->_body;
+		this->_response = this->_header + "\r\n" + this->_body;
 
 }
 
@@ -99,11 +99,7 @@ void	Response::buildHeader()
 			header << it->first << ": " << it->second << "\r\n";
 	}
 
-	header << "\r\n";						//End of header
-
 	this->_header = header.str();
-
-	Logger::Write(Logger::MORE, BLU, "response : header\n\n" + this->_header + "\n-------\n");
 }
 
 
@@ -131,7 +127,6 @@ void	Response::processGet()
 	// Check if the file can be open and create response
 	std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
 
-	// CGI
 	// CGI
 	if (!this->_location.getCgiPath().empty() && (this->_location.getCgiExt() == getExtension(this->_req->getTarget())))
 	{
@@ -508,12 +503,6 @@ std::string	Response::getContentType(std::string target)
 	return ("text/plain");
 }
 
-void Response::logResponse()
-{
-	Logger::Write(Logger::DEBUG, BLU, "response : header\n\n" + this->getHeader() + "\n-------\n");
-	Logger::Write(Logger::MORE, BLU, "response : body\n\n" + this->getBody() + "\n-------\n");
-}
-
 ////////////////////
 // SET RESPONSE / BODY / CONTENT TYPE (protect rewrite for errors)
 ////////////////////
@@ -577,13 +566,11 @@ std::string		Response::getContentLength()
 	return (oss.str());
 }
 
-
-std::ostream &	operator<<(std::ostream & o, Response & rhs)
+void Response::logResponse(int serverNbr)
 {
-	(void)rhs;
-	o << "In this response we have :\n";
-	o << "Index path : "  << "\n";
-	// o << "Response : " << rhs.getResponse() << "\n";
-
-	return ( o );
+	Logger::Write(Logger::INFO, BLU, "server[" + std::to_string(serverNbr) + "] : response sent [code: " +
+		this->getResponseCodeStr() + "] [message: " + this->getResponseCodeMessage() 
+		+ "] [content length: " + this->getContentLength()+ "]");
+	Logger::Write(Logger::DEBUG, WHT, " response : header\n" + this->getHeader());
+	Logger::Write(Logger::MORE, BLU, " response : body\n" + this->getBody());
 }

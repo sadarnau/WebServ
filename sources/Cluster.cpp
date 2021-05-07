@@ -194,7 +194,7 @@ std::vector<int>					Cluster::getFdList( void )
 	return (this->_fdList);
 }
 
-void							Cluster::logCluster()
+void							Cluster::logCluster(void)
 {
 	for (std::vector<Webserv>::iterator it = this->_serverList.begin(); it != this->_serverList.end(); ++it)
 		it->logWebserv();

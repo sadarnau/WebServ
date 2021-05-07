@@ -35,11 +35,11 @@ private:
 	std::string							_queryString;
 	Location							_selectedLocation;
 
-	void								parseRequest( std::string req );
+	void								parseRequest(std::string req);
 
-	void								parseUrl();
-	void								selectLocation();
-	void								createPath();
+	void								parseUrl(void);
+	void								selectLocation(void);
+	void								createPath(void);
 
 public:
 	Request( void );								//default constructor
@@ -51,16 +51,17 @@ public:
 	bool	isValidHeader( std::string header );
 
 	void								updateTarget(std::string target);
-	void								logRequest();
-	int									getInSock();
-	std::string							getMethod();
-	std::string							getBody();
-	std::string							getTarget();
-	std::string							getUrlTargetPath();
-	std::string							getAbsoluteTargetPath();
-	std::string							getQueryString();
-	std::map<std::string, std::string>	getHeaders();
-	Location							getSelectedLocation();
+	int									getInSock(void);
+	std::string							getMethod(void);
+	std::string							getBody(void);
+	std::string							getTarget(void);
+	std::string							getUrlTargetPath(void);
+	std::string							getAbsoluteTargetPath(void);
+	std::string							getQueryString(void);
+	std::map<std::string, std::string>	getHeaders(void);
+	Location							getSelectedLocation(void);
+
+	void								logRequest(int serverNb);
 };
 
 std::ostream &	operator<<(std::ostream & o, Request & rhs);

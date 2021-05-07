@@ -149,9 +149,9 @@ void	Webserv::handleRequest( int socket )
 void	Webserv::sendResponse( int socket )
 {
 	Request		request(&this->_locationVector, socket, this->_buff);
-	Logger::Write(Logger::INFO, BLU, "server[" + std::to_string(this->_serverNb) + "] : request received [method: " + request.getMethod() + "] [location: " + request.getSelectedLocation().getPath() + "] [target: " + request.getTarget() + "]");
+	request.logRequest(this->_serverNb);
 	Response	response(&request, socket);
-	Logger::Write(Logger::INFO, BLU, "server[" + std::to_string(this->_serverNb) + "] : response sent [code: " + response.getResponseCodeStr() + "] [message: " + response.getResponseCodeMessage() + "] [content length: " + response.getContentLength()+ "]");
+	response.logResponse(this->_serverNb);
 }
 
 int		Webserv::getFd( void )

@@ -11,7 +11,7 @@ Logger::~Logger(void)
 	Log.Stop();
 }
 
-const std::string Logger::_priorityNames[] = { "MORE", "DEBUG", "INFO ", "ERROR", "NONE" };
+const std::string Logger::_priorityNames[] = { "MORE ", "DEBUG", "INFO ", "ERROR", "NONE" };
 
 void Logger::Start(Priority minPriority)
 {

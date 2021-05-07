@@ -127,7 +127,7 @@ bool								Location::isSet(void)
 	return (this->_isSet);
 }
 
-void								Location::logLocation()
+void								Location::logLocation(void)
 {
 	std::ostringstream oss;
 	std::vector<std::string> vec;

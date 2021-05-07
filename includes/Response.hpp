@@ -34,34 +34,34 @@ private:
 	std::map<int, std::string>				_responseMessages;
 	bool									_isSetToError;
 
-	void			send( void );
-	void			buildHeader( void );
-	void			buildResponse( void );
+	void			send(void);
+	void			buildHeader(void);
+	void			buildResponse(void);
 
-	void			processGet( void );
-	void			processPost( void );
-	void			processPut( void );
-	void			processOptions( void );
-	void			processDelete( void );
-	void			processTrace( void );
+	void			processGet(void);
+	void			processPost(void);
+	void			processPut(void);
+	void			processOptions(void);
+	void			processDelete(void);
+	void			processTrace(void);
 
-	bool			autoIndexResponse( void );
-	std::string		getIndexTarget( void );
-	bool			isIndexPagePresent( void );
+	bool			autoIndexResponse(void);
+	std::string		getIndexTarget(void);
+	bool			isIndexPagePresent(void);
 
-	void			checkErrors( void );
-	void			initResponseMessageMap( void );
-	void			setToErrorPage( int errorNumber );
-	std::string		generateDefaultErrorPage( std::string errorNbr, std::string message );
+	void			checkErrors(void);
+	void			initResponseMessageMap(void);
+	void			setToErrorPage(int errorNumber);
+	std::string		generateDefaultErrorPage(std::string errorNbr, std::string message);
 
-	bool			isDirectory( void );
-	std::string		getContentType( std::string target );
-	bool			isValidMethod( std::string key );
-	bool			isValidHttpMethod( std::string key );
+	bool			isDirectory(void);
+	std::string		getContentType(std::string target);
+	bool			isValidMethod(std::string key);
+	bool			isValidHttpMethod(std::string key);
 
-	void			setResponseCode( int responseCode );
-	void			setBody( std::string body );
-	void			setContentType( std::string contentType );
+	void			setResponseCode(int responseCode);
+	void			setBody(std::string body);
+	void			setContentType(std::string contentType);
 
 public:
 	Response( Request *req, int socket );	//default constructor
@@ -69,17 +69,15 @@ public:
 	~Response( void );									//destructor
 	Response & operator=( Response const & rhs );		//overload operator =
 
+	std::string		getResponse(void);
+	std::string		getBody(void);
+	std::string		getHeader(void);
+	std::string		getResponseCodeStr(void);
+	int				getResponseCode(void);
+	std::string		getResponseCodeMessage(void);
+	std::string		getContentLength(void);
 
-	void			logResponse( void );
-	std::string		getResponse( void );
-	std::string		getBody( void );
-	std::string		getHeader( void );
-	std::string		getResponseCodeStr( void );
-	int				getResponseCode( void );
-	std::string		getResponseCodeMessage( void );
-	std::string		getContentLength( void );
+	void			logResponse(int serverNbr);
 };
-
-std::ostream		&operator<<( std::ostream & o, Response & rhs );
 
 #endif

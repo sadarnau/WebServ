@@ -18,7 +18,6 @@ Request::Request(vlocation *locationVector, int inSock, std::string buff )
 	this->selectLocation();
 	this->parseUrl();
 	this->createPath();
-	this->logRequest();
 	return ;
 }
 
@@ -176,47 +175,6 @@ bool	Request::isValidHeader(std::string header)
 	return (false);
 }
 
-void	Request::logRequest( void )
-{
-	std::ostringstream oss;
-	
-	oss << "request :\n\n" ;
-	oss << std::setw(30) << "request->method" << " : " << this->_method << std::endl;
-	oss << std::setw(30) << "request->target" << " : " << this->_target << std::endl;
-	oss << std::setw(30) << "request->query" << " : " << this->_queryString << std::endl;
-	oss << std::setw(30) << "request->body" << " : " << this->_body << std::endl;
-	oss << std::setw(30) << "request->urlTargetPath " << " : " << this->_urlTargetPath << std::endl;
-	oss << std::setw(30) << "request->absoluteTargetPath " << " : " << this->_absoluteTargetPath << std::endl;
-	oss << std::setw(30) << "selectedLocation.getPath() " << " : " << this->_selectedLocation.getPath() << std::endl << std::endl;
-	oss << "Content of request->headers :" << std::endl << std::endl; 
-	oss << std::setw(20) << "KEY" << " : " << "VALUE" << std::endl << std::endl;
-	for (std::map<std::string, std::string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); ++it)
-	{
-		oss << std::setw(20) << it->first << " : " << it->second << std::endl;
-	}
-	oss << std::endl << std::endl;
-	Logger::Write(Logger::MORE, BLU, oss.str());
-
-
-	std::ostringstream oss2;
-
-	//SKIPPED HEADERS
-	oss2 << std::endl << "Skipped headers : ";
-	for (std::vector<std::string>::iterator it = this->_skippedHeaders.begin(); it != this->_skippedHeaders.end(); ++it)
-		oss2 << " " << *it;
-	oss2 << std::endl << std::endl;
-	
-	// RAW REQUEST
-	oss2 << "Raw request :" << std::endl << std::endl;
-	oss2 << this->_buff;
-	oss2 << "----------\n\n";
-	oss2 << RESET;
-	Logger::Write(Logger::MORE, BLU, oss2.str());
-
-	return ;
-}
-
-
 ////////////////////
 // GETTERS / SETTERS
 ////////////////////
@@ -267,11 +225,44 @@ std::map<std::string, std::string>	Request::getHeaders()
 	return(this->_headers);
 }
 
-std::ostream &	operator<<(std::ostream & o, Request & rhs)
+void	Request::logRequest(int serverNbr)
 {
-	o << "request : ";
-	o << "[method:" << rhs.getMethod() << "] ";
-	o << "[target:" << rhs.getTarget() << "] ";
+	Logger::Write(Logger::INFO, BLU, "server[" + std::to_string(serverNbr) +
+		"] : request received [method: " + this->getMethod() + "] [location: " +
+		this->getSelectedLocation().getPath() + "] [target: " + this->getTarget() + "]");
+	
+	std::ostringstream oss;
+	
+	oss << "request :\n\n" ;
+	oss << std::setw(30) << "request->method" << " : " << this->_method << std::endl;
+	oss << std::setw(30) << "request->target" << " : " << this->_target << std::endl;
+	oss << std::setw(30) << "request->query" << " : " << this->_queryString << std::endl;
+	oss << std::setw(30) << "request->body" << " : " << this->_body << std::endl;
+	oss << std::setw(30) << "request->urlTargetPath " << " : " << this->_urlTargetPath << std::endl;
+	oss << std::setw(30) << "request->absoluteTargetPath " << " : " << this->_absoluteTargetPath << std::endl;
+	oss << std::setw(30) << "selectedLocation.getPath() " << " : " << this->_selectedLocation.getPath() << std::endl << std::endl;
+	oss << "Content of request->headers :" << std::endl << std::endl; 
+	for (std::map<std::string, std::string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); ++it)
+	{
+		oss << std::setw(20) << it->first << " : " << it->second << std::endl;
+	}
+	Logger::Write(Logger::DEBUG, WHT, oss.str());
 
-	return ( o );
+
+	std::ostringstream oss2;
+
+	//SKIPPED HEADERS
+	oss2 << std::endl << "Skipped headers : ";
+	for (std::vector<std::string>::iterator it = this->_skippedHeaders.begin(); it != this->_skippedHeaders.end(); ++it)
+		oss2 << " " << *it;
+	oss2 << std::endl << std::endl;
+	
+	// RAW REQUEST
+	oss2 << "Raw request :" << std::endl << std::endl;
+	oss2 << this->_buff;
+	oss2 << "\n";
+	oss2 << RESET;
+	Logger::Write(Logger::MORE, BLU, oss2.str());
+
+	return ;
 }
