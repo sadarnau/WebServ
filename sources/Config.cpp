@@ -93,7 +93,7 @@ void	Config::createServerMap( void )
 	bool locationFound = false;
 	bool listenFound = false;
 	bool endOfSectionFound = false;
-	bool inServerConfig = true;
+	bool inServerConfig = false;
 	bool rootLocationFound = false;
 	std::map<std::string, std::string> newLoc;
 
