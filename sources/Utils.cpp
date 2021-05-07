@@ -114,27 +114,6 @@ void		printLocation(Location loc)
 	Logger::Write(Logger::MORE, WHT, oss.str());
 }
 
-void			printServer(Webserv wserv)
-{
-	std::vector<Location> locVector;
-	std::ostringstream oss;
-
-	locVector = wserv.getLocationVector();
-	oss << wserv;
-	Logger::Write(Logger::DEBUG, WHT, oss.str());
-
-	for (std::vector<Location>::const_iterator it2 = locVector.begin(); it2 != locVector.end(); ++it2)
-		printLocation(*it2);
-	oss.str("");
-	oss.clear();
-}
-
-void			printAllServers(std::vector<Webserv> serverList)
-{
-	for (std::vector<Webserv>::const_iterator it = serverList.begin(); it != serverList.end(); ++it)
-		printServer(*it);
-}
-
 void			printMap(std::map<std::string, std::string> m, std::string type)
 {
 	std::ostringstream oss;

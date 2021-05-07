@@ -58,8 +58,8 @@ public:
 	std::string							getListen( void );
 	std::vector<Location>				getLocationVector( void );
 	int									getServerNb( void );
-};
 
-std::ostream &	operator<<(std::ostream & o, Webserv & rhs);
+	void								logWebserv();
+};
 
 #endif

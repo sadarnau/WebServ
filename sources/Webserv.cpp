@@ -199,13 +199,17 @@ int						Webserv::getServerNb( void )
 	return (this->_serverNb);
 }
 
-
-std::ostream &	operator<<(std::ostream & o, Webserv & rhs)
+void					Webserv::logWebserv()
 {
-	o << "server[" << rhs.getServerNb() << "] : " ;
-	o << "[fd: " << rhs.getFd() << "] ";
-	o << "[IP address: " << rhs.getIpAddress() << "] ";
-	o << "[port: " << rhs.getPort() << "] ";
-	// o << "Config = " << rhs.getConfig() << "\n\n";
-	return ( o );
+	std::ostringstream oss;
+
+	oss << "server[" << this->getServerNb() << "] : " ;
+	oss << "[fd: " << this->getFd() << "] ";
+	oss << "[IP address: " << this->getIpAddress() << "] ";
+	oss << "[port: " << this->getPort() << "] ";
+
+	Logger::Write(Logger::DEBUG, WHT, oss.str());
+
+	for (std::vector<Location>::const_iterator it2 = this->_locationVector.begin(); it2 != this->_locationVector.end(); ++it2)
+		printLocation(*it2);
 }

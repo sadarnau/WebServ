@@ -37,8 +37,8 @@ public:
 	std::vector<Webserv>				getServerList( void );
 	int									getMaxFd( void );
 	std::vector<int>					getFdList( void );
-};
 
-std::ostream &	operator<<(std::ostream & o, Cluster & rhs);
+	void								logCluster();
+};
 
 #endif

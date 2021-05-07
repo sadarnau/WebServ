@@ -49,7 +49,7 @@ int								Cluster::initialization( std::string fileName)
 			this->_maxFd = this->_serverList[i].getFd();
 	}
 
-	printAllServers(this->_serverList);
+	this->logCluster();
 
 	return (0);
 }
@@ -194,12 +194,8 @@ std::vector<int>					Cluster::getFdList( void )
 	return (this->_fdList);
 }
 
-std::ostream &	operator<<(std::ostream & o, Cluster & rhs)
+void							Cluster::logCluster()
 {
-	o << "In the cluster we have :\n";
-	o << "_maxFd = " << rhs.getMaxFd() << '\n';
-	o << "nb of server = " << rhs.getServerList().size() << "\n\n";
-	// o << "_config = " << rhs.getConfig() << '\n';
-
-	return ( o );
+	for (std::vector<Webserv>::iterator it = this->_serverList.begin(); it != this->_serverList.end(); ++it)
+		it->logWebserv();
 }
