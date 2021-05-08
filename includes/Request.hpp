@@ -36,7 +36,7 @@ private:
 	Location							_selectedLocation;
 
 	void								_parseRequest(std::string req);
-
+	std::string							_unchunkBody(std::string body);
 	void								_parseUrl(void);
 	void								_selectLocation(void);
 	void								_createPath(void);

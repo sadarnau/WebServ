@@ -78,9 +78,33 @@ void	Request::_parseRequest(std::string req)
 			this->_skippedHeaders.push_back(key);
 	}
 
-	this->_body = body;
+	if (this->_headers.count("Transfer-Encoding") && !this->_headers["Transfer-Encoding"].compare("chunked"))
+		this->_body = this->_unchunkBody(body);
+	else
+		this->_body = body;
 }
 
+std::string		Request::_unchunkBody(std::string body)
+{
+	std::string		tmpBody("");
+	size_t			chunkLength;
+	size_t			it;
+
+	it = body.find("\r\n");
+	chunkLength = getChunkLength(body, it);
+	if (!chunkLength)
+		return (tmpBody);
+	body.erase(0, it + 2);
+	while (chunkLength)
+	{
+		tmpBody += body.substr(0, chunkLength);
+		body.erase(0, chunkLength + 2);
+		it = body.find("\r\n");
+		chunkLength = getChunkLength(body, it);
+		body.erase(0, it + 2);
+	}
+	return (tmpBody);
+}
 
 ////////////////////
 // UTILS
@@ -233,7 +257,7 @@ void	Request::logRequest(int serverNbr)
 	oss << std::setw(30) << "request->method" << " : " << this->_method << std::endl;
 	oss << std::setw(30) << "request->target" << " : " << this->_target << std::endl;
 	oss << std::setw(30) << "request->query" << " : " << this->_queryString << std::endl;
-	oss << std::setw(30) << "request->body" << " : " << this->_body << std::endl;
+	oss << std::setw(30) << "request->body" << " : \n" << this->_body << std::endl;
 	oss << std::setw(30) << "request->urlTargetPath " << " : " << this->_urlTargetPath << std::endl;
 	oss << std::setw(30) << "request->absoluteTargetPath " << " : " << this->_absoluteTargetPath << std::endl;
 	oss << std::setw(30) << "selectedLocation.getPath() " << " : " << this->_selectedLocation.getPath() << std::endl << std::endl;

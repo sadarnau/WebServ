@@ -120,6 +120,16 @@ std::string					intToStr(int i)
 	return (convert.str());
 }
 
+size_t						getChunkLength(std::string body, size_t it)
+{
+	size_t 				length;   
+	std::stringstream 	ss;
+
+	ss << std::hex << body.substr(0, it);
+	ss >> length;
+	return (length);
+}
+
 std::string					getExtension(std::string target)
 {
 	std::string ext = target.substr(target.find("."), target.length());
