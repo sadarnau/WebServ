@@ -86,7 +86,7 @@ void	Request::_parseRequest(std::string req)
 			this->_skippedHeaders.push_back(key);
 	}
 
-	if (this->_headers["Transfer-Encoding"] == "chunked" || this->_headers["Transfer-Encoding"] == "chunked ")
+	if (this->_headers["Transfer-Encoding"] == "chunked")
 		this->_body = this->_unchunkBody(body);
 	else
 		this->_body = body;
