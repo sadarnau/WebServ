@@ -116,6 +116,11 @@ void	Response::processGetPostHead(void)
 			this->_req->updateTarget(this->getIndexTarget());
 		else if(this->_location.getAutoindex() == "on" && this->autoIndexResponse())  //autoIndexResponse return true on success
 				return ;
+		else
+		{
+			this->checkErrors();
+			return ;
+		}
 	}
 	this->checkErrors();
 

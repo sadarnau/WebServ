@@ -120,12 +120,12 @@ std::string					intToStr(int i)
 	return (convert.str());
 }
 
-size_t						getChunkLength(std::string body, size_t it)
+size_t						hexStrtoInt(std::string hex)
 {
 	size_t 				length;   
 	std::stringstream 	ss;
 
-	ss << std::hex << body.substr(0, it);
+	ss << std::hex << hex;
 	ss >> length;
 	return (length);
 }
