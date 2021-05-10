@@ -17,12 +17,18 @@ Cgi::Cgi(Cgi const &src)
 
 Cgi::~Cgi(void)
 {
-	//delete _envCFormat;
 	if (this->_envC)
 	{
 		for (int i = 0; this->_envC[i]; i++)
 			delete[] this->_envC[i];
 		delete this->_envC;
+	}
+
+	if (this->_argC)
+	{
+		for (int i = 0; this->_argC[i]; i++)
+			delete[] this->_argC[i];
+		delete this->_argC;
 	}
 }
 

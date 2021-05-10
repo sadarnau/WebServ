@@ -114,15 +114,12 @@ void	Response::processGetPostHead(void)
 	}
 	this->checkErrors();
 
-	// Here comes the block where you check the file ext and define content_type
-	// maybe this is called too soon in process
-
-	// Check if the file can be open and create response
 	std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
 
 	// CGI
 	if (!this->_location.getCgiPath().empty() && (this->_location.getCgiExt() == getExtension(this->_req->getTarget())))
 	{
+
 		Cgi		cgi(this->_req);
 
 		if(cgi.processCgi())
@@ -397,11 +394,11 @@ std::string	Response::getIndexTarget(void)
 bool		Response::isIndexPagePresent(void)
 {
 	std::vector<std::string> vIndex = this->_location.getIndex();
-	if (vIndex.empty())
-		return(false);
 
 	for(std::vector<std::string>::iterator it = vIndex.begin(); it != vIndex.end(); ++it)
 	{
+		if (*it == "")
+			return false;
 		std::string target(safeUrlJoin(this->_req->getAbsoluteTargetPath(), *it));
 
 		std::ifstream 	f(target.c_str());

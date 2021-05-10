@@ -132,6 +132,9 @@ size_t						getChunkLength(std::string body, size_t it)
 
 std::string					getExtension(std::string target)
 {
+	if(target.find(".") == std::string::npos)
+		return ("");
+		
 	std::string ext = target.substr(target.find("."), target.length());
 	return ext;
 }

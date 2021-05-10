@@ -92,9 +92,12 @@ std::string		Request::_unchunkBody(std::string body)
 
 	it = body.find("\r\n");
 	chunkLength = getChunkLength(body, it);
+
 	if (!chunkLength)
 		return (tmpBody);
+
 	body.erase(0, it + 2);
+	
 	while (chunkLength)
 	{
 		tmpBody += body.substr(0, chunkLength);
