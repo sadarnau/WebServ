@@ -115,7 +115,7 @@ void	Response::processGetPostHead(void)
 		if (this->isIndexPagePresent())
 			this->_req->updateTarget(this->getIndexTarget());
 		else if(this->_location.getAutoindex() == "on" && this->autoIndexResponse())  //autoIndexResponse return true on success
-				return ;
+			return ;
 		else
 		{
 			this->checkErrors();
@@ -123,7 +123,6 @@ void	Response::processGetPostHead(void)
 		}
 	}
 	this->checkErrors();
-
 	std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
 
 	// CGI
@@ -140,7 +139,8 @@ void	Response::processGetPostHead(void)
 		else
 			this->setToErrorPage(500);
 	}
-	else{
+	else
+	{
 		if (f.good())
 		{
 			this->setResponseCode(200);
