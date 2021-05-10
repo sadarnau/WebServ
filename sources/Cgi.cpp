@@ -120,7 +120,7 @@ void    	Cgi::_initEnv(void)
 	this->_env["CONTENT_LENGTH"] = reqHeaders["Content-Length"];
 	this->_env["CONTENT_TYPE"] = reqHeaders["Content-Type"];
 	this->_env["GATEWAY_INTERFACE"] = "CGI/1.1";
-	this->_env["PATH_INFO"] =  this->_req->getTarget();
+	this->_env["PATH_INFO"] =  this->_req->getUrlTargetPath();
 	this->_env["PATH_TRANSLATED"] = this->_req->getAbsoluteTargetPath();
 	this->_env["QUERY_STRING"] = this->_req->getQueryString();
 	this->_env["REMOTE_ADDR"] = "";
