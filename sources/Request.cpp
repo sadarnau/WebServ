@@ -43,9 +43,17 @@ void	Request::_parseRequest(std::string req)
 {
 	std::string				header;
 	std::string				body;
-
-	header = req.substr(0, req.find("\r\n\r\n"));
-	body = req.substr(req.find("\r\n\r\n") + 4, req.length());
+	
+	if (req.find("\r\n\r\n") != std::string::npos)
+	{
+		header = req.substr(0, req.find("\r\n\r\n"));
+		body = req.substr(req.find("\r\n\r\n") + 4, req.length());
+	}
+	else
+	{
+		header = req;
+		body = "";
+	}
 
 	// parse header
 	std::string				line;
@@ -97,7 +105,7 @@ std::string		Request::_unchunkBody(std::string body)
 		return (tmpBody);
 
 	body.erase(0, it + 2);
-	
+
 	while (chunkLength)
 	{
 		tmpBody += body.substr(0, chunkLength);
