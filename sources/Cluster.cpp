@@ -43,7 +43,7 @@ int								Cluster::initialization( std::string fileName)
 	{
 		Logger::Write(Logger::INFO, GRN, "server[" + std::to_string(i) + "] : creation");
 		if (this->_serverList[i].initialization(i))
-			return 1;
+			return (1);
 		FD_SET(this->_serverList[i].getFd(), &this->_master_fd);	// adding our first fd socket, the server one.
 		if(this->_serverList[i].getFd() > this->_maxFd)				// ternaire ??
 			this->_maxFd = this->_serverList[i].getFd();
@@ -103,14 +103,16 @@ int								Cluster::lanchServices( void )
 			{
 				if (FD_ISSET(*it, &copyMasterSet))
 				{
-					this->_serverList[i].handleRequest( *it );		//if so we send a response without checking if we can write...
+					this->_serverList[i].handleRequest( *it );
 					if (FD_ISSET(*it, &writingSet))
 					{
-						this->_serverList[i].sendResponse( *it );		//if so we send a response without checking if we can write...
+						this->_serverList[i].sendResponse( *it );
 					}
 					else
 					{
 						Logger::Write(Logger::ERROR, RED, "server[" + std::to_string(i) + "] : error with fd[" + std::to_string(*it) + "]");
+						close(*it);
+						list.erase(it);
 						return (1);
 					}
 				}
@@ -139,7 +141,7 @@ int								Cluster::lanchServices( void )
 
 void								Cluster::addSocketToMaster( int socket )
 {
-	this->_fdList.push_back(socket);	// ??
+	this->_fdList.push_back(socket);
 
 	FD_SET(socket, &this->_master_fd);	// add the new fd in the master fd set
 
@@ -164,7 +166,7 @@ int								Cluster::findInVector( int socket, std::vector<int> _fdReady )
 void							Cluster::setWritingSet( fd_set *writefds )
 {
 	FD_ZERO(writefds);
-	std::vector<int> list = _fdList;
+	std::vector<int> list = this->_fdList;
 	for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
 		FD_SET(*it, writefds);
 }

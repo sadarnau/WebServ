@@ -7,15 +7,6 @@
 #include <list>
 #include <csignal>
 
-// static int serverFd;
-
-// void		handle_signal(int sig_num)
-// {
-// 	Logger::Write(Logger::INFO, GRN, "See you\n");
-// 	if (sig_num == SIGINT)
-// 		close(serverFd);
-// }
-
 bool	setLoggerMode(std::string mode)
 {
 		if (mode == "more")
