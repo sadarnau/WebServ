@@ -52,7 +52,12 @@ void	Response::buildResponse(void)
 	if (!this->isValidMethod(requestMethod))
 	{
 		this->setToErrorPage(405);
-		return ;
+		this->buildHeader();
+		if (requestMethod == "HEAD")
+			this->_response = this->_header + "\r\n";
+		else
+			this->_response = this->_header + "\r\n" + this->_body;
+		return;
 	}
 
 	if (requestMethod == "GET" || requestMethod == "POST" || requestMethod == "HEAD")
@@ -70,7 +75,7 @@ void	Response::buildResponse(void)
 	this->buildHeader();
 
 	if (requestMethod == "HEAD")
-		this->_response = this->_header;
+		this->_response = this->_header + "\r\n";
 	else
 		this->_response = this->_header + "\r\n" + this->_body;
 
