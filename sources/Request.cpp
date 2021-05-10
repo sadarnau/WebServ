@@ -43,7 +43,7 @@ void	Request::_parseRequest(std::string req)
 {
 	std::string				header;
 	std::string				body;
-	
+
 	if (req.find("\r\n\r\n") != std::string::npos)
 	{
 		header = req.substr(0, req.find("\r\n\r\n"));
@@ -179,10 +179,12 @@ void	Request::_createPath(void)
 {
 	//Create absolute path
 	if (this->_selectedLocation.getRoot().front() == '/')
-		this->_absoluteTargetPath =  safeUrlJoin(this->_selectedLocation.getRoot(), this->_target);
-	else{
+		this->_absoluteTargetPath = safeUrlJoin(this->_selectedLocation.getRoot(), this->_target);
+	else
+	{
 		char cwd[1000];
-		getcwd(cwd, sizeof(cwd));
+		if(getcwd(cwd, sizeof(cwd)) == NULL)
+			Logger::Write(Logger::ERROR, RED, "error : getcwd");
 		std::string currentdir = cwd;
 		this->_absoluteTargetPath = safeUrlJoin(currentdir, this->_selectedLocation.getRoot());
 		this->_absoluteTargetPath = safeUrlJoin(this->_absoluteTargetPath, this->_target);
