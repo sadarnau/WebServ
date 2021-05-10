@@ -66,8 +66,6 @@ int								Cluster::lanchServices( void )
 		copyMasterSet = this->_master_fd;
 		setWritingSet(&writingSet);
 
-		// Logger::Write(Logger::INFO, GRN, "waiting for request...");
-
 		int	ret = select(this->_maxFd + 1, &copyMasterSet, &writingSet, 0, 0);	// to do : check if there is an error in fd (errorfds)
 
 		if (ret < 0)
@@ -89,13 +87,6 @@ int								Cluster::lanchServices( void )
 			}
 		}
 
-		// std::vector<int> list = this->_fdList;
-		// for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
-		// {
-		// 	if (FD_ISSET(*it, &copyMasterSet))
-		// 		this->_fdReady.push_back(*it);
-		// }
-
 		for(int i = 0; i < this->_nbServ; i++)
 		{
 			std::vector<int> list = this->_serverList[i].getFdList();
@@ -113,6 +104,7 @@ int								Cluster::lanchServices( void )
 						Logger::Write(Logger::ERROR, RED, "server[" + std::to_string(i) + "] : error with fd[" + std::to_string(*it) + "]");
 						close(*it);
 						list.erase(it);
+						this->_fdList.erase(it);
 						return (1);
 					}
 				}
@@ -133,6 +125,14 @@ int								Cluster::lanchServices( void )
 		// 				Logger::Write(Logger::ERROR, RED, "Cannot write in this fd...");
 		// 		}
 		// 	}
+		// }
+
+
+		// std::vector<int> list = this->_fdList;
+		// for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
+		// {
+		// 	if (FD_ISSET(*it, &copyMasterSet))
+		// 		this->_fdReady.push_back(*it);
 		// }
 	}
 

@@ -124,7 +124,7 @@ void	Webserv::handleRequest( int socket )
 			break;
 
 		memset(chunk_data , 0, 128); 					 	// clear the variable (to do : protect)
-		if((ret = recv(socket, chunk_data, 128, 0) ) < 0)	// to do : if = 0, client closed fd
+		if((ret = recv(socket, chunk_data, 127, 0) ) < 0)	// to do : if = 0, client closed fd
 		{
 			// if nothing is received we wait 0.1 second before trying again
 			usleep(100000);

@@ -86,7 +86,7 @@ void	Request::_parseRequest(std::string req)
 			this->_skippedHeaders.push_back(key);
 	}
 
-	if (this->_headers.count("Transfer-Encoding") && !this->_headers["Transfer-Encoding"].compare("chunked"))
+	if (this->_headers["Transfer-Encoding"] == "chunked")
 		this->_body = this->_unchunkBody(body);
 	else
 		this->_body = body;
@@ -94,26 +94,27 @@ void	Request::_parseRequest(std::string req)
 
 std::string		Request::_unchunkBody(std::string body)
 {
-	std::string		tmpBody("");
-	size_t			chunkLength;
-	size_t			it;
+	std::string		tmpBody = "";
+	std::string		hexStr;
+	int				chunkLength;
+	int				it;
 
 	it = body.find("\r\n");
-	chunkLength = getChunkLength(body, it);
+	hexStr = body.substr(0, it);
+	chunkLength = hexStrtoInt(hexStr);
 
 	if (!chunkLength)
 		return (tmpBody);
 
-	body.erase(0, it + 2);
-
-	while (chunkLength)
+	while (chunkLength && chunkLength > 0)
 	{
-		tmpBody += body.substr(0, chunkLength);
-		body.erase(0, chunkLength + 2);
+		tmpBody += body.substr(it + 2, chunkLength);
+		body = body.substr(chunkLength + it + 4, body.size());
+
 		it = body.find("\r\n");
-		chunkLength = getChunkLength(body, it);
-		body.erase(0, it + 2);
+		chunkLength = hexStrtoInt(body.substr(0, it));
 	}
+
 	return (tmpBody);
 }
 
