@@ -5,7 +5,7 @@ Location::Location(void)
 	this->_isSet = false;
 }
 
-Location::Location(std::map<std::string, std::string> locationMap) : _listen(""), _path(""), _serverName(""), _clientMaxBodySizeStr("1M"), _clientMaxBodySize(1000000), _root(""), _cgiPath(""),  _cgiExt(""), _autoindex("")
+Location::Location(std::map<std::string, std::string> locationMap) : _listen(""), _path(""), _serverName(""), _clientMaxBodySizeStr("1M"), _clientMaxBodySize(1000000), _root(""), _cgiPath(""),  _cgiExt(""), _autoindex(""), _settingMap(locationMap)
 {
 	this->_isSet = true;
 	this->_index.clear();
@@ -132,6 +132,12 @@ std::map<std::string, std::string>	Location::getErrorPage(void)
 	return (this->_errorPage);
 }
 
+std::map<std::string, std::string>	Location::getSettingMap(void)
+{
+	return (this->_settingMap);
+}
+
+
 bool								Location::isSet(void)
 {
 	return (this->_isSet);
@@ -150,7 +156,7 @@ void								Location::logLocation(void)
 	oss << "[client_max_body_size: " << this->_clientMaxBodySizeStr << "]";
 	oss << "[root: " << this->_root << "]";
 	oss << "[cgi_path: " << this->_cgiPath << "]";
-	oss << "[cgi_Ext: " << this->_cgiExt << "]";
+	oss << "[cgi_ext: " << this->_cgiExt << "]";
 	oss << "[autoindex: " << this->_autoindex << "]";
 	oss << "[index: ";
 	vec = this->getIndex();
@@ -159,6 +165,7 @@ void								Location::logLocation(void)
 		for (std::vector<std::string>::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			oss << *it << " ";
 	}
+	oss << "]";
 	oss << "[accepted_method: ";
 	vec = this->getAcceptedMethod();
 	if (!vec.empty())

@@ -23,6 +23,7 @@ class Location
 		std::vector<std::string>			_index;
 		std::vector<std::string>			_acceptedMethod;
 		std::map<std::string, std::string>	_errorPage;
+		std::map<std::string, std::string>	_settingMap;
 
 	public:
 		Location(void);
@@ -43,6 +44,7 @@ class Location
 		std::vector<std::string>			getIndex(void);
 		std::vector<std::string>			getAcceptedMethod(void);
 		std::map<std::string, std::string>	getErrorPage(void);
+		std::map<std::string, std::string>	getSettingMap(void);
 		bool								isSet(void);
 
 		void								logLocation(void);

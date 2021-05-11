@@ -28,6 +28,7 @@ private:
 	struct sockaddr_in		address;
 	std::string				_listen;
 	std::vector<Location>	_locationVector;
+	std::vector<Location>	_locationExtVector;
 	fd_set					_master_fd;
 	int						_maxFd;
 	std::string				_port;
@@ -37,7 +38,7 @@ private:
 public:
 
 	Webserv( void );						 		//default constructor
-	Webserv( std::string listen, std::vector<Location> locationVector );					//constructor
+	Webserv( std::string listen, std::vector<Location> locationVector, std::vector<Location> locationExtVector );					//constructor
 	Webserv( Webserv const & src);  				//copy
 	~Webserv( void );								//destructor
 	Webserv & operator=( Webserv const & rhs );		//overload operator =
@@ -57,6 +58,7 @@ public:
 	std::string							getPort( void );
 	std::string							getListen( void );
 	std::vector<Location>				getLocationVector( void );
+	std::vector<Location>				getLocationExtVector( void );
 	int									getServerNb( void );
 
 	void								logWebserv();

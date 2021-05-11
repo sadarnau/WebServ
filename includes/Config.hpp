@@ -22,10 +22,11 @@ private:
 	std::string							_listen;
 	std::map<std::string, std::string>	_configMap;
 	std::vector<Location> 				_locationVector;
+	std::vector<Location> 				_locationExtVector;
 	std::vector<Webserv>				_serverVector;
 	void								initConfigMap( void );
 	void								initLocationMap( std::map<std::string, std::string> & newLoc, std::string path);
-	void								addConfigToLocation(std::map<std::string, std::string> newLoc);
+	void								addConfigToLocation(std::map<std::string, std::string> newLoc, bool isExtension);
 	void								checkFile( std::string fileName );
 	bool								checkSemiColon( std::string str );
 	void								createServerMap( void );

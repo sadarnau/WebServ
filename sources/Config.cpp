@@ -26,6 +26,7 @@ Config & Config::operator=( Config const & rhs)
 	// this->f = rhs.f;
 	this->_configMap = rhs._configMap;
 	this->_locationVector = rhs._locationVector;
+	this->_locationExtVector = rhs._locationExtVector;
 	this->_serverVector = rhs._serverVector;
 
 	return ( *this );
@@ -150,12 +151,13 @@ void	Config::createServerMap( void )
 				throw (std::exception());
 			}
 			if (!rootLocationFound)
-				addConfigToLocation(newLoc);
-			this->_serverVector.push_back(Webserv(this->_listen, this->_locationVector));
+				addConfigToLocation(newLoc, false);
+			this->_serverVector.push_back(Webserv(this->_listen, this->_locationVector, this->_locationExtVector));
 			newLoc.clear();
 			this->initLocationMap(newLoc, "/");
 			this->_configMap.clear();
 			this->_locationVector.clear();
+			this->_locationExtVector.clear();
 			this->initConfigMap();
 			rootLocationFound = false;
 		}
@@ -184,24 +186,39 @@ void	Config::initLocationMap(std::map<std::string, std::string> & newLoc, std::s
 	newLoc["path"] = path;
 }
 
-void	Config::addConfigToLocation(std::map<std::string, std::string> newLoc)
+void	Config::addConfigToLocation(std::map<std::string, std::string> newLoc, bool isExtension)
 {
-	for (std::map<std::string, std::string>::const_iterator it = this->_configMap.begin(); it != this->_configMap.end(); ++it)
+	if (isExtension)
 	{
-		if (!newLoc.count(it->first))
-			newLoc[it->first] = it->second;
+		newLoc["cgi_ext"] = newLoc["path"];
+		this->_locationExtVector.push_back(Location(newLoc));
 	}
-	this->_locationVector.push_back(Location(newLoc));
+	else
+	{
+		for (std::map<std::string, std::string>::const_iterator it = this->_configMap.begin(); it != this->_configMap.end(); ++it)
+		{
+			if (!newLoc.count(it->first))
+				newLoc[it->first] = it->second;
+		}
+		this->_locationVector.push_back(Location(newLoc));
+	}
 }
 
-void	Config::newLocationConfig( std::string path )
+void	Config::newLocationConfig(std::string path)
 {
 	std::string line;
 	std::vector<std::string> split;
 	std::map<std::string, std::string> newLoc;
 	bool endOfSectionFound = false;
+	bool isExtension = false;
 
-	this->initLocationMap(newLoc, path);
+	if (path[0] == '*' && path[1] == '.')
+	{
+		this->initLocationMap(newLoc, path.substr(1));
+		isExtension = true;
+	}
+	else
+		this->initLocationMap(newLoc, path);
 	while (std::getline(this->f, line))
 	{
 		splitStringToVector(line, split);
@@ -227,7 +244,7 @@ void	Config::newLocationConfig( std::string path )
 			newLoc[split[1]] = split[2].substr(0, split[2].size() - 1);
 		else if (!split[0].compare("}") && split.size() == 1)
 		{
-			addConfigToLocation(newLoc);
+			addConfigToLocation(newLoc, isExtension);
 			endOfSectionFound = true;
 			break ;
 		}

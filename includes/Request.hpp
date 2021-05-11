@@ -21,6 +21,7 @@ class Request
 {
 private:
 	vlocation							*_locationVector;
+	vlocation							*_locationExtVector;
 	int									_inSocket;
 	std::string							_buff;
 
@@ -35,16 +36,18 @@ private:
 	std::vector<std::string>			_skippedHeaders;
 	std::string							_queryString;
 	Location							_selectedLocation;
+	Location							_selectedLocationExt;
 
 	void								_parseRequest(std::string req);
 	std::string							_unchunkBody(std::string body);
 	void								_parseUrl(void);
 	void								_selectLocation(void);
+	void								_mergeLocation(void);
 	void								_createPath(void);
 	bool								_isValidHeader(std::string header);
 
 public:
-	Request(vlocation *_locationVector, int inSock, std::string buff);
+	Request(vlocation *_locationVector, vlocation *_locationExtVector, int inSock, std::string buff);
 	Request(Request const & src);
 	~Request(void);
 	Request & operator=(Request const & rhs);

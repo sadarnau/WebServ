@@ -5,7 +5,7 @@ Webserv::Webserv( void )
 	return ;
 }
 
-Webserv::Webserv( std::string listen, std::vector<Location > locationVector ) : _listen(listen), _locationVector(locationVector)				//constructor
+Webserv::Webserv( std::string listen, std::vector<Location > locationVector, std::vector<Location > locationExtVector ) : _listen(listen), _locationVector(locationVector), _locationExtVector(locationExtVector)				//constructor
 {
 	return ;
 }
@@ -30,6 +30,7 @@ Webserv & Webserv::operator=( Webserv const & rhs)
 	this->address = rhs.address;
 	this->_listen = rhs._listen;
 	this->_locationVector = rhs._locationVector;
+	this->_locationExtVector = rhs._locationExtVector;
 	this->_serverNb = rhs._serverNb;
 
 	return ( *this );
@@ -145,7 +146,7 @@ void	Webserv::handleRequest( int socket )
 
 void	Webserv::sendResponse( int socket )
 {
-	Request		request(&this->_locationVector, socket, this->_buff);
+	Request		request(&this->_locationVector, &this->_locationExtVector, socket, this->_buff);
 	request.logRequest(this->_serverNb);
 	Response	response(&request, socket);
 	response.logResponse(this->_serverNb);
@@ -191,6 +192,11 @@ std::vector<Location>	Webserv::getLocationVector( void )
 	return (this->_locationVector);
 }
 
+std::vector<Location>	Webserv::getLocationExtVector( void )
+{
+	return (this->_locationExtVector);
+}
+
 int						Webserv::getServerNb( void )
 {
 	return (this->_serverNb);
@@ -208,5 +214,7 @@ void					Webserv::logWebserv()
 	Logger::Write(Logger::DEBUG, WHT, oss.str());
 
 	for (std::vector<Location>::iterator it2 = this->_locationVector.begin(); it2 != this->_locationVector.end(); ++it2)
+		it2->logLocation();
+	for (std::vector<Location>::iterator it2 = this->_locationExtVector.begin(); it2 != this->_locationExtVector.end(); ++it2)
 		it2->logLocation();
 }

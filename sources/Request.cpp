@@ -3,11 +3,12 @@
 ////////////////////
 // COPLIEN'S
 ////////////////////
-Request::Request(vlocation *locationVector, int inSock, std::string buff)
+Request::Request(vlocation *locationVector, vlocation *locationExtVector, int inSock, std::string buff)
 {
 	// Logger::Write(Logger::DEBUG, WHT, "request : creation");
 	this->_inSocket = inSock;
 	this->_locationVector = locationVector;
+	this->_locationExtVector = locationExtVector;
 	this->_buff = buff;
 	this->_contentLength = 0;
 
@@ -160,6 +161,17 @@ void	Request::_selectLocation(void)
 	if(this->_target.front() != '/')
 		this->_target.insert(0, "/");
 }
+
+void	Request::_mergeLocation(void)
+{
+	std::map<std::string, std::string>	locationSetting(this->_selectedLocation.getSettingMap());
+	std::map<std::string, std::string>	locationExtSetting(this->_selectedLocationExt.getSettingMap());
+
+	for (std::map<std::string, std::string>::const_iterator it = locationExtSetting.begin(); it != locationExtSetting.end(); ++it)
+		locationSetting[it->first] = it->second;
+	this->_selectedLocation = Location(locationSetting);
+}
+
 
 void	Request::_parseUrl(void)
 {
