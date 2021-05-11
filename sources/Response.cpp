@@ -73,7 +73,7 @@ void	Response::buildResponse(void)
 	this->buildHeader();
 
 	if (requestMethod == "HEAD")
-		this->_response = this->_header;
+		this->_response = this->_header + "\r\n";
 	else
 		this->_response = this->_header + "\r\n" + this->_body;
 
@@ -526,5 +526,5 @@ void Response::logResponse(int serverNbr)
 		this->getResponseCodeStr() + "] [message: " + this->getResponseCodeMessage() 
 		+ "] [content length: " + this->getContentLength()+ "]");
 	Logger::Write(Logger::DEBUG, WHT, " response : header\n" + this->getHeader());
-	Logger::Write(Logger::MORE, BLU, " response : body\n" + this->getBody());
+	Logger::Write(Logger::MORE, BLU, " full response :\n" + this->getResponse());
 }
