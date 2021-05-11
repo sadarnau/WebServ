@@ -41,7 +41,9 @@ Response & Response::operator=(Response const & rhs)
 ////////////////////
 void	Response::send(void)
 {
-	write(this->_socket, this->_response.c_str() , this->_response.length());	//to protect
+	write(this->_socket, this->_response.c_str() , this->_response.length());	// to protect !!!!!
+
+	return ;
 }
 
 void	Response::buildResponse(void)
@@ -71,7 +73,7 @@ void	Response::buildResponse(void)
 	this->buildHeader();
 
 	if (requestMethod == "HEAD")
-		this->_response = this->_header + "\r\n";
+		this->_response = this->_header;
 	else
 		this->_response = this->_header + "\r\n" + this->_body;
 
@@ -111,14 +113,10 @@ void	Response::processGetPostHead(void)
 		if (this->isIndexPagePresent())
 			this->_req->updateTarget(this->getIndexTarget());
 		else if(this->_location.getAutoindex() == "on" && this->autoIndexResponse())  //autoIndexResponse return true on success
-			return ;
-		else
-		{
-			this->checkErrors();
-			return ;
-		}
+				return ;
 	}
 	this->checkErrors();
+
 	std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
 
 	// CGI
@@ -135,8 +133,7 @@ void	Response::processGetPostHead(void)
 		else
 			this->setToErrorPage(500);
 	}
-	else
-	{
+	else{
 		if (f.good())
 		{
 			this->setResponseCode(200);

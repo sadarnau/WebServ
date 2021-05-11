@@ -43,7 +43,7 @@ int								Cluster::initialization( std::string fileName)
 	{
 		Logger::Write(Logger::INFO, GRN, "server[" + std::to_string(i) + "] : creation");
 		if (this->_serverList[i].initialization(i))
-			return 1;
+			return (1);
 		FD_SET(this->_serverList[i].getFd(), &this->_master_fd);	// adding our first fd socket, the server one.
 		if(this->_serverList[i].getFd() > this->_maxFd)				// ternaire ??
 			this->_maxFd = this->_serverList[i].getFd();
@@ -66,13 +66,15 @@ int								Cluster::lanchServices( void )
 		copyMasterSet = this->_master_fd;
 		setWritingSet(&writingSet);
 
-		// Logger::Write(Logger::INFO, GRN, "waiting for request...");
-
 		int	ret = select(this->_maxFd + 1, &copyMasterSet, &writingSet, 0, 0);	// to do : check if there is an error in fd (errorfds)
 
 		if (ret < 0)
 		{
 			Logger::Write(Logger::ERROR, RED, "error : select");
+			std::cout << "\n\n" << std::string(strerror(errno)) << "\n\n";
+			std::vector<int> list = this->_serverList[0].getFdList();
+			for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
+				std::cout << *it << " ";
 			throw (std::exception()); // to do : exception
 			return (1); //test ???
 		}
@@ -89,13 +91,6 @@ int								Cluster::lanchServices( void )
 			}
 		}
 
-		// std::vector<int> list = this->_fdList;
-		// for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
-		// {
-		// 	if (FD_ISSET(*it, &copyMasterSet))
-		// 		this->_fdReady.push_back(*it);
-		// }
-
 		for(int i = 0; i < this->_nbServ; i++)
 		{
 			std::vector<int> list = this->_serverList[i].getFdList();
@@ -103,15 +98,29 @@ int								Cluster::lanchServices( void )
 			{
 				if (FD_ISSET(*it, &copyMasterSet))
 				{
-					this->_serverList[i].handleRequest( *it );		//if so we send a response without checking if we can write...
-					if (FD_ISSET(*it, &writingSet))
+					if (!this->_serverList[i].handleRequest( *it ))
 					{
-						this->_serverList[i].sendResponse( *it );		//if so we send a response without checking if we can write...
+						close(*it);
+						FD_CLR(*it, &this->_master_fd);
+						FD_CLR(*it, &writingSet);
+						deleteInFdList(*it);
+						this->_serverList[i].deleteSocket(*it);
 					}
 					else
 					{
-						Logger::Write(Logger::ERROR, RED, "server[" + std::to_string(i) + "] : error with fd[" + std::to_string(*it) + "]");
-						return (1);
+						if (FD_ISSET(*it, &writingSet))
+						{
+							this->_serverList[i].sendResponse( *it );
+						}
+						else
+						{
+							Logger::Write(Logger::ERROR, RED, "server[" + std::to_string(i) + "] : error with fd[" + std::to_string(*it) + "]");
+							close(*it);
+							list.erase(it);
+							FD_CLR(*it, &copyMasterSet);
+							FD_CLR(*it, &writingSet);
+							return (1);
+						}
 					}
 				}
 			}
@@ -132,6 +141,14 @@ int								Cluster::lanchServices( void )
 		// 		}
 		// 	}
 		// }
+
+
+		// std::vector<int> list = this->_fdList;
+		// for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
+		// {
+		// 	if (FD_ISSET(*it, &copyMasterSet))
+		// 		this->_fdReady.push_back(*it);
+		// }
 	}
 
 	return (0);
@@ -139,7 +156,7 @@ int								Cluster::lanchServices( void )
 
 void								Cluster::addSocketToMaster( int socket )
 {
-	this->_fdList.push_back(socket);	// ??
+	this->_fdList.push_back(socket);
 
 	FD_SET(socket, &this->_master_fd);	// add the new fd in the master fd set
 
@@ -149,13 +166,15 @@ void								Cluster::addSocketToMaster( int socket )
 	return ;
 }
 
-int								Cluster::findInVector( int socket, std::vector<int> _fdReady )
+int								Cluster::deleteInFdList( int socket )
 {
-	std::vector<int> list = _fdReady;
-	for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
+	for (std::vector<int>::iterator it = this->_fdList.begin() ; it != this->_fdList.end() ; it++)
 	{
 		if (socket == *it)
-			return (0);
+		{
+			this->_fdList.erase(it);
+			break ;
+		}
 	}
 
 	return (1);
@@ -164,7 +183,7 @@ int								Cluster::findInVector( int socket, std::vector<int> _fdReady )
 void							Cluster::setWritingSet( fd_set *writefds )
 {
 	FD_ZERO(writefds);
-	std::vector<int> list = _fdList;
+	std::vector<int> list = this->_fdList;
 	for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
 		FD_SET(*it, writefds);
 }
