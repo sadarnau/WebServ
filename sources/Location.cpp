@@ -5,7 +5,7 @@ Location::Location(void)
 	this->_isSet = false;
 }
 
-Location::Location(std::map<std::string, std::string> locationMap) : _listen(""), _path(""), _serverName(""), _clientMaxBodySize(""), _root(""), _cgiPath(""), _autoindex("")
+Location::Location(std::map<std::string, std::string> locationMap) : _listen(""), _path(""), _serverName(""), _clientMaxBodySizeStr("1M"), _clientMaxBodySize(1000000), _root(""), _cgiPath(""),  _cgiExt(""), _autoindex("")
 {
 	this->_isSet = true;
 	this->_index.clear();
@@ -20,7 +20,11 @@ Location::Location(std::map<std::string, std::string> locationMap) : _listen("")
 		else if (!it->first.compare("server_name"))
 			this->_serverName = it->second;
 		else if (!it->first.compare("client_max_body_size"))
-			this->_clientMaxBodySize = it->second;
+		{
+			if (it->second.size())
+				this->_clientMaxBodySizeStr = it->second;
+			this->_clientMaxBodySize = convertClientSizeFromStr(this->_clientMaxBodySizeStr);
+		}
 		else if (!it->first.compare("root"))
 			this->_root = it->second;
 		else if (!it->first.compare("autoindex"))
@@ -56,6 +60,7 @@ Location &Location::operator=(const Location &rhs)
 	this->_path = rhs._path;
 	this->_serverName = rhs._serverName;
 	this->_clientMaxBodySize = rhs._clientMaxBodySize;
+	this->_clientMaxBodySizeStr = rhs._clientMaxBodySizeStr;
 	this->_root = rhs._root;
 	this->_cgiPath = rhs._cgiPath;
 	this->_cgiExt = rhs._cgiExt;
@@ -82,9 +87,14 @@ std::string		Location::getServerName(void)
 	return (this->_serverName);
 }
 
-std::string		Location::getClientMaxBodySize(void)
+size_t			Location::getClientMaxBodySize(void)
 {
 	return (this->_clientMaxBodySize);
+}
+
+std::string		Location::getClientMaxBodySizeStr(void)
+{
+	return (this->_clientMaxBodySizeStr);
 }
 
 std::string		Location::getRoot(void)
@@ -134,14 +144,14 @@ void								Location::logLocation(void)
 	std::map<std::string, std::string> mapstr;
 
 	oss << "location ";
-	oss << "[path: " << this->getPath() << "] : ";
-	oss << "[listen: " << this->getListen() << "]";
-	oss << "[server_name: " << this->getServerName() << "]";
-	oss << "[client_max_body_size: " << this->getClientMaxBodySize() << "]";
-	oss << "[root: " << this->getRoot() << "]";
-	oss << "[cgi_path: " << this->getCgiPath() << "]";
-	oss << "[cgi_Ext: " << this->getCgiExt() << "]";
-	oss << "[autoindex: " << this->getAutoindex() << "]";
+	oss << "[path: " << this->_path << "] : ";
+	oss << "[listen: " << this->_listen << "]";
+	oss << "[server_name: " << this->_serverName << "]";
+	oss << "[client_max_body_size: " << this->_clientMaxBodySizeStr << "]";
+	oss << "[root: " << this->_root << "]";
+	oss << "[cgi_path: " << this->_cgiPath << "]";
+	oss << "[cgi_Ext: " << this->_cgiExt << "]";
+	oss << "[autoindex: " << this->_autoindex << "]";
 	oss << "[index: ";
 	vec = this->getIndex();
 	if (!vec.empty())

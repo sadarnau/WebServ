@@ -13,6 +13,7 @@ Response::Response(Request *req, int socket)
 	this->_socket = socket;
 	this->_httpVersion = "HTTP/1.1";
 
+
 	this->buildResponse();
 	this->send();
 }
@@ -52,6 +53,18 @@ void	Response::buildResponse(void)
 	if (!this->isValidMethod(requestMethod))
 	{
 		this->setToErrorPage(405);
+		this->buildHeader();
+		if (requestMethod == "HEAD")
+			this->_response = this->_header + "\r\n";
+		else
+			this->_response = this->_header + "\r\n" + this->_body;
+		return;
+	}
+	//Check client_max_body_size
+	std::cout << " req l : " << this->_req->getContentLength() << "  || cmbs : " <<this->_location.getClientMaxBodySize() << "\n\n";
+	if (this->_req->getContentLength() > this->_location.getClientMaxBodySize())
+	{
+		this->setToErrorPage(413);
 		this->buildHeader();
 		if (requestMethod == "HEAD")
 			this->_response = this->_header + "\r\n";

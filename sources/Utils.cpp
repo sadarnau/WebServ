@@ -120,6 +120,46 @@ std::string					intToStr(int i)
 	return (convert.str());
 }
 
+bool						isStrNumber(std::string s)
+{
+    std::string::const_iterator it = s.begin();
+
+    while (it != s.end() && std::isdigit(*it)) 
+		++it;
+    return (!s.empty() && it == s.end());
+}
+
+size_t						convertClientSizeFromStr(std::string str)
+{
+	size_t				res;
+	size_t				weight = 1;
+	std::stringstream 	ss;
+
+	if (str.find("K") != std::string::npos)
+	{
+		ss << str.substr(0, str.find("K"));
+		weight = 1000;
+	}
+	else if (str.find("M") != std::string::npos)
+	{
+		ss << str.substr(0, str.find("M"));
+		weight = 1000000;
+	}
+	else if (str.find("G") != std::string::npos)
+	{
+		ss << str.substr(0, str.find("G"));
+		weight = 1000000000;
+	}
+	else if (!isStrNumber(str))
+		return (0);
+	else
+		ss << str;
+
+	ss >> res;
+	res *= weight;
+	return (res);
+}
+
 size_t						hexStrtoInt(std::string hex)
 {
 	size_t 				length;   

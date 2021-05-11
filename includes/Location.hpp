@@ -14,7 +14,8 @@ class Location
 		std::string							_listen;
 		std::string							_path;
 		std::string							_serverName;
-		std::string							_clientMaxBodySize;
+		std::string							_clientMaxBodySizeStr;
+		size_t								_clientMaxBodySize;
 		std::string							_root;
 		std::string							_cgiPath;
 		std::string							_cgiExt;
@@ -33,7 +34,8 @@ class Location
 		std::string							getListen(void);
 		std::string							getPath(void);
 		std::string							getServerName(void);
-		std::string							getClientMaxBodySize(void);
+		size_t								getClientMaxBodySize(void);
+		std::string							getClientMaxBodySizeStr(void);
 		std::string							getRoot(void);
 		std::string							getCgiPath(void);
 		std::string							getCgiExt(void);

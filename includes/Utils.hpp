@@ -23,6 +23,7 @@ std::string                 safeUrlJoin(std::string url1, std::string url2);
 std::vector<std::string>	concatToVector(std::string toParse);
 std::string					intToStr(int i);
 bool						isPathAFile(std::string path);
+size_t						convertClientSizeFromStr(std::string str);
 size_t						hexStrtoInt(std::string hex);
 std::string					getExtension(std::string target);
 

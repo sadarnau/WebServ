@@ -8,6 +8,7 @@ Request::Request(vlocation *locationVector, int inSock, std::string buff)
 	this->_inSocket = inSock;
 	this->_locationVector = locationVector;
 	this->_buff = buff;
+	this->_contentLength = 0;
 
 	this->_parseRequest(this->_buff);
 	this->_selectLocation();
@@ -81,7 +82,11 @@ void	Request::_parseRequest(std::string req)
 
 		key = key.substr(0, key.length() - 1);				// delete char ':' at the end of key
 		if (this->_isValidHeader(key))
+		{
 			this->_headers[key] = value;
+			if (!key.compare("Content-Length"))
+				this->_contentLength = std::stoul(value);
+		}
 		else
 			this->_skippedHeaders.push_back(key);
 	}
@@ -252,6 +257,11 @@ Location		Request::getSelectedLocation(void)
 std::map<std::string, std::string>	Request::getHeaders(void)
 {
 	return(this->_headers);
+}
+
+size_t			Request::getContentLength(void)
+{
+	return (this->_contentLength);
 }
 
 ////////////////////

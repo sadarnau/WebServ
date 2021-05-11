@@ -24,6 +24,7 @@ private:
 	int									_inSocket;
 	std::string							_buff;
 
+	size_t								_contentLength;
 	std::string							_method;
 	std::string							_target;
 	std::string							_message;
@@ -58,7 +59,8 @@ public:
 	std::string							getQueryString(void);
 	std::map<std::string, std::string>	getHeaders(void);
 	Location							getSelectedLocation(void);
-
+	size_t								getContentLength(void);
+	
 	void								logRequest(int serverNb);
 };
 
