@@ -68,6 +68,7 @@ Location &Location::operator=(const Location &rhs)
 	this->_index = rhs._index;
 	this->_acceptedMethod = rhs._acceptedMethod;
 	this->_errorPage = rhs._errorPage;
+	this->_settingMap = rhs._settingMap;
 
 	return (*this);
 }
