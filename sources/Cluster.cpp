@@ -62,34 +62,29 @@ int								Cluster::lanchServices( void )
 	while(1)
 	{
 		// We have to make a copy of the master fd set because select() will change bits
-		// of living fds  (( man 2 select ))
+		// of moving fds  (( man 2 select ))
 		copyMasterSet = this->_master_fd;
 		setWritingSet(&writingSet);
 
-		int	ret = select(this->_maxFd + 1, &copyMasterSet, &writingSet, 0, 0);	// to do : check if there is an error in fd (errorfds)
+		int	ret = select(this->_maxFd + 1, &copyMasterSet, &writingSet, 0, 0);
 
 		if (ret < 0)
 		{
-			Logger::Write(Logger::ERROR, RED, "error : select");
-			std::cout << "\n\n" << std::string(strerror(errno)) << "\n\n";
-			std::vector<int> list = this->_serverList[0].getFdList();
-			for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
-				std::cout << *it << " ";
+			Logger::Write(Logger::ERROR, RED, "Error : select have deconné");
 			throw (std::exception()); // to do : exception
-			return (1); //test ???
+			return (1); // test ???
 		}
 
-		// We go throught every server fds to see if we have a new connection
-		for(int i = 0; i < this->_nbServ; i++)
-		{
-			if (FD_ISSET(this->_serverList[i].getFd(), &copyMasterSet)) // if serv fd changed -> new connection
+		for(int i = 0; i < this->_nbServ; i++)							// We go throught every server fds to see if we have a new connection
+			if (FD_ISSET(this->_serverList[i].getFd(), &copyMasterSet))	// if serv fd changed -> new connection
 			{
+				int	sock;
 				Logger::Write(Logger::INFO, GRN, "server[" + std::to_string(i) + "] : new connection");
-				int sock = this->_serverList[i].acceptConexion();
+				if ((sock = this->_serverList[i].acceptConexion()) < 0)
+					return (1); // test ???
 				addSocketToMaster(sock);
-				break ;			// no need to check any more serv
+				break ;													// no need to check any more serv
 			}
-		}
 
 		for(int i = 0; i < this->_nbServ; i++)
 		{
@@ -109,46 +104,20 @@ int								Cluster::lanchServices( void )
 					else
 					{
 						if (FD_ISSET(*it, &writingSet))
-						{
 							this->_serverList[i].sendResponse( *it );
-						}
 						else
 						{
-							Logger::Write(Logger::ERROR, RED, "server[" + std::to_string(i) + "] : error with fd[" + std::to_string(*it) + "]");
+							Logger::Write(Logger::ERROR, RED, "server[" + std::to_string(i) + "] : error with reading fd[" + std::to_string(*it) + "]");
 							close(*it);
-							list.erase(it);
 							FD_CLR(*it, &copyMasterSet);
 							FD_CLR(*it, &writingSet);
-							return (1);
+							deleteInFdList(*it);
+							this->_serverList[i].deleteSocket(*it);
 						}
 					}
 				}
 			}
 		}
-
-		// // We go throught every open fds to see if we have something new to read
-		// for(int i = 0; i < this->_nbServ; i++)
-		// {
-		// 	std::vector<int> list = this->_serverList[i].getFdList();
-		// 	for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
-		// 	{
-		// 		if (FD_ISSET(*it, &copyMasterSet))
-		// 		{
-		// 			if (!findInVector(*it, this->_fdReady))
-		// 				this->_serverList[i].handleRequest( *it );		//if so we send a response without checking if we can write...
-		// 			else
-		// 				Logger::Write(Logger::ERROR, RED, "Cannot write in this fd...");
-		// 		}
-		// 	}
-		// }
-
-
-		// std::vector<int> list = this->_fdList;
-		// for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
-		// {
-		// 	if (FD_ISSET(*it, &copyMasterSet))
-		// 		this->_fdReady.push_back(*it);
-		// }
 	}
 
 	return (0);
@@ -166,18 +135,14 @@ void								Cluster::addSocketToMaster( int socket )
 	return ;
 }
 
-int								Cluster::deleteInFdList( int socket )
+void								Cluster::deleteInFdList( int socket )
 {
 	for (std::vector<int>::iterator it = this->_fdList.begin() ; it != this->_fdList.end() ; it++)
-	{
 		if (socket == *it)
 		{
 			this->_fdList.erase(it);
 			break ;
 		}
-	}
-
-	return (1);
 }
 
 void							Cluster::setWritingSet( fd_set *writefds )
