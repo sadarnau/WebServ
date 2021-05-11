@@ -95,13 +95,11 @@ void	Request::_parseRequest(std::string req)
 std::string		Request::_unchunkBody(std::string body)
 {
 	std::string		tmpBody = "";
-	std::string		hexStr;
 	int				chunkLength;
 	int				it;
 
 	it = body.find("\r\n");
-	hexStr = body.substr(0, it);
-	chunkLength = hexStrtoInt(hexStr);
+	chunkLength = hexStrtoInt(body.substr(0, it));
 
 	if (!chunkLength)
 		return (tmpBody);
