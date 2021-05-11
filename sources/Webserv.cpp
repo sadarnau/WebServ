@@ -107,15 +107,13 @@ int		Webserv::acceptConexion( void )
 
 void	Webserv::handleRequest( int socket )
 {
-	// char tmp[1024];
-	// int ret;
 	this->_buff.clear();
 
+	int BUFF_SIZE = 10000;
 	int ret;
 	struct timeval now , beginning;
-	char chunk_data[128];
+	char chunk_data[BUFF_SIZE];
 	double timediff;
-	 
 	gettimeofday(&beginning , NULL);
 	 
 	while(1)
@@ -126,24 +124,23 @@ void	Webserv::handleRequest( int socket )
 		if(timediff > 0.5 ) // (0.5 is timeout)
 			break;
 
-		memset(chunk_data , 0, 128);  //clear the variable
-		if((ret = recv(socket, chunk_data, 127, 0) ) < 0) //to do : if = 0, client closed fd
+		memset(chunk_data , 0, BUFF_SIZE);  //clear the variable
+		if((ret = recv(socket, chunk_data, BUFF_SIZE - 1, 0) ) < 0) //to do : if = 0, client closed fd
 		{
 			//if nothing is received we wait 0.1 second before trying again
 			usleep(100000);
 		}
+		else if (ret == 0)
+        {
+            Logger::Write(Logger::ERROR, RED, "Error : Client have closed his connection.." );
+            return ;
+        }
 		else
 		{
-			this->_buff = this->_buff + chunk_data;
+			this->_buff.append(chunk_data);
 			gettimeofday(&beginning , NULL);
 		}
 	}
-
-	// while ((ret = read( socket , tmp, 1024)) > 0)	// to protect
-	// {
-	// 	tmp[ret] = 0;	//usefull ?
-	// 	this->_buff = this->_buff + tmp;
-	// }
 }
 
 void	Webserv::sendResponse( int socket )

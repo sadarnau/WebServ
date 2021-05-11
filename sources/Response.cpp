@@ -51,39 +51,22 @@ void	Response::buildResponse(void)
 
 	// METHODS
 	if (!this->isValidMethod(requestMethod))
-	{
 		this->setToErrorPage(405);
-		this->buildHeader();
-		if (requestMethod == "HEAD")
-			this->_response = this->_header + "\r\n";
-		else
-			this->_response = this->_header + "\r\n" + this->_body;
-		return;
-	}
-	//Check client_max_body_size
-	std::cout << " req l : " << this->_req->getContentLength() << "  || cmbs : " <<this->_location.getClientMaxBodySize() << "\n\n";
-	if (this->_req->getContentLength() > this->_location.getClientMaxBodySize())
-	{
+	else if (this->_req->getContentLength() > this->_location.getClientMaxBodySize())
 		this->setToErrorPage(413);
-		this->buildHeader();
-		if (requestMethod == "HEAD")
-			this->_response = this->_header + "\r\n";
-		else
-			this->_response = this->_header + "\r\n" + this->_body;
-		return;
+	else
+	{
+		if (requestMethod == "GET" || requestMethod == "POST" || requestMethod == "HEAD")
+			this->processGetPostHead();
+		else if (requestMethod == "PUT")
+			this->processPut();
+		else if (requestMethod == "TRACE")
+			this->processTrace();
+		else if (requestMethod == "OPTIONS")
+			this->processOptions();
+		else if (requestMethod == "DELETE")
+			this->processDelete();
 	}
-
-	if (requestMethod == "GET" || requestMethod == "POST" || requestMethod == "HEAD")
-		this->processGetPostHead();
-	else if (requestMethod == "PUT")
-		this->processPut();
-	else if (requestMethod == "TRACE")
-		this->processTrace();
-	else if (requestMethod == "OPTIONS")
-		this->processOptions();
-	else if (requestMethod == "DELETE")
-		this->processDelete();
-
 	// BUILD HEADER AND RESPONSE
 	this->buildHeader();
 
