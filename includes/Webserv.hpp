@@ -45,8 +45,9 @@ public:
 	int									initialization( int i );
 	void								fillAddress( void );
 	int									acceptConexion( void );
-	void								handleRequest( int socket );
+	int									handleRequest( int socket );
 	void								sendResponse( int socket );
+	void								deleteSocket( int socket );
 
 	int									getFd( void );
 	int									getMaxFd( void );

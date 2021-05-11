@@ -52,12 +52,7 @@ void	Response::buildResponse(void)
 	if (!this->isValidMethod(requestMethod))
 	{
 		this->setToErrorPage(405);
-		this->buildHeader();
-		if (requestMethod == "HEAD")
-			this->_response = this->_header + "\r\n";
-		else
-			this->_response = this->_header + "\r\n" + this->_body;
-		return;
+		return ;
 	}
 
 	if (requestMethod == "GET" || requestMethod == "POST" || requestMethod == "HEAD")
@@ -75,7 +70,7 @@ void	Response::buildResponse(void)
 	this->buildHeader();
 
 	if (requestMethod == "HEAD")
-		this->_response = this->_header + "\r\n";
+		this->_response = this->_header;
 	else
 		this->_response = this->_header + "\r\n" + this->_body;
 
@@ -115,14 +110,10 @@ void	Response::processGetPostHead(void)
 		if (this->isIndexPagePresent())
 			this->_req->updateTarget(this->getIndexTarget());
 		else if(this->_location.getAutoindex() == "on" && this->autoIndexResponse())  //autoIndexResponse return true on success
-			return ;
-		else
-		{
-			this->checkErrors();
-			return ;
-		}
+				return ;
 	}
 	this->checkErrors();
+
 	std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
 
 	// CGI
@@ -139,8 +130,7 @@ void	Response::processGetPostHead(void)
 		else
 			this->setToErrorPage(500);
 	}
-	else
-	{
+	else{
 		if (f.good())
 		{
 			this->setResponseCode(200);

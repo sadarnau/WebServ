@@ -62,7 +62,7 @@ int		Webserv::initialization( int i ) //to do : return 1 in case of error else r
 
 	Logger::Write(Logger::INFO, GRN, "socket : binded on " + this->_IPaddr + ":" + this->_port);
 
-	if ((listen(this->fd, 5)) < 0) 			// 5 = number of max connections (why 5 ??)
+	if ((listen(this->fd, 10000)) < 0) 			// 10000 = number of max connections
 	{
 		Logger::Write(Logger::ERROR, RED, "error : listening socket");
 		return (1);
@@ -105,7 +105,7 @@ int		Webserv::acceptConexion( void )
 	return (socket);
 }
 
-void	Webserv::handleRequest( int socket )
+int	Webserv::handleRequest( int socket )
 {
 	int ret;
 	struct timeval now , beginning;
@@ -120,7 +120,7 @@ void	Webserv::handleRequest( int socket )
 		gettimeofday(&now , NULL);
 		timediff = (now.tv_sec - beginning.tv_sec) + 1e-6 * (now.tv_usec - beginning.tv_usec);
 	 
-		if(timediff > 0.5 ) // (0.5 is timeout)
+		if(timediff > 0.2 ) // (0.5 is timeout)
 			break;
 
 		memset(chunk_data , 0, 128); 					 	// clear the variable (to do : protect)
@@ -131,17 +131,17 @@ void	Webserv::handleRequest( int socket )
 		}
 		else if (ret == 0)
 		{
-			Logger::Write(Logger::ERROR, RED, "Error : Client have closed his connection..");
-			close(socket);
+			Logger::Write(Logger::ERROR, RED, "Error : Client have closed his connection.." + std::to_string(socket));
+			return (0);
 		}
 		else
 		{
-			this->_buff = this->_buff + chunk_data;
-			gettimeofday(&beginning , NULL);
+			this->_buff.append(chunk_data);
+ 			gettimeofday(&beginning , NULL);
 		}
 	}
 
-	return ;
+	return 1;
 }
 
 void	Webserv::sendResponse( int socket )
@@ -153,6 +153,18 @@ void	Webserv::sendResponse( int socket )
 	response.logResponse(this->_serverNb);
 
 	return ;
+}
+
+void	Webserv::deleteSocket( int socket )
+{
+	for (std::vector<int>::iterator it = this->_fdList.begin() ; it != this->_fdList.end() ; it++)
+	{
+		if(*it == socket)
+		{
+			this->_fdList.erase(it);
+			break ;
+		}
+	}
 }
 
 int		Webserv::getFd( void )

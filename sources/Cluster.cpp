@@ -71,6 +71,10 @@ int								Cluster::lanchServices( void )
 		if (ret < 0)
 		{
 			Logger::Write(Logger::ERROR, RED, "error : select");
+			std::cout << "\n\n" << std::string(strerror(errno)) << "\n\n";
+			std::vector<int> list = this->_serverList[0].getFdList();
+			for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
+				std::cout << *it << " ";
 			throw (std::exception()); // to do : exception
 			return (1); //test ???
 		}
@@ -94,18 +98,29 @@ int								Cluster::lanchServices( void )
 			{
 				if (FD_ISSET(*it, &copyMasterSet))
 				{
-					this->_serverList[i].handleRequest( *it );
-					if (FD_ISSET(*it, &writingSet))
+					if (!this->_serverList[i].handleRequest( *it ))
 					{
-						this->_serverList[i].sendResponse( *it );
+						close(*it);
+						FD_CLR(*it, &this->_master_fd);
+						FD_CLR(*it, &writingSet);
+						deleteInFdList(*it);
+						this->_serverList[i].deleteSocket(*it);
 					}
 					else
 					{
-						Logger::Write(Logger::ERROR, RED, "server[" + std::to_string(i) + "] : error with fd[" + std::to_string(*it) + "]");
-						close(*it);
-						list.erase(it);
-						this->_fdList.erase(it);
-						return (1);
+						if (FD_ISSET(*it, &writingSet))
+						{
+							this->_serverList[i].sendResponse( *it );
+						}
+						else
+						{
+							Logger::Write(Logger::ERROR, RED, "server[" + std::to_string(i) + "] : error with fd[" + std::to_string(*it) + "]");
+							close(*it);
+							list.erase(it);
+							FD_CLR(*it, &copyMasterSet);
+							FD_CLR(*it, &writingSet);
+							return (1);
+						}
 					}
 				}
 			}
@@ -151,13 +166,15 @@ void								Cluster::addSocketToMaster( int socket )
 	return ;
 }
 
-int								Cluster::findInVector( int socket, std::vector<int> _fdReady )
+int								Cluster::deleteInFdList( int socket )
 {
-	std::vector<int> list = _fdReady;
-	for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
+	for (std::vector<int>::iterator it = this->_fdList.begin() ; it != this->_fdList.end() ; it++)
 	{
 		if (socket == *it)
-			return (0);
+		{
+			this->_fdList.erase(it);
+			break ;
+		}
 	}
 
 	return (1);
