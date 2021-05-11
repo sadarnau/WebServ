@@ -29,7 +29,7 @@ public:
 	int									initialization( std::string fileName );
 	int									lanchServices( void );
 	void								addSocketToMaster( int socket );
-	int									deleteInFdList( int socket );
+	void								deleteInFdList( int socket );
 	void								setWritingSet( fd_set *writefds );
 
 	std::map<std::string, std::string>	getMap( void );

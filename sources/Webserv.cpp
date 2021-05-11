@@ -36,17 +36,17 @@ Webserv & Webserv::operator=( Webserv const & rhs)
 	return ( *this );
 }
 
-int		Webserv::initialization( int i ) //to do : return 1 in case of error else return 0
+int		Webserv::initialization( int i )
 {
 	this->_serverNb = i;
 
 	if ((this->fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
-		Logger::Write(Logger::ERROR, RED, "error : assigning the socket");
+		Logger::Write(Logger::ERROR, RED, "Error : couldn't assign the socket...");
 		return (1);
 	}
 
-	Logger::Write(Logger::INFO, GRN, "socket : created");
+	Logger::Write(Logger::INFO, GRN, "Socket created");
 	
 	this->fillAddress();
 	
@@ -56,20 +56,20 @@ int		Webserv::initialization( int i ) //to do : return 1 in case of error else r
 
 	if ((bind(this->fd, (struct sockaddr *)&this->address, sizeof(this->address))) < 0)
 	{
-		Logger::Write(Logger::ERROR, RED, "error : bindind the socket...");
+		Logger::Write(Logger::ERROR, RED, "Error : couldn't bind the socket...");
 		close(this->fd);
 		return (1);
 	}
 
-	Logger::Write(Logger::INFO, GRN, "socket : binded on " + this->_IPaddr + ":" + this->_port);
+	Logger::Write(Logger::INFO, GRN, "Socket : binded on " + this->_IPaddr + ":" + this->_port);
 
 	if ((listen(this->fd, 10000)) < 0) 			// 10000 = number of max connections
 	{
-		Logger::Write(Logger::ERROR, RED, "error : listening socket");
+		Logger::Write(Logger::ERROR, RED, "Error : couldn't listen the socket");
 		return (1);
 	}
 
-	Logger::Write(Logger::INFO, GRN, "socket : listening...");
+	Logger::Write(Logger::INFO, GRN, "Socket is listening...");
 
 	return (0);
 }
@@ -95,8 +95,8 @@ int		Webserv::acceptConexion( void )
 	
 	if (socket < 0)
 	{
-		Logger::Write(Logger::ERROR, RED, "error : accepting a new connection");
-		exit(1); // not ouf du tout...
+		Logger::Write(Logger::ERROR, RED, "Error : could not accept the new connection");
+		return (-1);
 	}
 	
 	fcntl(socket, F_SETFL, O_NONBLOCK);
@@ -164,6 +164,8 @@ void	Webserv::deleteSocket( int socket )
 			break ;
 		}
 	}
+
+	return ;
 }
 
 int		Webserv::getFd( void )
