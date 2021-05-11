@@ -14,6 +14,7 @@ Request::Request(vlocation *locationVector, vlocation *locationExtVector, int in
 
 	this->_parseRequest(this->_buff);
 	this->_selectLocation();
+	//need to choose an extension location then merge it if there is one//
 	this->_parseUrl();
 	this->_createPath();
 	return ;
