@@ -40,7 +40,9 @@ Response & Response::operator=(Response const & rhs)
 ////////////////////
 void	Response::send(void)
 {
-	write(this->_socket, this->_response.c_str() , this->_response.length());	//to protect
+	write(this->_socket, this->_response.c_str() , this->_response.length());	// to protect !!!!!
+
+	return ;
 }
 
 void	Response::buildResponse(void)

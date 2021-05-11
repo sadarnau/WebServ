@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 {
     if (argc > 4) {
         showUsage(argv[0]);
-        return 1;
+        return (1);
     }
 
     std::string conf = "files/default.conf";
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
         if ((arg == "-h") || (arg == "--help"))
 		{
             showUsage(argv[0]);
-            return 0;
+            return (0);
         }
 		else if ((arg == "-l") || (arg == "--log"))
 		{
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 			{
     		    std::cerr << "--logger option requires one argument." << std::endl << std::endl;
 				showUsage(argv[0]);
-                return 1;
+                return (1);
             }  
         }
 		else
@@ -87,17 +87,8 @@ int main(int argc, char *argv[])
 	}
 	catch(const std::exception& e)
 	{
-		return 1;
+		return (1);
 	}
-	
 
-
-	// std::vector<int> list = cluster.getFdList();
-	// for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
-	// 	close( *it );
-
-	// close(webserv.getFd());
-
-	return 0;
-
+	return (0);
 }

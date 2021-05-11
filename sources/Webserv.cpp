@@ -120,18 +120,15 @@ int	Webserv::handleRequest( int socket )
 		gettimeofday(&now , NULL);
 		timediff = (now.tv_sec - beginning.tv_sec) + 1e-6 * (now.tv_usec - beginning.tv_usec);
 	 
-		if(timediff > 0.2 ) // (0.5 is timeout)
+		if(timediff > 0.2 ) 								// (0.2 is timeout)
 			break;
 
 		memset(chunk_data , 0, 128); 					 	// clear the variable (to do : protect)
 		if((ret = recv(socket, chunk_data, 127, 0) ) < 0)	// to do : if = 0, client closed fd
-		{
-			// if nothing is received we wait 0.1 second before trying again
-			usleep(100000);
-		}
+			usleep(100000); 								// if nothing is received we wait 0.1 second before trying again
 		else if (ret == 0)
 		{
-			Logger::Write(Logger::ERROR, RED, "Error : Client have closed his connection.." + std::to_string(socket));
+			Logger::Write(Logger::ERROR, RED, "Error : Client have closed his connection...");
 			return (0);
 		}
 		else
