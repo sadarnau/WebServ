@@ -188,8 +188,8 @@ bool	Request::_selectLocationExt()
 
 void	Request::_mergeLocation(void)
 {
-	std::map<std::string, std::string>	locationSetting(this->_selectedLocation.getSettingMap());
-	std::map<std::string, std::string>	locationExtSetting(this->_selectedLocationExt.getSettingMap());
+	std::map<std::string, std::string>	locationSetting = this->_selectedLocation.getSettingMap();
+	std::map<std::string, std::string>	locationExtSetting = this->_selectedLocationExt.getSettingMap();
 
 	for (std::map<std::string, std::string>::const_iterator it = locationExtSetting.begin(); it != locationExtSetting.end(); ++it)
 	{
