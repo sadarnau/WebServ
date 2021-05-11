@@ -14,7 +14,14 @@ Request::Request(vlocation *locationVector, vlocation *locationExtVector, int in
 
 	this->_parseRequest(this->_buff);
 	this->_selectLocation();
-	//need to choose an extension location then merge it if there is one//
+
+	if(this->_selectLocationExt())
+	{
+		std::cout << "Merge here" << std::endl;
+		this->_mergeLocation();
+	}
+
+	this->_selectedLocation.logLocation();
 	this->_parseUrl();
 	this->_createPath();
 	return ;
@@ -163,13 +170,32 @@ void	Request::_selectLocation(void)
 		this->_target.insert(0, "/");
 }
 
+bool	Request::_selectLocationExt()
+{
+	std::string targetExt = getExtension(this->_target);
+
+	for (vlocation::iterator it = this->_locationExtVector->begin(); it != this->_locationExtVector->end(); ++it)
+	{
+		if (it->getPath() == targetExt)
+		{
+			this->_selectedLocationExt = *it;
+			return (true);
+		}
+	}
+
+	return (false);
+}
+
 void	Request::_mergeLocation(void)
 {
 	std::map<std::string, std::string>	locationSetting(this->_selectedLocation.getSettingMap());
 	std::map<std::string, std::string>	locationExtSetting(this->_selectedLocationExt.getSettingMap());
 
 	for (std::map<std::string, std::string>::const_iterator it = locationExtSetting.begin(); it != locationExtSetting.end(); ++it)
-		locationSetting[it->first] = it->second;
+	{
+		if (it->second != "")
+			locationSetting[it->first] = it->second;
+	}
 	this->_selectedLocation = Location(locationSetting);
 }
 

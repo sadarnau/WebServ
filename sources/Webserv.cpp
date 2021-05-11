@@ -125,8 +125,8 @@ int	Webserv::handleRequest( int socket )
 		if(timediff > 0.2 ) 								// (0.2 is timeout)
 			break;
 
-		memset(chunk_data , 0, 128); 					 	// clear the variable (to do : protect)
-		if((ret = recv(socket, chunk_data, 127, 0) ) < 0)	// to do : if = 0, client closed fd
+		memset(chunk_data , 0, BUFF_SIZE); 					 	// clear the variable (to do : protect)
+		if((ret = recv(socket, chunk_data, BUFF_SIZE - 1, 0) ) < 0)	// to do : if = 0, client closed fd
 			usleep(100000); 								// if nothing is received we wait 0.1 second before trying again
 		else if (ret == 0)
 		{
