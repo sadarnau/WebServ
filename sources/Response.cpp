@@ -91,6 +91,13 @@ void	Response::buildHeader(void)
 	this->_headers["Date"] = getDate();
 
 	std::map<std::string, std::string> tmpHeaders = this->_headers;
+	std::map<std::string, std::string> tmpCgiHeaders = this->_cgiheaders;
+
+	for (std::map<std::string, std::string>::const_iterator it = tmpCgiHeaders.begin(); it != tmpCgiHeaders.end(); it++)
+	{
+		if (it->first != "Status")
+			tmpHeaders[it->first] = it->second;
+	}
 
 	for (std::map<std::string, std::string>::const_iterator it = tmpHeaders.begin(); it != tmpHeaders.end(); it++)
 	{
@@ -128,6 +135,7 @@ void	Response::processGetPostHead(void)
 		if(cgi.processCgi())
 		{
 			this->setBody(cgi.getResult());
+			this->_cgiheaders = cgi.getCgiHeaders();
 			this->setResponseCode(200);
 		}
 		else

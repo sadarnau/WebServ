@@ -19,6 +19,7 @@ class Cgi
 		char								**_envC;
 		char								**_argC;
 		std::string							_result;
+		std::map<std::string, std::string>	_headers;
 		
 		void								_initEnv(void);
 		void								_initArgC(void);
@@ -35,8 +36,9 @@ class Cgi
 
 		bool								processCgi(void);
 		std::string							getResult(void);
-		void								logCgi();
-
+		void								logCgi(void);
+		void								parseResponse(void);
+		std::map<std::string, std::string>	getCgiHeaders(void);
 };
 
 #endif

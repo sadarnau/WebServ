@@ -99,7 +99,7 @@ bool		Cgi::processCgi(void)
 	dup2(stdOut, STDOUT_FILENO);
 
 	this->_closeFd(fIn, fOut, fdIn, fdOut);
-	
+	this->parseResponse();
 	return true;
 }
 
@@ -159,6 +159,35 @@ void		Cgi::_initArgC(void)
 ////////////////////
 // UTILS
 ////////////////////
+
+void		Cgi::parseResponse(void)
+{
+	std::string				header;
+	std::string				body;
+	std::string				res = this->_result;
+
+	if (res.find("\r\n\r\n") != std::string::npos)
+	{
+		header = res.substr(0, res.find("\r\n\r\n"));
+		this->_result = res.substr(res.find("\r\n\r\n") + 4, res.length());
+	}
+	else
+	{
+		return ;
+	}
+
+	std::istringstream		streamHeader(header);
+	std::string				line;
+ 	std::string				key;
+    std::string				value;
+	while (std::getline(streamHeader, line))
+    {
+		key = line.substr(0, line.find(":"));
+		value = line.substr(line.find(":") + 2, line.size());
+		this->_headers[key] = value;
+	}
+}
+
 void		Cgi::_closeFd(FILE *fIn, FILE *fOut, int fdIn, int fdOut)
 {
 	close(fdIn);
@@ -192,7 +221,12 @@ void		Cgi::logCgi(void)
 ////////////////////
 // GETTERS / SETTERS
 ////////////////////
-std::string	Cgi::getResult()
+std::string	Cgi::getResult(void)
 {
 	return (this->_result);
+}
+
+std::map<std::string, std::string>	Cgi::getCgiHeaders(void)
+{
+	return (this->_headers);
 }

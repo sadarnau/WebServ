@@ -28,6 +28,7 @@ private:
 	int										_responseCode;
 	std::string								_contentType;
 	std::map<std::string, std::string>		_headers;
+	std::map<std::string, std::string>		_cgiheaders;
 	std::string								_header;
 	std::string								_body;
 	std::string								_response;

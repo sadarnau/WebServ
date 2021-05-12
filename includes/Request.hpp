@@ -42,7 +42,7 @@ private:
 	std::string							_unchunkBody(std::string body);
 	void								_parseUrl(void);
 	void								_selectLocation(void);
-	bool								_selectLocationExt();
+	bool								_selectLocationExt(void);
 	void								_mergeLocation(void);
 	void								_createPath(void);
 	bool								_isValidHeader(std::string header);
