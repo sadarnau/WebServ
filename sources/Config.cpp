@@ -43,6 +43,8 @@ void	Config::initConfigMap(void)
 	this->_configMap["index"] = "";
 	this->_configMap["cgi_path"] = "";
 	this->_configMap["cgi_ext"] = "";
+
+	return ;
 }
 
 void	Config::parseFile( std::string fileName )
@@ -52,6 +54,7 @@ void	Config::parseFile( std::string fileName )
 	this->checkFile(fileName);
 	this->initConfigMap();
 	this->createServerMap();
+
 	return ;
 }
 
@@ -84,19 +87,20 @@ bool	Config::checkSemiColon(std::string str)
 {
 	if (str[str.size() - 1] == ';')
 		return (true);
+
 	return (false);
 }
 
-void	Config::createServerMap( void )
+void	Config::createServerMap( void )		// commentaire a enlever ?
 {
-	std::string line;
-	std::vector<std::string> split;
-	bool locationFound = false;
-	bool listenFound = false;
-	bool endOfSectionFound = false;
-	bool inServerConfig = false;
-	bool rootLocationFound = false;
-	std::map<std::string, std::string> newLoc;
+	std::string 						line;
+	std::vector<std::string>			split;
+	std::map<std::string, std::string>	newLoc;
+	bool								locationFound = false;
+	bool								listenFound = false;
+	bool								endOfSectionFound = false;
+	bool								inServerConfig = false;
+	bool								rootLocationFound = false;
 
 	this->initLocationMap(newLoc, "/");
 	while (std::getline(this->f, line))
@@ -168,22 +172,27 @@ void	Config::createServerMap( void )
 		}
 		split.clear();
 	}
+
 	if (inServerConfig && !endOfSectionFound)
 	{
 		Logger::Error("Server section doesn't end by }\n");
 		throw (std::exception());
 	}
-	/*if (!locationFound)
+
+	/*if (!locationFound)							//ici
 	{
 		Logger::Error("No location definition\n");
 		throw (std::exception());
 	}*/
+
 	return ;
 }
 
 void	Config::initLocationMap(std::map<std::string, std::string> & newLoc, std::string path)
 {
 	newLoc["path"] = path;
+
+	return ;
 }
 
 void	Config::addConfigToLocation(std::map<std::string, std::string> newLoc, bool isExtension)
@@ -196,21 +205,21 @@ void	Config::addConfigToLocation(std::map<std::string, std::string> newLoc, bool
 	else
 	{
 		for (std::map<std::string, std::string>::const_iterator it = this->_configMap.begin(); it != this->_configMap.end(); ++it)
-		{
 			if (!newLoc.count(it->first))
 				newLoc[it->first] = it->second;
-		}
 		this->_locationVector.push_back(Location(newLoc));
 	}
+
+	return ;
 }
 
 void	Config::newLocationConfig(std::string path)
 {
-	std::string line;
-	std::vector<std::string> split;
-	std::map<std::string, std::string> newLoc;
-	bool endOfSectionFound = false;
-	bool isExtension = false;
+	std::string 						line;
+	std::vector<std::string>			split;
+	std::map<std::string, std::string>	newLoc;
+	bool								endOfSectionFound = false;
+	bool								isExtension = false;
 
 	if (path[0] == '*' && path[1] == '.')
 	{
@@ -219,6 +228,7 @@ void	Config::newLocationConfig(std::string path)
 	}
 	else
 		this->initLocationMap(newLoc, path);
+
 	while (std::getline(this->f, line))
 	{
 		splitStringToVector(line, split);
@@ -257,11 +267,13 @@ void	Config::newLocationConfig(std::string path)
 		}
 		split.clear();
 	}
+
 	if (!endOfSectionFound)
 	{
 		Logger::Error("Location section doesn't end by }\n");
 		throw (std::exception());
 	}
+
 	return ;
 }
 
@@ -270,21 +282,12 @@ std::map<std::string, std::string>	Config::getConfigMap( void )
 	return (this->_configMap);
 }
 
-std::vector<Webserv> 	Config::getServerVector(void)
+std::vector<Webserv> 				Config::getServerVector(void)
 {
 	return (this->_serverVector);
 }
 
-std::vector<Location>	Config::getLocationVector( void )
+std::vector<Location>				Config::getLocationVector( void )
 {
 	return (this->_locationVector);
-}
-
-std::ostream &	operator<<(std::ostream & o, Config & rhs)
-{
-	(void)rhs;
-	o << "In this config we have :\n";
-	// o << rhs.getConfigMap();
-
-	return ( o );
 }

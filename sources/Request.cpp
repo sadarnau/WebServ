@@ -3,9 +3,9 @@
 ////////////////////
 // COPLIEN'S
 ////////////////////
-Request::Request(vlocation *locationVector, vlocation *locationExtVector, int inSock, std::string buff)
+Request::Request(vlocation *locationVector, vlocation *locationExtVector, int inSock, std::string buff) // commentaire a enlever ?
 {
-	// Logger::Write(Logger::DEBUG, WHT, "request : creation");
+	// Logger::Write(Logger::DEBUG, WHT, "request : creation");											//ici
 	this->_inSocket = inSock;
 	this->_locationVector = locationVector;
 	this->_locationExtVector = locationExtVector;
@@ -23,12 +23,14 @@ Request::Request(vlocation *locationVector, vlocation *locationExtVector, int in
 	this->_selectedLocation.logLocation();
 	this->_parseUrl();
 	this->_createPath();
+
 	return ;
 }
 
 Request::Request(Request const & src)
 {
 	*this = src;
+
 	return ;
 }
 
@@ -51,8 +53,8 @@ Request & Request::operator=(Request const & rhs)
 ////////////////////
 void	Request::_parseRequest(std::string req)
 {
-	std::string				header;
-	std::string				body;
+	std::string			header;
+	std::string			body;
 
 	// Logger::Write(Logger::DEBUG, WHT, "request : parseRequest()");
 
@@ -68,11 +70,11 @@ void	Request::_parseRequest(std::string req)
 	}
 
 	// parse header
-	std::string				line;
-    std::string				key;
-    std::string				value;
-    std::string				message;
-	std::istringstream		streamHeader(header);
+	std::string			line;
+    std::string			key;
+    std::string			value;
+    std::string			message;
+	std::istringstream	streamHeader(header);
 
 	// handle first line
 	std::getline(streamHeader, line);
@@ -91,7 +93,7 @@ void	Request::_parseRequest(std::string req)
 		if(ss.fail())											// if value extraction failed, break while loop
 			break;
 
-		key = key.substr(0, key.length() - 1);				// delete char ':' at the end of key
+		key = key.substr(0, key.length() - 1);					// delete char ':' at the end of key
 		if (this->_isValidHeader(key))
 		{
 			this->_headers[key] = value;
@@ -106,13 +108,15 @@ void	Request::_parseRequest(std::string req)
 		this->_body = this->_unchunkBody(body);
 	else
 		this->_body = body;
+
+	return ;
 }
 
 std::string		Request::_unchunkBody(std::string body)
 {
-	std::string		tmpBody = "";
-	int				chunkLength;
-	int				it;
+	std::string	tmpBody = "";
+	int			chunkLength;
+	int			it;
 
 	// Logger::Write(Logger::DEBUG, WHT, "request : unchunkBody()");
 	it = body.find("\r\n");
@@ -129,6 +133,7 @@ std::string		Request::_unchunkBody(std::string body)
 		it = body.find("\r\n");
 		chunkLength = hexStrtoInt(body.substr(0, it));
 	}
+
 	return (tmpBody);
 }
 
@@ -167,6 +172,8 @@ void	Request::_selectLocation(void)
 	// format target
 	if(this->_target.front() != '/')
 		this->_target.insert(0, "/");
+
+	return ;
 }
 
 bool	Request::_selectLocationExt()
@@ -191,7 +198,6 @@ void	Request::_mergeLocation(void)
 	std::map<std::string, std::string>	locationExtSetting = this->_selectedLocationExt.getSettingMap();
 
 	for (std::map<std::string, std::string>::const_iterator it = locationExtSetting.begin(); it != locationExtSetting.end(); ++it)
-	{
 		if (it->first != "path" && it->second != "")
 		{
 			if (!it->first.compare("accepted_method"))
@@ -210,8 +216,10 @@ void	Request::_mergeLocation(void)
 			else
 				locationSetting[it->first] = it->second;
 		}
-	}
+
 	this->_selectedLocation = Location(locationSetting);
+
+	return ;
 }
 
 
@@ -225,15 +233,18 @@ void	Request::_parseUrl(void)
 		//query separator is found
 		this->_queryString = this->_target.substr(i + 1, this->_target.size() - 2); // i + 1 to skip &, so size - (1 + '&')
 		this->_target = this->_target.substr(0, i);
-
 		this->_urlTargetPath = this->_urlTargetPath.substr(0, this->_urlTargetPath.find("?"));
 	}
+
+	return ;
 }
 
 void			Request::updateTarget(std::string target)
 {
 	this->_target = target;
 	this->_createPath();
+
+	return ;
 }
 
 void	Request::_createPath(void)
@@ -250,6 +261,8 @@ void	Request::_createPath(void)
 		this->_absoluteTargetPath = safeUrlJoin(currentdir, this->_selectedLocation.getRoot());
 		this->_absoluteTargetPath = safeUrlJoin(this->_absoluteTargetPath, this->_target);
 	}
+
+	return ;
 }
 
 bool	Request::_isValidHeader(std::string header)

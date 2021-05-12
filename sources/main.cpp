@@ -9,24 +9,24 @@
 
 bool	setLoggerMode(std::string mode)
 {
-		if (mode == "more")
-			Logger::Start(Logger::MORE);
-		else if (mode == "debug")
-			Logger::Start(Logger::DEBUG);
-		else if (mode == "info")
-			Logger::Start(Logger::INFO);
-		else if (mode == "error")
-			Logger::Start(Logger::ERROR);
-		else if (mode == "none")
-			Logger::Start(Logger::NONE);
-		else
-		{
-			std::cerr << mode << " is not a valid mode for --log.\nTry -l [none, error, [info], debug, more]" << std::endl;
-			return (false);
-		}
-		Logger::Write(Logger::INFO, GRN, "Logger in < " + mode + " > mode");
+	if (mode == "more")
+		Logger::Start(Logger::MORE);
+	else if (mode == "debug")
+		Logger::Start(Logger::DEBUG);
+	else if (mode == "info")
+		Logger::Start(Logger::INFO);
+	else if (mode == "error")
+		Logger::Start(Logger::ERROR);
+	else if (mode == "none")
+		Logger::Start(Logger::NONE);
+	else
+	{
+		std::cerr << mode << " is not a valid mode for --log.\nTry -l [none, error, [info], debug, more]" << std::endl;
+		return (false);
+	}
+	Logger::Write(Logger::INFO, GRN, "Logger in < " + mode + " > mode");
 
-		return (true);
+	return (true);
 }
 
 void	showUsage(std::string name)
@@ -36,11 +36,14 @@ void	showUsage(std::string name)
               << "\t-h,--help\tShow this help message\n"
               << "\t-l,--log MODE\tSpecify the logger mode [none, error, [info], debug, more]"
               << std::endl;
+
+	return ;
 }
 
 int main(int argc, char *argv[])
 {
-    if (argc > 4) {
+    if (argc > 4)
+	{
         showUsage(argv[0]);
         return (1);
     }
