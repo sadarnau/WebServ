@@ -2,19 +2,21 @@
 
 std::string 	getTimeHMS(void)
 {
-    struct timeval 	tv;
-    struct tm 		time;
-    struct timezone tz;
-    char 			buffer[1000];
-    std::string 	date;
+	struct timeval 	tv;
+	struct tm 		time;
+	struct timezone tz;
+	char 			buffer[1000];
+	std::string 	date;
 
-    gettimeofday(&tv, &tz);
+	if (gettimeofday(&tv, &tz) < 0)
+		return (NULL);	// maybe throw error ?
 	std::ostringstream ss;
 	ss << tv.tv_sec;
 	std::string res = ss.str();
-    strptime(res.c_str(), "%s", &time);
-    strftime(buffer, sizeof(buffer), "%H:%M:%S", &time);
-    date = buffer;
+	strptime(res.c_str(), "%s", &time);
+	strftime(buffer, sizeof(buffer), "%H:%M:%S", &time);
+	date = buffer;
+
 	return (date);
 }
 
@@ -27,33 +29,37 @@ bool			isPathAFile(std::string path)
 		if (s.st_mode & S_IFREG)
 			return (true);
 	}
+
 	return (false);
 }
 
 std::string 	getDate(void)
 {
-    struct timeval 	tv;
-    struct tm 		time;
-    struct timezone tz;
-    char 			buffer[1000];
-    std::string 	date;
+	struct timeval 	tv;
+	struct tm 		time;
+	struct timezone tz;
+	char 			buffer[1000];
+	std::string 	date;
 
-    gettimeofday(&tv, &tz);
-    strptime(std::to_string(tv.tv_sec).c_str(), "%s", &time);
-    strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S CEST", &time);
-    date = buffer;
+	if (gettimeofday(&tv, &tz) < 0)
+		return (NULL);	// maybe throw error ?
+	strptime(std::to_string(tv.tv_sec).c_str(), "%s", &time);
+	strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S CEST", &time);
+	date = buffer;
+
 	return (date);
 }
 
 void 			splitStringToVector(std::string line, std::vector<std::string> &split)
 {
-	std::string res;
-	size_t pos1 = 0;
-	size_t pos2 = 0;
-	char *str = new char [line.length() + 1];
+	std::string	res;
+	size_t		pos1 = 0;
+	size_t		pos2 = 0;
+	char		*str = new char [line.length() + 1];
 
 	std::strcpy(str, line.c_str());
 	str[line.length()] = 0;
+
 	while (str[pos1] != 0 && str[pos2] != 0)
 	{
 		while ((str[pos1] == ' ' || str[pos1] == '\t') && str[pos1] != 0)
@@ -67,7 +73,10 @@ void 			splitStringToVector(std::string line, std::vector<std::string> &split)
 		split.push_back(res);
 		pos1 = pos2;
 	}
+
 	delete[] str;
+
+	return ;
 }
 
 void			printMap(std::map<std::string, std::string> m, std::string type)
@@ -81,11 +90,12 @@ void			printMap(std::map<std::string, std::string> m, std::string type)
 	}
 	oss << '\n' << "----------\n\n";
 	Logger::Write(Logger::DEBUG, WHT, oss.str());
+
+	return ;
 }
 
 std::string	safeUrlJoin(std::string url1, std::string url2)
 {
-
 	if(url1.back() == '/' )
 		url1 = url1.substr(0, url1.size() - 1);
 
@@ -97,10 +107,10 @@ std::string	safeUrlJoin(std::string url1, std::string url2)
 
 std::vector<std::string>	concatToVector(std::string toParse)
 {
-	std::vector<std::string> result;
-	std::string separator = "/";
-	std::string token;
-	size_t pos;
+	std::vector<std::string>	result;
+	std::string					separator = "/";
+	std::string					token;
+	size_t						pos;
 
 	while ((pos = toParse.find(separator)) != std::string::npos)
 	{
@@ -108,6 +118,7 @@ std::vector<std::string>	concatToVector(std::string toParse)
 		toParse = toParse.substr(pos + 1, toParse.length());
 		result.push_back(token);
 	}
+
 	result.push_back(toParse);
 
 	return (result);
@@ -117,16 +128,18 @@ std::string					intToStr(int i)
 {
 	std::ostringstream convert;
 	convert << i;
+
 	return (convert.str());
 }
 
 bool						isStrNumber(std::string s)
 {
-    std::string::const_iterator it = s.begin();
+	std::string::const_iterator it = s.begin();
 
-    while (it != s.end() && std::isdigit(*it)) 
+	while (it != s.end() && std::isdigit(*it)) 
 		++it;
-    return (!s.empty() && it == s.end());
+
+	return (!s.empty() && it == s.end());
 }
 
 size_t						convertClientSizeFromStr(std::string str)
@@ -157,6 +170,7 @@ size_t						convertClientSizeFromStr(std::string str)
 
 	ss >> res;
 	res *= weight;
+
 	return (res);
 }
 
@@ -167,6 +181,7 @@ size_t						hexStrtoInt(std::string hex)
 
 	ss << std::hex << hex;
 	ss >> length;
+
 	return (length);
 }
 
@@ -176,5 +191,6 @@ std::string					getExtension(std::string target)
 		return ("");
 		
 	std::string ext = target.substr(target.find("."), target.length());
-	return ext;
+
+	return (ext);
 }

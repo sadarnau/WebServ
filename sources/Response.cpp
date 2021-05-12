@@ -21,6 +21,7 @@ Response::Response(Request *req, int socket)
 Response::Response(Response const & src)
 {
 	*this = src;
+
 	return ;
 }
 
@@ -32,6 +33,7 @@ Response::~Response(void)
 Response & Response::operator=(Response const & rhs)
 {
 	(void)rhs;
+
 	return (*this);
 }
 
@@ -41,14 +43,16 @@ Response & Response::operator=(Response const & rhs)
 ////////////////////
 void	Response::send(void)
 {
-	write(this->_socket, this->_response.c_str() , this->_response.length());	// to protect !!!!!
+	if (write(this->_socket, this->_response.c_str() , this->_response.length()) < 0)
+		throw (std::exception());
 
 	return ;
 }
 
 void	Response::buildResponse(void)
 {
-	std::string		requestMethod = this->_req->getMethod();
+	std::string	requestMethod = this->_req->getMethod();
+	
 	errno = 0;
 
 	// METHODS
@@ -77,6 +81,7 @@ void	Response::buildResponse(void)
 	else
 		this->_response = this->_header + "\r\n" + this->_body;
 
+	return ;
 }
 
 void	Response::buildHeader(void)
@@ -94,18 +99,16 @@ void	Response::buildHeader(void)
 	std::map<std::string, std::string> tmpCgiHeaders = this->_cgiheaders;
 
 	for (std::map<std::string, std::string>::const_iterator it = tmpCgiHeaders.begin(); it != tmpCgiHeaders.end(); it++)
-	{
 		if (it->first != "Status")
 			tmpHeaders[it->first] = it->second;
-	}
 
 	for (std::map<std::string, std::string>::const_iterator it = tmpHeaders.begin(); it != tmpHeaders.end(); it++)
-	{
 		if (!it->second.empty())
 			header << it->first << ": " << it->second << "\r\n";
-	}
 
 	this->_header = header.str();
+
+	return ;
 }
 
 
@@ -119,7 +122,7 @@ void	Response::processGetPostHead(void)
 	{
 		if (this->isIndexPagePresent())
 			this->_req->updateTarget(this->getIndexTarget());
-		else if(this->_location.getAutoindex() == "on" && this->autoIndexResponse())  //autoIndexResponse return true on success
+		else if(this->_location.getAutoindex() == "on" && this->autoIndexResponse())  //autoIndexResponse return (true) on success
 				return ;
 	}
 	this->checkErrors();
@@ -141,7 +144,8 @@ void	Response::processGetPostHead(void)
 		else
 			this->setToErrorPage(500);
 	}
-	else{
+	else
+	{
 		if (f.good())
 		{
 			std::stringstream buff;
@@ -152,8 +156,9 @@ void	Response::processGetPostHead(void)
 		this->checkErrors();
 		f.close();
 	}
-
 	this->setContentType(this->getContentType(this->_req->getTarget()));
+
+	return ;
 }
 
 void	Response::processPut(void)
@@ -186,12 +191,14 @@ void	Response::processPut(void)
 			this->setResponseCode(201);
 		}
 	}
+
+	return ;
 }
 
 void	Response::processOptions(void)
 {
-	std::string allow;
-	std::vector<std::string> acceptedMethods = this->_location.getAcceptedMethod();
+	std::string 				allow;
+	std::vector<std::string>	acceptedMethods = this->_location.getAcceptedMethod();
 
 	if (acceptedMethods.empty())
 		allow = std::string("GET, HEAD, POST, PUT, TRACE, OPTIONS, DELETE");
@@ -207,6 +214,8 @@ void	Response::processOptions(void)
 
 	this->_headers["Allow"] = allow;
 	this->setResponseCode(200);
+
+	return ;
 }
 
 void	Response::processTrace(void)
@@ -228,6 +237,8 @@ void	Response::processDelete(void)
 	}
 	else
 		this->checkErrors();
+
+	return ;
 }
 
 
@@ -236,8 +247,8 @@ void	Response::processDelete(void)
 ////////////////////
 bool		Response::autoIndexResponse(void)
 {
-	DIR *directory;
-	struct dirent *dircontent;
+	DIR				*directory;
+	struct dirent	*dircontent;
 
 	if ((directory = opendir(this->_req->getAbsoluteTargetPath().c_str())))
 	{
@@ -255,17 +266,17 @@ bool		Response::autoIndexResponse(void)
 
 		while((dircontent = readdir(directory)))
 		{
-				content << "<li>" << "<a href='" << safeUrlJoin(this->_req->getUrlTargetPath(), dircontent->d_name) << 
-				"'>" << dircontent->d_name << "</a>" << "</li>" << std::endl;
+			content << "<li>" << "<a href='" << safeUrlJoin(this->_req->getUrlTargetPath(), dircontent->d_name) <<
+			"'>" << dircontent->d_name << "</a>" << "</li>" << std::endl;
 		}
 		content << "</ul>" << std::endl;
 		
 		content << std::string((std::istreambuf_iterator<char>(content_end)), std::istreambuf_iterator<char>());
 		this->setBody(content.str());
-		return true;
+		return (true);
 	}
 
-	return false;
+	return (false);
 }
 
 
@@ -284,6 +295,7 @@ void		Response::initResponseMessageMap(void)
 	this->_responseMessages[413] = "PAYLOAD_TOO_LARGE";		// client_max_bodysize < requestbody
 	this->_responseMessages[500] = "INTERNAL_ERROR";		// smthg had gone wrong internaly, mostly part of cgi
 
+	return ;
 }
 
 void		Response::checkErrors(void)
@@ -300,15 +312,16 @@ void		Response::checkErrors(void)
 			this->setToErrorPage(403);
 		if (errorMessage == "No such file or directory")
 			this->setToErrorPage(404);
-
 		errno = 0;
 	}
+
+	return ;
 }
 
 void		Response::setToErrorPage(int errorNumber)
 {
-	std::ifstream error_page;
-	std::string errorNbrString = intToStr(errorNumber);
+	std::ifstream	error_page;
+	std::string		errorNbrString = intToStr(errorNumber);
 
 	this->setResponseCode(errorNumber);
 	this->setContentType("text/html");
@@ -322,14 +335,16 @@ void		Response::setToErrorPage(int errorNumber)
 		this->setBody(this->generateDefaultErrorPage(errorNbrString, this->_responseMessages[errorNumber]));
 
 	this->_isSetToError = true;
+
+	return ;
 }
 
 std::string		Response::generateDefaultErrorPage(std::string errorNbr, std::string message)
 {
-	std::ifstream content_1("files/default_pages/default_error_1.html");
-	std::ifstream content_2("files/default_pages/default_error_2.html");
-	std::ifstream content_3("files/default_pages/default_error_3.html");
-	std::ostringstream body;
+	std::ifstream		content_1("files/default_pages/default_error_1.html");
+	std::ifstream		content_2("files/default_pages/default_error_2.html");
+	std::ifstream		content_3("files/default_pages/default_error_3.html");
+	std::ostringstream	body;
 
 	body << std::string((std::istreambuf_iterator<char>(content_1)), std::istreambuf_iterator<char>());
 	body << "error " << errorNbr;
@@ -347,9 +362,8 @@ std::string		Response::generateDefaultErrorPage(std::string errorNbr, std::strin
 
 bool	Response::isValidMethod(std::string key)
 {
-	
-	std::vector<std::string> acceptedMethods = this->_location.getAcceptedMethod();
-	std::ostringstream oss;
+	std::vector<std::string>	acceptedMethods = this->_location.getAcceptedMethod();
+	std::ostringstream			oss;
 
 	// if empty = accept all methods
 	if (acceptedMethods.empty())
@@ -379,7 +393,7 @@ bool	Response::isValidHttpMethod(std::string key)
 	return (false);
 }
 
-std::string	Response::getIndexTarget(void)
+std::string	Response::getIndexTarget(void) // commentaire a supprimer ?
 {
 	std::vector<std::string> vIndex = this->_location.getIndex();
 
@@ -398,7 +412,7 @@ std::string	Response::getIndexTarget(void)
 		}
 		f.close();
 	}
-	// std::ifstream indexTry;
+	// std::ifstream indexTry;				//ici
 
 	return (this->_req->getTarget());
 }
@@ -410,7 +424,7 @@ bool		Response::isIndexPagePresent(void)
 	for(std::vector<std::string>::iterator it = vIndex.begin(); it != vIndex.end(); ++it)
 	{
 		if (*it == "")
-			return false;
+			return (false);
 		std::string target(safeUrlJoin(this->_req->getAbsoluteTargetPath(), *it));
 
 		std::ifstream 	f(target.c_str());
@@ -421,6 +435,7 @@ bool		Response::isIndexPagePresent(void)
 		}
 		f.close();
 	}
+
 	return (false);
 }
 
@@ -429,8 +444,9 @@ bool		Response::isDirectory(void)
 	DIR *directory;
 
 	if ((directory = opendir(this->_req->getAbsoluteTargetPath().c_str())))
-		return true;
-	return false;
+		return (true);
+
+	return (false);
 }
 
 std::string	Response::getContentType(std::string target)
@@ -470,18 +486,24 @@ void	Response::setResponseCode(int responseCode)
 {
 	if (!this->_isSetToError)
 		this->_responseCode = responseCode;
+
+	return ;
 }
 
 void	Response::setBody(std::string body)
 {
 	if (!this->_isSetToError)
 		this->_body = body;
+
+	return ;
 }
 
 void	Response::setContentType(std::string contentType)
 {
 	if (!this->_isSetToError)
 		this->_contentType = contentType;
+
+	return ;
 }
 
 ////////////////////
@@ -506,6 +528,7 @@ std::string		Response::getResponseCodeStr(void)
 {
 	std::ostringstream oss;
 	oss << this->_responseCode;
+
 	return (oss.str());
 }
 
@@ -523,6 +546,7 @@ std::string		Response::getContentLength(void)
 {
 	std::ostringstream oss;
 	oss << this->_body.size();
+
 	return (oss.str());
 }
 
@@ -536,4 +560,6 @@ void Response::logResponse(int serverNbr)
 		+ "] [content length: " + this->getContentLength()+ "]");
 	Logger::Write(Logger::DEBUG, WHT, " response : header\n" + this->getHeader());
 	Logger::Write(Logger::MORE, BLU, " full response :\n" + this->getResponse());
+
+	return ;
 }

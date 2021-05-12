@@ -5,7 +5,8 @@ Webserv::Webserv( void )
 	return ;
 }
 
-Webserv::Webserv( std::string listen, std::vector<Location > locationVector, std::vector<Location > locationExtVector ) : _listen(listen), _locationVector(locationVector), _locationExtVector(locationExtVector)				//constructor
+Webserv::Webserv( std::string listen, std::vector<Location > locationVector, std::vector<Location > locationExtVector ) : _listen(listen), _locationVector(locationVector),
+																															_locationExtVector(locationExtVector)
 {
 	return ;
 }
@@ -13,6 +14,7 @@ Webserv::Webserv( std::string listen, std::vector<Location > locationVector, std
 Webserv::Webserv( Webserv const & src )
 {
 	*this = src;
+
 	return ;
 }
 
@@ -52,7 +54,8 @@ int		Webserv::initialization( int i )
 	
 	// Fix binding error, it was due to TIME_WAIT who deosnt allow new connection to same socket before a certain time
 	int reusePort = 1; // enum ?
-	setsockopt(this->fd, SOL_SOCKET, SO_REUSEPORT, &reusePort, sizeof(reusePort));	// to protect !
+	if (setsockopt(this->fd, SOL_SOCKET, SO_REUSEPORT, &reusePort, sizeof(reusePort)) < 0)
+		return (1);
 
 	if ((bind(this->fd, (struct sockaddr *)&this->address, sizeof(this->address))) < 0)
 	{
@@ -83,7 +86,7 @@ void	Webserv::fillAddress( void )
 	this->address.sin_addr.s_addr = inet_addr(this->_IPaddr.c_str());	//htonl ??
 	this->address.sin_port = htons(std::stoi(this->_port));
 
-	memset(this->address.sin_zero, 0, sizeof(this->address.sin_zero));	// to protect
+	memset(this->address.sin_zero, 0, sizeof(this->address.sin_zero));
 
 	return ;
 }
@@ -106,7 +109,7 @@ int		Webserv::acceptConexion( void )
 	return (socket);
 }
 
-int	Webserv::handleRequest( int socket )
+int		Webserv::handleRequest( int socket )
 {
 	int				BUFF_SIZE = 10000;
 	int				ret;
@@ -114,20 +117,22 @@ int	Webserv::handleRequest( int socket )
 	char			chunk_data[BUFF_SIZE];
 	double			timediff;
 
-	gettimeofday(&beginning , NULL);
+	if (gettimeofday(&beginning , NULL) < 0)
+		return (0);
 	this->_buff.clear();
 	 
 	while(1)
 	{
-		gettimeofday(&now , NULL);
+		if (gettimeofday(&now , NULL) < 0)
+			return (0);
 		timediff = (now.tv_sec - beginning.tv_sec) + 1e-6 * (now.tv_usec - beginning.tv_usec);
 	 
-		if(timediff > 0.2 ) 								// (0.2 is timeout)
-			break;
+		if(timediff > 0.2 )		// (0.2 is timeout)
+			break ;
 
-		memset(chunk_data , 0, BUFF_SIZE); 					 	// clear the variable (to do : protect)
-		if((ret = recv(socket, chunk_data, BUFF_SIZE - 1, 0) ) < 0)	// to do : if = 0, client closed fd
-			usleep(100000); 								// if nothing is received we wait 0.1 second before trying again
+		memset(chunk_data , 0, BUFF_SIZE);
+		if((ret = recv(socket, chunk_data, BUFF_SIZE - 1, 0) ) < 0)
+			usleep(100000);		// if nothing is received we wait 0.1 second before trying again
 		else if (ret == 0)
 		{
 			Logger::Write(Logger::ERROR, RED, "Error : Client have closed his connection...");
@@ -140,7 +145,7 @@ int	Webserv::handleRequest( int socket )
 		}
 	}
 
-	return 1;
+	return (1);
 }
 
 void	Webserv::sendResponse( int socket )
@@ -178,27 +183,27 @@ int		Webserv::getMaxFd( void )
 	return (this->_maxFd);
 }
 
-fd_set								Webserv::getMasterSet( void )
+fd_set					Webserv::getMasterSet( void )
 {
 	return (this->_master_fd);
 }
 
-struct sockaddr_in					&Webserv::getAddr( void )
+struct sockaddr_in		&Webserv::getAddr( void )
 {
 	return (this->address);
 }
 
-std::vector<int>					Webserv::getFdList( void )
+std::vector<int>		Webserv::getFdList( void )
 {
 	return (this->_fdList);
 }
 
-std::string							Webserv::getIpAddress( void )
+std::string				Webserv::getIpAddress( void )
 {
 	return (this->_IPaddr);
 }
 
-std::string							Webserv::getPort( void )
+std::string				Webserv::getPort( void )
 {
 	return (this->_port);
 }
@@ -233,4 +238,6 @@ void					Webserv::logWebserv()
 		it2->logLocation();
 	for (std::vector<Location>::iterator it2 = this->_locationExtVector.begin(); it2 != this->_locationExtVector.end(); ++it2)
 		it2->logLocation();
+
+	return ;
 }
