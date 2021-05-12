@@ -22,18 +22,19 @@ class Webserv
 {
 private:
 
-	int						fd;
-	std::string				_buff; // test
-	std::vector<int>		_fdList;
-	struct sockaddr_in		address;
-	std::string				_listen;
-	std::vector<Location>	_locationVector;
-	std::vector<Location>	_locationExtVector;
-	fd_set					_master_fd;
-	int						_maxFd;
-	std::string				_port;
-	std::string				_IPaddr;
-	int						_serverNb;
+	int									fd;
+	std::string							_buff; // test
+	struct sockaddr_in					address;
+	std::string							_listen;
+	std::vector<Location>				_locationVector;
+	std::vector<Location>				_locationExtVector;
+	fd_set								_master_fd;
+	int									_maxFd;
+	std::string							_port;
+	std::string							_IPaddr;
+	int									_serverNb;
+	std::vector<int>					_fdList;
+	std::map<int, struct sockaddr_in>	_clientMap;
 
 public:
 
