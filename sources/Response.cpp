@@ -144,9 +144,10 @@ void	Response::processGetPostHead(void)
 	else{
 		if (f.good())
 		{
+			std::stringstream buff;
+			buff << f.rdbuf();
 			this->setResponseCode(200);
-			std::string str((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>()); //initialize str with index.html content
-			this->setBody(str);
+			this->setBody(buff.str());
 		}
 		this->checkErrors();
 		f.close();
