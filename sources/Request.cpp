@@ -192,8 +192,24 @@ void	Request::_mergeLocation(void)
 
 	for (std::map<std::string, std::string>::const_iterator it = locationExtSetting.begin(); it != locationExtSetting.end(); ++it)
 	{
-		if (it->second != "")
-			locationSetting[it->first] = it->second;
+		if (it->first != "path" && it->second != "")
+		{
+			if (!it->first.compare("accepted_method"))
+			{
+				if (locationSetting["accepted_method"].size())
+				{
+					if (it->second.size())
+					{
+						locationSetting["accepted_method"] += "/";
+						locationSetting["accepted_method"] += it->second;
+					}
+					else 
+						locationSetting["accepted_method"] = "";
+				}
+			}
+			else
+				locationSetting[it->first] = it->second;
+		}
 	}
 	this->_selectedLocation = Location(locationSetting);
 }
