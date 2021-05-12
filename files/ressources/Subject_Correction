@@ -1,6 +1,5 @@
 webserv
 
-
 Check the code and ask questions - launch the installation of siege with homebrew
 - Ask to get an explanation of how select is working.
 - Ask if they use only one select and how they ve managed the server accept and the client read/write.

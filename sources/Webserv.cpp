@@ -93,8 +93,9 @@ void	Webserv::fillAddress( void )
 
 int		Webserv::acceptConexion( void )
 {
-	unsigned int addrlen = sizeof(this->address);
-	int	socket = accept(this->fd, (struct sockaddr *)&this->address, (socklen_t*)&addrlen); // to protect
+	struct sockaddr_in		address;
+	unsigned int addrlen = sizeof(address);
+	int	socket = accept(this->fd, (struct sockaddr *)&address, (socklen_t*)&addrlen); // to protect
 	
 	if (socket < 0)
 	{
@@ -103,6 +104,11 @@ int		Webserv::acceptConexion( void )
 	}
 	
 	fcntl(socket, F_SETFL, O_NONBLOCK);
+
+    // if(this->_clientMap.insert(std::make_pair(socket, address)).second == false)
+    //     std::cout<<"\n\n element not insered, already in map...\n\n";
+
+	// Logger::Write(Logger::INFO, RED, "client[" + std::to_string(socket) + "] ip = " + );
 
 	this->_fdList.push_back(socket);
 
@@ -126,7 +132,7 @@ int		Webserv::handleRequest( int socket )
 		if (gettimeofday(&now , NULL) < 0)
 			return (0);
 		timediff = (now.tv_sec - beginning.tv_sec) + 1e-6 * (now.tv_usec - beginning.tv_usec);
-	 
+
 		if(timediff > 0.2 )		// (0.2 is timeout)
 			break ;
 
@@ -135,7 +141,7 @@ int		Webserv::handleRequest( int socket )
 			usleep(100000);		// if nothing is received we wait 0.1 second before trying again
 		else if (ret == 0)
 		{
-			Logger::Write(Logger::ERROR, RED, "Error : Client have closed his connection...");
+			Logger::Write(Logger::INFO, RED, "server[" + std::to_string(this->_serverNb) + "] : client have closed his connection...");
 			return (0);
 		}
 		else
@@ -150,6 +156,15 @@ int		Webserv::handleRequest( int socket )
 
 void	Webserv::sendResponse( int socket )
 {
+	char		 		myIP[16];
+	struct sockaddr_in	my_addr;
+
+	bzero(&my_addr, sizeof(my_addr));
+	socklen_t len = sizeof(my_addr);
+	getsockname(socket, (struct sockaddr *) &my_addr, &len);
+	inet_ntop(AF_INET, &my_addr.sin_addr, myIP, sizeof(myIP));
+	// printf("Local ip address: %s\n", myIP);
+
 	Request		request(&this->_locationVector, &this->_locationExtVector, socket, this->_buff);
 	request.logRequest(this->_serverNb);
 
