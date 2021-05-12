@@ -46,6 +46,4 @@ public:
 	std::vector<Webserv> 				getServerVector(void);
 };
 
-std::ostream &	operator<<(std::ostream & o, Config & rhs);
-
 #endif

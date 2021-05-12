@@ -43,15 +43,20 @@ Location::Location(std::map<std::string, std::string> locationMap) : _listen("")
 		else
 			this->_errorPage[it->first] = it->second;
 	}
+
+	return ;
 }
 
 Location::Location(const Location &rhs)
 {
 	*this = rhs;
+
+	return ;
 }
 
 Location::~Location(void)
 {
+	return ;
 }
 
 Location &Location::operator=(const Location &rhs)
@@ -146,9 +151,9 @@ bool								Location::isSet(void)
 
 void								Location::logLocation(void)
 {
-	std::ostringstream oss;
-	std::vector<std::string> vec;
-	std::map<std::string, std::string> mapstr;
+	std::ostringstream 					oss;
+	std::vector<std::string>			vec;
+	std::map<std::string, std::string>	mapstr;
 
 	oss << "location ";
 	oss << "[path: " << this->_path << "] : ";
@@ -160,31 +165,32 @@ void								Location::logLocation(void)
 	oss << "[cgi_ext: " << this->_cgiExt << "]";
 	oss << "[autoindex: " << this->_autoindex << "]";
 	oss << "[index: ";
+
 	vec = this->getIndex();
 	if (!vec.empty())
 	{
 		for (std::vector<std::string>::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			oss << *it << " ";
 	}
+
 	oss << "]";
 	oss << "[accepted_method: ";
 	vec = this->getAcceptedMethod();
+
 	if (!vec.empty())
-	{
 		for (std::vector<std::string>::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			oss << *it << " ";
-	}
 	oss << "]";
 
 	mapstr = this->getErrorPage();
 
 	oss << "[error_pages :";
 	if (!mapstr.empty())
-	{
 		for (std::map<std::string, std::string>::const_iterator it = mapstr.begin(); it != mapstr.end(); ++it)
 			oss << it->first << " " << it->second << " ";
-	}
 	oss << "]";
 
 	Logger::Write(Logger::DEBUG, WHT, oss.str());
+
+	return ;
 }

@@ -13,6 +13,7 @@ Cluster::Cluster( void )
 Cluster::Cluster( Cluster const & src )
 {
 	*this = src;
+
 	return ;
 }
 
@@ -25,19 +26,19 @@ Cluster & Cluster::operator=( Cluster const & rhs)
 {
 	(void)rhs;
     // this->??? = rhs.???;
+
 	return ( *this );
 }
 
 int								Cluster::initialization( std::string fileName)
 {
-	this->_maxFd = 0;	// not ouf du tout
-
+	this->_maxFd = 0;
 	this->_config.parseFile(fileName);
 
 	this->_serverList = this->_config.getServerVector();
 	this->_nbServ = this->_serverList.size();
 
-	FD_ZERO(&this->_master_fd);				// create a master file descriptor set and initialize it to zero
+	FD_ZERO(&this->_master_fd);										// create a master file descriptor set and initialize it to zero
 
 	for (int i = 0; i < this->_nbServ; i++)
 	{
@@ -45,7 +46,7 @@ int								Cluster::initialization( std::string fileName)
 		if (this->_serverList[i].initialization(i))
 			return (1);
 		FD_SET(this->_serverList[i].getFd(), &this->_master_fd);	// adding our first fd socket, the server one.
-		if(this->_serverList[i].getFd() > this->_maxFd)				// ternaire ??
+		if(this->_serverList[i].getFd() > this->_maxFd)				// ternaire ?? a faire
 			this->_maxFd = this->_serverList[i].getFd();
 	}
 
@@ -95,7 +96,8 @@ int								Cluster::lanchServices( void )
 				{
 					if (!this->_serverList[i].handleRequest( *it ))
 					{
-						close(*it);
+						if (close(*it) < 0)
+							return (1);
 						FD_CLR(*it, &this->_master_fd);
 						FD_CLR(*it, &writingSet);
 						deleteInFdList(*it);
@@ -108,7 +110,8 @@ int								Cluster::lanchServices( void )
 						else
 						{
 							Logger::Write(Logger::ERROR, RED, "server[" + std::to_string(i) + "] : error with reading fd[" + std::to_string(*it) + "]");
-							close(*it);
+							if (close(*it) < 0)
+								return (1);
 							FD_CLR(*it, &copyMasterSet);
 							FD_CLR(*it, &writingSet);
 							deleteInFdList(*it);
@@ -143,6 +146,8 @@ void								Cluster::deleteInFdList( int socket )
 			this->_fdList.erase(it);
 			break ;
 		}
+	
+	return ;
 }
 
 void							Cluster::setWritingSet( fd_set *writefds )
@@ -151,6 +156,8 @@ void							Cluster::setWritingSet( fd_set *writefds )
 	std::vector<int> list = this->_fdList;
 	for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
 		FD_SET(*it, writefds);
+
+	return ;
 }
 
 std::map<std::string, std::string>	Cluster::getMap( void )
@@ -178,7 +185,7 @@ std::vector<int>					Cluster::getFdList( void )
 	return (this->_fdList);
 }
 
-void							Cluster::logCluster(void)
+void								Cluster::logCluster(void)
 {
 	for (std::vector<Webserv>::iterator it = this->_serverList.begin(); it != this->_serverList.end(); ++it)
 		it->logWebserv();

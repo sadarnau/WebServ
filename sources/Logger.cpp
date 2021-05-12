@@ -21,6 +21,8 @@ void Logger::Start(Priority minPriority)
 
 	if (Log._fileStream.is_open())
         Log._fileStream.close();
+
+	return ;
 }
 
 void Logger::Write(Priority priority, std::string color, const std::string &message)
@@ -45,8 +47,9 @@ void Logger::Write(Priority priority, std::string color, const std::string &mess
 		std::cout << oss.str();
 		if (Log._fileStream.is_open())
 			Log._fileStream.close();
-		
 	}
+
+	return ;
 }
 
 void Logger::Error(const std::string &message)
@@ -55,10 +58,14 @@ void Logger::Error(const std::string &message)
 		Logger::Write(Logger::ERROR, RED, message + "Errno -> (" + std::string(strerror(errno)));
 	else
 		Logger::Write(Logger::ERROR, RED, message);
+
+	return ;
 }
 
 void Logger::Stop(void)
 {
     if (Log._fileStream.is_open())
         Log._fileStream.close();
+
+	return ;
 }
