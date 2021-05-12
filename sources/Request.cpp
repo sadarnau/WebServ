@@ -196,6 +196,7 @@ void	Request::_mergeLocation(void)
 	std::map<std::string, std::string>	locationExtSetting = this->_selectedLocationExt.getSettingMap();
 
 	for (std::map<std::string, std::string>::const_iterator it = locationExtSetting.begin(); it != locationExtSetting.end(); ++it)
+	{
 		if (it->first != "path" && it->second != "")
 		{
 			if (!it->first.compare("accepted_method"))
@@ -214,7 +215,8 @@ void	Request::_mergeLocation(void)
 			else
 				locationSetting[it->first] = it->second;
 		}
-
+	}
+	
 	this->_selectedLocation = Location(locationSetting);
 
 	return ;

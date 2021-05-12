@@ -15,7 +15,7 @@ Response::Response(Request *req, int socket)
 
 
 	this->buildResponse();
-	this->send();
+	this->sendResponse();
 }
 
 Response::Response(Response const & src)
@@ -41,10 +41,25 @@ Response & Response::operator=(Response const & rhs)
 ////////////////////
 // METHODS
 ////////////////////
-void	Response::send(void)
+void	Response::sendResponse(void)
 {
-	if (write(this->_socket, this->_response.c_str() , this->_response.length()) < 0)
-		throw (std::exception());
+	errno = 0;
+	char *toSend = strdup(this->_response.c_str());
+
+	long ret = 0;
+	long bytesSent = 0;
+	long bytesToSend = this->_response.length();
+
+	while (bytesToSend > 0)
+	{
+		ret = send(this->_socket, toSend, bytesToSend, 0);
+		if (ret != -1)
+		{
+			bytesSent += ret;
+			bytesToSend -= ret;
+		}
+		// Logger::Write(Logger::DEBUG, WHT, std::string(strerror(errno)) + " sent : " + intToStr(bytesSent) + " rest : " + intToStr(bytesToSend));
+	}
 
 	return ;
 }
@@ -77,9 +92,9 @@ void	Response::buildResponse(void)
 	this->buildHeader();
 
 	if (requestMethod == "HEAD")
-		this->_response = this->_header + "\r\n";
+		this->_response = this->_header;
 	else
-		this->_response = this->_header + "\r\n" + this->_body;
+		this->_response = this->_header + this->_body;
 
 	return ;
 }
@@ -106,7 +121,7 @@ void	Response::buildHeader(void)
 		if (!it->second.empty())
 			header << it->first << ": " << it->second << "\r\n";
 
-	this->_header = header.str();
+	this->_header = header.str() + "\r\n";
 
 	return ;
 }
@@ -542,12 +557,19 @@ std::string		Response::getResponseCodeMessage(void)
 	return (this->_responseMessages[this->_responseCode]);
 }
 
-std::string		Response::getContentLength(void)
+long			Response::getHeaderLength(void)
 {
-	std::ostringstream oss;
-	oss << this->_body.size();
+	return (this->_header.size());
+}
 
-	return (oss.str());
+long			Response::getBodyLength(void)
+{
+	return (this->_body.size());
+}
+
+long			Response::getResponseLength(void)
+{
+	return (this->_response.size());
 }
 
 ////////////////////
@@ -555,9 +577,10 @@ std::string		Response::getContentLength(void)
 ////////////////////
 void Response::logResponse(int serverNbr)
 {
-	Logger::Write(Logger::INFO, BLU, "server[" + std::to_string(serverNbr) + "] : response sent [code: " +
+	Logger::Write(Logger::INFO, BLU, "server[" + intToStr(serverNbr) + "] : response sent [code: " +
 		this->getResponseCodeStr() + "] [message: " + this->getResponseCodeMessage() 
-		+ "] [content length: " + this->getContentLength()+ "]");
+		+ "] [length: " + intToStr(this->getHeaderLength()) + " + " + intToStr(this->getBodyLength()) + 
+		+ " = " + intToStr(this->getResponseLength()) +"]");
 	Logger::Write(Logger::DEBUG, WHT, " response : header\n" + this->getHeader());
 	Logger::Write(Logger::MORE, BLU, " full response :\n" + this->getResponse());
 

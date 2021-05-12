@@ -35,7 +35,7 @@ private:
 	std::map<int, std::string>				_responseMessages;
 	bool									_isSetToError;
 
-	void			send(void);
+	void			sendResponse(void);
 	void			buildHeader(void);
 	void			buildResponse(void);
 
@@ -75,7 +75,9 @@ public:
 	std::string		getResponseCodeStr(void);
 	int				getResponseCode(void);
 	std::string		getResponseCodeMessage(void);
-	std::string		getContentLength(void);
+	long			getHeaderLength(void);
+	long			getBodyLength(void);
+	long			getResponseLength(void);
 
 	void			logResponse(int serverNbr);
 };
