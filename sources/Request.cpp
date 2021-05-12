@@ -13,13 +13,11 @@ Request::Request(vlocation *locationVector, vlocation *locationExtVector, int in
 	this->_contentLength = 0;
 
 	this->_parseRequest(this->_buff);
-	this->_selectLocation();
 
+	this->_selectLocation();
 	if(this->_selectLocationExt())
-	{
-		std::cout << "Merge here" << std::endl;
 		this->_mergeLocation();
-	}
+		
 	this->_selectedLocation.logLocation();
 	this->_parseUrl();
 	this->_createPath();
