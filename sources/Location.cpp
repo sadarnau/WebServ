@@ -186,5 +186,5 @@ void								Location::logLocation(void)
 	}
 	oss << "]";
 
-	Logger::Write(Logger::MORE, WHT, oss.str());
+	Logger::Write(Logger::DEBUG, WHT, oss.str());
 }

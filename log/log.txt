@@ -1,0 +1,42 @@
+--------LOG----------
+[0;33mINFO [16:56:03]: [0;32mLogger in < info > mode[0m
+[0;33mINFO [16:56:03]: [0;33mconfiguration file : files/default.conf[0m
+[0;33mINFO [16:56:03]: [0;32mserver[0] : creation[0m
+[0;33mINFO [16:56:03]: [0;32msocket : created[0m
+[0;33mINFO [16:56:03]: [0;32msocket : binded on 127.0.0.1:8080[0m
+[0;33mINFO [16:56:03]: [0;32msocket : listening...[0m
+[0;33mINFO [16:56:03]: [0;32mserver[1] : creation[0m
+[0;33mINFO [16:56:03]: [0;32msocket : created[0m
+[0;33mINFO [16:56:03]: [0;32msocket : binded on 127.0.0.1:8000[0m
+[0;33mINFO [16:56:03]: [0;32msocket : listening...[0m
+[0;33mINFO [16:56:03]: [0;37mlocation [path: /] : [listen: 127.0.0.1:8080][server_name: domain2.com][client_max_body_size: 100M][root: files/www][cgi_path: ][cgi_ext: ][autoindex: off][index: index.html otherindex.html ][accepted_method: ][error_pages :][0m
+[0;33mINFO [16:56:03]: [0;37mlocation [path: /test] : [listen: 127.0.0.1:8080][server_name: domain2.com][client_max_body_size: 100M][root: files/www/test][cgi_path: ][cgi_ext: ][autoindex: on][index: index.html test.html ][accepted_method: GET POST ][error_pages :404 files/www/custom_404.html ][0m
+[0;33mINFO [16:56:03]: [0;37mlocation [path: /testlocation] : [listen: 127.0.0.1:8080][server_name: domain2.com][client_max_body_size: 100M][root: files/www/else][cgi_path: ][cgi_ext: ][autoindex: on][index: other_index.html ][accepted_method: GET POST ][error_pages :][0m
+[0;33mINFO [16:56:03]: [0;37mlocation [path: /php] : [listen: 127.0.0.1:8080][server_name: domain2.com][client_max_body_size: 100M][root: files/www/cgi-bin/php][cgi_path: files/cgi/OSX_php-cgi][cgi_ext: .php][autoindex: on][index: index.php ][accepted_method: GET POST ][error_pages :][0m
+[0;33mINFO [16:56:03]: [0;37mlocation [path: /wrongCgi] : [listen: 127.0.0.1:8080][server_name: domain2.com][client_max_body_size: 100M][root: files/www/errors][cgi_path: /usr/bin/aaaaaaaa][cgi_ext: ][autoindex: on][index: index.php ][accepted_method: GET POST ][error_pages :][0m
+[0;33mINFO [16:56:03]: [0;37mlocation [path: .test-ext] : [listen: ][server_name: ][client_max_body_size: 100][root: files/www/else][cgi_path: ][cgi_ext: .test-ext][autoindex: on][index: ][accepted_method: GET POST TRACE ][error_pages :][0m
+[0;33mINFO [16:56:03]: [0;37mlocation [path: /] : [listen: 127.0.0.1:8000][server_name: servertest.fr][client_max_body_size: 100M][root: files/www/YoupiBanane][cgi_path: ][cgi_ext: ][autoindex: on][index:  ][accepted_method: GET ][error_pages :][0m
+[0;33mINFO [16:56:03]: [0;37mlocation [path: /put_test] : [listen: 127.0.0.1:8000][server_name: servertest.fr][client_max_body_size: 100M][root: files/www/YoupiBanane][cgi_path: ][cgi_ext: ][autoindex: off][index:  ][accepted_method: PUT ][error_pages :][0m
+[0;33mINFO [16:56:03]: [0;37mlocation [path: /post_body] : [listen: 127.0.0.1:8000][server_name: servertest.fr][client_max_body_size: 100][root: files/www/YoupiBanane][cgi_path: ][cgi_ext: ][autoindex: off][index:  ][accepted_method: POST ][error_pages :][0m
+[0;33mINFO [16:56:03]: [0;37mlocation [path: /directory] : [listen: 127.0.0.1:8000][server_name: servertest.fr][client_max_body_size: 100M][root: files/www/YoupiBanane][cgi_path: ][cgi_ext: ][autoindex: off][index: youpi.bad_extension ][accepted_method: GET ][error_pages :][0m
+[0;33mINFO [16:56:03]: [0;37mlocation [path: .bla] : [listen: ][server_name: ][client_max_body_size: 1M][root: ][cgi_path: files/cgi/OSX_cgi_tester][cgi_ext: .bla][autoindex: ][index: ][accepted_method: POST ][error_pages :][0m
+[0;33mINFO [16:56:17]: [0;32mserver[1] : new connection[0m
+[0;33mINFO [16:56:17]: [0;37mlocation [path: /] : [listen: 127.0.0.1:8000][server_name: servertest.fr][client_max_body_size: 100M][root: files/www/YoupiBanane][cgi_path: ][cgi_ext: ][autoindex: on][index:  ][accepted_method: GET ][error_pages :][0m
+[0;33mINFO [16:56:17]: [0;34mserver[1] : request received [method: GET] [location: /] [target: /][0m
+[0;33mINFO [16:56:17]: [0;34mserver[1] : response sent [code: 200] [message: OK] [content length: 953][0m
+[0;33mINFO [16:56:17]: [0;37mlocation [path: /] : [listen: 127.0.0.1:8000][server_name: servertest.fr][client_max_body_size: 100M][root: files/www/YoupiBanane][cgi_path: ][cgi_ext: ][autoindex: on][index:  ][accepted_method: GET ][error_pages :][0m
+[0;33mINFO [16:56:17]: [0;34mserver[1] : request received [method: POST] [location: /] [target: /][0m
+[0;33mINFO [16:56:17]: [0;34mserver[1] : response sent [code: 405] [message: METHOD_NOT_ALLOWED] [content length: 2089][0m
+[0;33mINFO [16:56:18]: [0;37mlocation [path: /] : [listen: 127.0.0.1:8000][server_name: servertest.fr][client_max_body_size: 100M][root: files/www/YoupiBanane][cgi_path: ][cgi_ext: ][autoindex: on][index:  ][accepted_method: GET ][error_pages :][0m
+[0;33mINFO [16:56:18]: [0;34mserver[1] : request received [method: HEAD] [location: /] [target: /][0m
+[0;33mINFO [16:56:18]: [0;34mserver[1] : response sent [code: 405] [message: METHOD_NOT_ALLOWED] [content length: 2089][0m
+[0;33mINFO [16:56:18]: [0;37mlocation [path: /directory] : [listen: 127.0.0.1:8000][server_name: servertest.fr][client_max_body_size: 100M][root: files/www/YoupiBanane][cgi_path: ][cgi_ext: ][autoindex: off][index: youpi.bad_extension ][accepted_method: GET ][error_pages :][0m
+[0;33mINFO [16:56:18]: [0;34mserver[1] : request received [method: GET] [location: /directory] [target: /][0m
+[0;33mINFO [16:56:18]: [0;34mserver[1] : response sent [code: 200] [message: OK] [content length: 295][0m
+[0;33mINFO [16:56:18]: [0;37mlocation [path: /directory] : [listen: 127.0.0.1:8000][server_name: servertest.fr][client_max_body_size: 100M][root: files/www/YoupiBanane][cgi_path: ][cgi_ext: ][autoindex: off][index: youpi.bad_extension ][accepted_method: GET ][error_pages :][0m
+[0;33mINFO [16:56:18]: [0;34mserver[1] : request received [method: GET] [location: /directory] [target: /youpi.bad_extension][0m
+[0;33mINFO [16:56:18]: [0;34mserver[1] : response sent [code: 200] [message: OK] [content length: 295][0m
+[0;33mINFO [16:56:19]: [0;37mlocation [path: .bla] : [listen: 127.0.0.1:8000][server_name: servertest.fr][client_max_body_size: 100M][root: files/www/YoupiBanane][cgi_path: files/cgi/OSX_cgi_tester][cgi_ext: .bla][autoindex: off][index: youpi.bad_extension ][accepted_method: POST ][error_pages :][0m
+[0;33mINFO [16:56:19]: [0;34mserver[1] : request received [method: GET] [location: .bla] [target: /youpi.bla][0m
+[0;33mINFO [16:56:19]: [0;34mserver[1] : response sent [code: 405] [message: METHOD_NOT_ALLOWED] [content length: 2089][0m
+[0;31mERROR[16:56:19]: [0;31mError : Client have closed his connection...[0m

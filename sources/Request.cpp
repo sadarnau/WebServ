@@ -20,7 +20,6 @@ Request::Request(vlocation *locationVector, vlocation *locationExtVector, int in
 		std::cout << "Merge here" << std::endl;
 		this->_mergeLocation();
 	}
-
 	this->_selectedLocation.logLocation();
 	this->_parseUrl();
 	this->_createPath();
