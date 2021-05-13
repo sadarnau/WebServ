@@ -67,8 +67,6 @@ int								Cluster::lanchServices( void )
 		copyMasterSet = this->_master_fd;
 		setWritingSet(&writingSet);
 
-			// std::cout << "\nclient[" << it->getSocket() << "] on serv " << it->getServerNb() << "\n\n";
-
 		int	ret = select(this->_maxFd + 1, &copyMasterSet, &writingSet, 0, 0);
 
 		if (ret < 0)
@@ -93,7 +91,6 @@ int								Cluster::lanchServices( void )
 			}
 			else
 			{
-				// std::cout << it->getSocket() << " " << it->getServerNb() << " "<< it->getFinishRead();
 				Logger::Write(Logger::ERROR, RED, "server[" + std::to_string(it->getServerNb()) + "] : error with send, fd[" + std::to_string(it->getSocket()) + "]");
 				if (close(it->getSocket()) < 0)
 					return (1);
@@ -110,14 +107,10 @@ int								Cluster::lanchServices( void )
 				Logger::Write(Logger::INFO, GRN, "server[" + std::to_string(i) + "] : new connection");
 				if ((sock = this->_serverList[i].acceptConexion()) < 0)
 					return (1); // test ???
-				
-			// std::cout << "sock = " << sock << "\n";
 
 				FD_SET(sock, &this->_master_fd);	// add the new fd in the master fd set
 				if (sock > this->_maxFd)			// check until where we have to select
 					this->_maxFd = sock;
-
-			// std::cout << "maxfd = " << this->_maxFd << "\n";
 
 				this->_clients.push_back(Client(sock, i));
 				break ;													// no need to check any more serv
@@ -126,7 +119,6 @@ int								Cluster::lanchServices( void )
 		std::vector<Client> list = this->_clients;
 		for (std::vector<Client>::iterator it = list.begin() ; it != list.end() ; it++)
 		{
-			// std::cout << "sock and webnb = " << it->getSocket() << " " << it->getServerNb() << "\n";
 			if (FD_ISSET(it->getSocket(), &copyMasterSet))
 			{
 				if ( !it->myRecv() )
@@ -137,52 +129,10 @@ int								Cluster::lanchServices( void )
 					deleteInClients(it->getSocket());
 				}
 				else
-				{
 					if (it->getFinishRead())
-					{
 						this->_readyClients.push_back(*it);
-						// std::cout << *it;
-					}
-				}
 			}
 		}
-
-	// 	for(int i = 0; i < this->_nbServ; i++)
-	// 	{
-	// 		std::vector<int> list = this->_serverList[i].getFdList();
-	// 		for (std::vector<int>::iterator it = list.begin() ; it != list.end() ; it++)
-	// 		{
-	// 			if (FD_ISSET(*it, &copyMasterSet))
-	// 			{
-	// 				if (!this->_serverList[i].handleRequest( *it ))
-	// 				{
-	// 					if (close(*it) < 0)
-	// 						return (1);
-	// 					FD_CLR(*it, &this->_master_fd);
-	// 					FD_CLR(*it, &writingSet);
-	// 					deleteInFdList(*it);
-	// 					this->_serverList[i].deleteSocket(*it);
-	// 				}
-	// 				else
-	// 				{
-	// 					if (FD_ISSET(*it, &writingSet))
-	// 						this->_serverList[i].sendResponse( *it );
-	// 					else
-	// 					{
-	// 						Logger::Write(Logger::ERROR, RED, "server[" + std::to_string(i) + "] : error with reading fd[" + std::to_string(*it) + "]");
-	// 						if (close(*it) < 0)
-	// 							return (1);
-	// 						FD_CLR(*it, &copyMasterSet);
-	// 						FD_CLR(*it, &writingSet);
-	// 						deleteInFdList(*it);
-	// 						this->_serverList[i].deleteSocket(*it);
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	
-	
 	}
 
 	return (0);
