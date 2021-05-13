@@ -105,8 +105,6 @@ int		Webserv::acceptConexion( void )
 	
 	fcntl(socket, F_SETFL, O_NONBLOCK);
 
-	this->_fdList.push_back(socket);
-
 	return (socket);
 }
 
@@ -152,19 +150,19 @@ void	Webserv::sendResponse( int socket, Client client )
 	return ;
 }
 
-void	Webserv::deleteSocket( int socket )
-{
-	for (std::vector<int>::iterator it = this->_fdList.begin() ; it != this->_fdList.end() ; it++)
-	{
-		if(*it == socket)
-		{
-			this->_fdList.erase(it);
-			break ;
-		}
-	}
+// void	Webserv::deleteSocket( int socket )
+// {
+// 	for (std::vector<int>::iterator it = this->_fdList.begin() ; it != this->_fdList.end() ; it++)
+// 	{
+// 		if(*it == socket)
+// 		{
+// 			this->_fdList.erase(it);
+// 			break ;
+// 		}
+// 	}
 
-	return ;
-}
+// 	return ;
+// }
 
 int		Webserv::getFd( void )
 {

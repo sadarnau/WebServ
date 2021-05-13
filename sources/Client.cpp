@@ -36,13 +36,13 @@ Client & Client::operator=( Client const & rhs)
 
 int		Client::myRecv( void )
 {
-	int				BUFF_SIZE = 10000;
+	int				BUFF_SIZE = 100000;
 	int				ret;
 	char			chunk_data[BUFF_SIZE];
 
 	memset(chunk_data , 0, BUFF_SIZE);
 	if ((ret = recv(this->_socket, chunk_data, BUFF_SIZE - 1, 0)) < 0)
-		return 1;
+		return 0;	// read error, close connection
 	else if (ret == 0)
 	{
 		Logger::Write(Logger::INFO, RED, "server[" + std::to_string(this->_servNb) + "] : client have closed his connection...");
