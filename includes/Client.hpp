@@ -25,7 +25,7 @@ public:
 	Client & operator=( Client const & rhs );		//overload operator =
 
 	int		myRecv( void );
-	void	checkReadState( void );
+	bool	checkReadState( void );
 	int		getSocket( void );
 	int		getServerNb( void );
 	bool	getFinishRead( void );
@@ -37,5 +37,6 @@ public:
 };
 
 std::ostream &	operator<<(std::ostream & o, Client & rhs);
+int								checkEnd(const std::string& str, const std::string& end);
 
 #endif

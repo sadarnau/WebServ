@@ -51,16 +51,31 @@ int		Client::myRecv( void )
 	else
 		this->_buff.append(chunk_data);
 
-	checkReadState();
+	this->_finishRead = checkReadState();
 
 	return (1);
 }
 
-void	Client::checkReadState( void )
+bool	Client::checkReadState( void )
 {
 	// check if the request is full
 	// set the flag this->finishRead to true or false
-	return ;
+	return (true);
+}
+
+int								checkEnd(const std::string& str, const std::string& end)
+{
+	size_t	i = str.size();
+	size_t	j = end.size();
+
+	while (j > 0)
+	{
+		i--;
+		j--;
+		if (i < 0 || str[i] != end[j])
+			return (1);
+	}
+	return (0);
 }
 
 int		Client::getServerNb( void )
