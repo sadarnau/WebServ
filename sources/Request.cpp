@@ -86,13 +86,9 @@ void	Request::_parseRequest(std::string req)
 	// handle rest of request
 	while (std::getline(streamHeader, line))
     {
-		std::stringstream	ss(line);
-		ss >> key >> value;										// set the variables
+		key = line.substr(0, line.find(":"));
+		value = line.substr(line.find(":") + 2, line.size());
 
-		if(ss.fail())											// if value extraction failed, break while loop
-			break;
-
-		key = key.substr(0, key.length() - 1);					// delete char ':' at the end of key
 		if (this->_isValidHeader(key))
 		{
 			this->_headers[key] = value;
