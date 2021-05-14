@@ -58,7 +58,11 @@ void	Response::sendResponse(void)
 			bytesSent += ret;
 			bytesToSend -= ret;
 		}
-		// Logger::Write(Logger::DEBUG, WHT, std::string(strerror(errno)) + " sent : " + intToStr(bytesSent) + " rest : " + intToStr(bytesToSend));
+		else if (ret == 0)
+			continue ;
+
+
+		Logger::Write(Logger::DEBUG, WHT, std::string(strerror(errno)) + " sent : " + intToStr(bytesSent) + " rest : " + intToStr(bytesToSend));
 	}
 
 	return ;
