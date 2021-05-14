@@ -77,7 +77,7 @@ void	Response::buildResponse(void)
 	// METHODS
 	if (this->_req->getBadRequest())
 		this->setToErrorPage(400);
-	else if (this->_location.getAuthentication() != "" && !this->isValidAuthorization())
+	else if (!this->isValidAuthorization())
 		this->setToErrorPage(401);
 	else if (!this->isValidMethod(requestMethod))
 		this->setToErrorPage(405);
