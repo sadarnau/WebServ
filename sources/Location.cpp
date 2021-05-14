@@ -5,7 +5,7 @@ Location::Location(void)
 	this->_isSet = false;
 }
 
-Location::Location(std::map<std::string, std::string> locationMap) : _listen(""), _path(""), _serverName(""), _clientMaxBodySizeStr("1M"), _clientMaxBodySize(1000000), _root(""), _cgiPath(""),  _cgiExt(""), _autoindex(""), _settingMap(locationMap)
+Location::Location(std::map<std::string, std::string> locationMap) : _listen(""), _path(""), _serverName(""), _clientMaxBodySizeStr("1M"), _clientMaxBodySize(1000000), _root(""), _cgiPath(""),  _cgiExt(""), _autoindex(""), _authentication(""), _settingMap(locationMap)
 {
 	this->_isSet = true;
 	this->_index.clear();
@@ -29,6 +29,8 @@ Location::Location(std::map<std::string, std::string> locationMap) : _listen("")
 			this->_root = it->second;
 		else if (!it->first.compare("autoindex"))
 			this->_autoindex = it->second;
+		else if (!it->first.compare("authentication"))
+			this->_authentication = it->second;
 		else if (!it->first.compare("cgi_path"))
 			this->_cgiPath = it->second;
 		else if (!it->first.compare("cgi_ext"))
@@ -70,6 +72,7 @@ Location &Location::operator=(const Location &rhs)
 	this->_cgiPath = rhs._cgiPath;
 	this->_cgiExt = rhs._cgiExt;
 	this->_autoindex = rhs._autoindex;
+	this->_authentication = rhs._authentication;
 	this->_index = rhs._index;
 	this->_acceptedMethod = rhs._acceptedMethod;
 	this->_errorPage = rhs._errorPage;
@@ -123,6 +126,11 @@ std::string		Location::getAutoindex(void)
 	return (this->_autoindex);
 }
 
+std::string		Location::getAuthentication(void)
+{
+	return (this->_authentication);
+}
+
 std::vector<std::string>			Location::getIndex(void)
 {
 	return (this->_index);
@@ -164,6 +172,7 @@ void								Location::logLocation(void)
 	oss << "[cgi_path: " << this->_cgiPath << "]";
 	oss << "[cgi_ext: " << this->_cgiExt << "]";
 	oss << "[autoindex: " << this->_autoindex << "]";
+	oss << "[authentication: " << this->_authentication << "]";
 	oss << "[index: ";
 
 	vec = this->getIndex();

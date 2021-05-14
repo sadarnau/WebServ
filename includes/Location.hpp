@@ -20,6 +20,7 @@ class Location
 		std::string							_cgiPath;
 		std::string							_cgiExt;
 		std::string							_autoindex;
+		std::string							_authentication;
 		std::vector<std::string>			_index;
 		std::vector<std::string>			_acceptedMethod;
 		std::map<std::string, std::string>	_errorPage;
@@ -41,6 +42,7 @@ class Location
 		std::string							getCgiPath(void);
 		std::string							getCgiExt(void);
 		std::string							getAutoindex(void);
+		std::string							getAuthentication(void);
 		std::vector<std::string>			getIndex(void);
 		std::vector<std::string>			getAcceptedMethod(void);
 		std::map<std::string, std::string>	getErrorPage(void);
