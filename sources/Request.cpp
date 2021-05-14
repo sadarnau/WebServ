@@ -11,7 +11,7 @@ Request::Request(vlocation *locationVector, vlocation *locationExtVector, int in
 	this->_locationExtVector = locationExtVector;
 	this->_buff = buff;
 	this->_contentLength = 0;
-	this->_authorization = "";
+	this->_badRequest = false;
 
 	this->_parseRequest(this->_buff);
 
@@ -80,8 +80,11 @@ void	Request::_parseRequest(std::string req)
 	std::stringstream	ss(line);
 
 	ss >> key >> value >> httpVersion;;
-	if (ss.fail())
-		Logger::Write(Logger::ERROR, RED, "request : bad request line : " + line);
+	if (ss.fail() || httpVersion != "HTTP/1.1")
+	{
+		this->_badRequest = true;
+		Logger::Write(Logger::ERROR, RED, "request : bad request : request line : " + line);
+	}
 
 	this->_method = key;
 	this->_target = value;
@@ -93,20 +96,17 @@ void	Request::_parseRequest(std::string req)
 
 		if (line.find(":") == std::string::npos)
 		{
-			Logger::Write(Logger::ERROR, RED, "request : bad header line : " + line);
-			continue ;
+			this->_badRequest = true;
+			Logger::Write(Logger::ERROR, RED, "request : bad request : header line : " + line);
+			break ;
 		}
 		key = line.substr(0, line.find(":"));
-		value = line.substr(line.find(":") + 2, line.size());
+		value = line.substr(line.find(":") + 2, line.find("\r\n"));
 
 		if (this->_isValidHeader(key))
-		{
 			this->_headers[key] = value;
 			if (!key.compare("Content-Length"))
 				this->_contentLength = std::stoul(value);
-			if (!key.compare("Authorization"))
-				this->_authorization = value;
-		}
 		else
 			this->_skippedHeaders.push_back(key);
 	}
@@ -342,11 +342,10 @@ size_t			Request::getContentLength(void)
 	return (this->_contentLength);
 }
 
-std::string		Request::getAuthorization(void)
+bool			Request::getBadRequest(void)
 {
-	return (this->_authorization);
+	return(this->_badRequest);
 }
-
 
 ////////////////////
 // LOG
@@ -370,7 +369,7 @@ void	Request::logRequest(int serverNbr)
 	oss << "Content of request->headers :" << std::endl << std::endl; 
 	for (std::map<std::string, std::string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); ++it)
 	{
-		oss << std::setw(20) << it->first << " : " << it->second << std::endl;
+		oss << std::setw(20) << it->first << " : >" << it->second << "<" << std::endl;
 	}
 	Logger::Write(Logger::DEBUG, WHT, oss.str());
 

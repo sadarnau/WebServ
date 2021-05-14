@@ -75,9 +75,11 @@ void	Response::buildResponse(void)
 	errno = 0;
 
 	// METHODS
-	//if (!this->isValidAuthorization())
-		//this->setToErrorPage(401);
-	if (!this->isValidMethod(requestMethod))
+	if (this->_req->getBadRequest())
+		this->setToErrorPage(400);
+	else if (this->_location.getAuthentication() != "" && !this->isValidAuthorization())
+		this->setToErrorPage(401);
+	else if (!this->isValidMethod(requestMethod))
 		this->setToErrorPage(405);
 	else if (this->_req->getContentLength() > this->_location.getClientMaxBodySize())
 		this->setToErrorPage(413);
@@ -302,7 +304,7 @@ bool		Response::autoIndexResponse(void)
 
 
 ////////////////////
-// ERRORS
+// MESSAGES / ERRORS
 ////////////////////
 void		Response::initResponseMessageMap(void)
 {
@@ -310,6 +312,7 @@ void		Response::initResponseMessageMap(void)
 	this->_responseMessages[201] = "CREATED";				// Created
 	this->_responseMessages[202] = "ACCEPTED";				// Accepted
 	this->_responseMessages[204] = "NO_CONTENT";			// No content
+	this->_responseMessages[400] = "BAD_REQUEST";			// Unauthorized
 	this->_responseMessages[401] = "UNAUTHORIZED";			// Unauthorized
 	this->_responseMessages[403] = "FORBIDDEN";				// you dont have rights to access file
 	this->_responseMessages[404] = "FILE_NOT_FOUND";		// target doesnt exist
@@ -385,7 +388,7 @@ std::string		Response::generateDefaultErrorPage(std::string errorNbr, std::strin
 bool	Response::isValidAuthorization(void)
 {
 	std::string					authentication(this->_location.getAuthentication());
-	std::string					authorization(this->_req->getAuthorization());
+	std::string					authorization(this->_req->getHeaders()["Authorization"]);
 	std::vector<std::string>	split;
 
 	Logger::Write(Logger::INFO, YEL, authentication);

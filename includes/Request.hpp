@@ -32,12 +32,12 @@ private:
 	std::string							_body;
 	std::string							_urlTargetPath;
 	std::string							_absoluteTargetPath;
-	std::string							_authorization;
 	std::map<std::string, std::string>	_headers;
 	std::vector<std::string>			_skippedHeaders;
 	std::string							_queryString;
 	Location							_selectedLocation;
 	Location							_selectedLocationExt;
+	bool								_badRequest;
 
 	void								_parseRequest(std::string req);
 	std::string							_unchunkBody(std::string body);
@@ -66,7 +66,8 @@ public:
 	std::map<std::string, std::string>	getHeaders(void);
 	Location							getSelectedLocation(void);
 	size_t								getContentLength(void);
-	
+	bool								getBadRequest(void);
+
 	void								logRequest(int serverNb);
 };
 
