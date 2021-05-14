@@ -172,9 +172,7 @@ void		Cgi::parseResponse(void)
 		this->_result = res.substr(res.find("\r\n\r\n") + 4, res.length());
 	}
 	else
-	{
 		return ;
-	}
 
 	unsigned long			it;
 	std::string				line;
@@ -188,10 +186,10 @@ void		Cgi::parseResponse(void)
 		key = line.substr(0, line.find(":"));
 		value = line.substr(line.find(":") + 2, line.size());
 		this->_headers[key] = value;
+
 		if (it == std::string::npos)
 			break ;	
 	}
-
 }
 
 void		Cgi::_closeFd(FILE *fIn, FILE *fOut, int fdIn, int fdOut)
