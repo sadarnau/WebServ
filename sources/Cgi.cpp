@@ -176,11 +176,11 @@ void		Cgi::parseResponse(void)
 		return ;
 	}
 
-	std::istringstream		streamHeader(header);
+	unsigned long			it;
 	std::string				line;
  	std::string				key;
     std::string				value;
-	while (std::getline(streamHeader, line))
+	while (cutLine(&it, &line, &header, "\r\n"))
     {
 		if(line.find(":") == std::string::npos)
 			continue ;
@@ -188,7 +188,10 @@ void		Cgi::parseResponse(void)
 		key = line.substr(0, line.find(":"));
 		value = line.substr(line.find(":") + 2, line.size());
 		this->_headers[key] = value;
+		if (it == std::string::npos)
+			break ;	
 	}
+
 }
 
 void		Cgi::_closeFd(FILE *fIn, FILE *fOut, int fdIn, int fdOut)
