@@ -73,10 +73,10 @@ void	Request::_parseRequest(std::string req)
     std::string			key;
     std::string			value;
     std::string			httpVersion;;
-	std::istringstream	streamHeader(header);
 
+	unsigned long it;
+	cutLine(&it, &line, &header, "\r\n");
 	// handle request line
-	std::getline(streamHeader, line);
 	std::stringstream	ss(line);
 
 	ss >> key >> value >> httpVersion;;
@@ -91,9 +91,8 @@ void	Request::_parseRequest(std::string req)
 	this->_httpVersion = httpVersion;
 
 	// handle request header
-	while (std::getline(streamHeader, line))
+	while (cutLine(&it, &line, &header, "\r\n"))
     {
-
 		if (line.find(":") == std::string::npos)
 		{
 			this->_badRequest = true;
@@ -101,7 +100,7 @@ void	Request::_parseRequest(std::string req)
 			break ;
 		}
 		key = line.substr(0, line.find(":"));
-		value = line.substr(line.find(":") + 2, line.find("\r\n"));
+		value = line.substr(line.find(":") + 2, line.size());
 
 		if (this->_isValidHeader(key))
 			this->_headers[key] = value;
@@ -109,6 +108,9 @@ void	Request::_parseRequest(std::string req)
 				this->_contentLength = std::stoul(value);
 		else
 			this->_skippedHeaders.push_back(key);
+
+		if (it == std::string::npos)
+			break;
 	}
 
 	if (this->_headers["Transfer-Encoding"] == "chunked")
@@ -375,7 +377,7 @@ void	Request::logRequest(int serverNbr)
 	oss << "Content of request->headers :" << std::endl << std::endl; 
 	for (std::map<std::string, std::string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); ++it)
 	{
-		oss << std::setw(20) << it->first << " : >" << it->second << "<" << std::endl;
+		oss << std::setw(20) << it->first << " : " << it->second  << std::endl;
 	}
 	Logger::Write(Logger::DEBUG, WHT, oss.str());
 

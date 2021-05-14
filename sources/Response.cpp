@@ -395,8 +395,8 @@ bool	Response::isValidAuthorization(void)
 	std::string					authorization(this->_req->getHeaders()["Authorization"]);
 	std::vector<std::string>	split;
 
-	Logger::Write(Logger::INFO, YEL, authentication);
-	Logger::Write(Logger::INFO, YEL, authorization);
+	Logger::Write(Logger::DEBUG, YEL, "authentication " + authentication);
+	Logger::Write(Logger::DEBUG, YEL, "authorization " + authorization);
 	if (authentication.empty())
 		return (true);
 	if (authorization.empty())

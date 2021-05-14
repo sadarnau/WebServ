@@ -222,3 +222,17 @@ std::string					getExtension(std::string target)
 
 	return (ext);
 }
+
+/**
+* Return a line from source separted by sep. Should be use in a while, it always return true.
+* Check it == std::string::npos to break after last line is returned 
+* 
+* Be careful, src WILL be CHANGE after each call, so be sure to use a copy of src
+*/
+int							cutLine(unsigned long *it, std::string *line, std::string *src, std::string sep)
+{
+	*it = src->find(sep);
+	*line = src->substr(0, *it);
+	*src = src->substr(*it + sep.size(), src->size());
+	return(1);
+}
