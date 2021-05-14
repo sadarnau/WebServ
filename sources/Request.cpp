@@ -72,20 +72,30 @@ void	Request::_parseRequest(std::string req)
 	std::string			line;
     std::string			key;
     std::string			value;
-    std::string			message;
+    std::string			httpVersion;;
 	std::istringstream	streamHeader(header);
 
-	// handle first line
+	// handle request line
 	std::getline(streamHeader, line);
 	std::stringstream	ss(line);
-	ss >> key >> value >> message;										
+
+	ss >> key >> value >> httpVersion;;
+	if (ss.fail())
+		Logger::Write(Logger::ERROR, RED, "request : bad request line : " + line);
+
 	this->_method = key;
 	this->_target = value;
-	this->_message = message;
+	this->_httpVersion = httpVersion;
 
-	// handle rest of request
+	// handle request header
 	while (std::getline(streamHeader, line))
     {
+
+		if (line.find(":") == std::string::npos)
+		{
+			Logger::Write(Logger::ERROR, RED, "request : bad header line : " + line);
+			continue ;
+		}
 		key = line.substr(0, line.find(":"));
 		value = line.substr(line.find(":") + 2, line.size());
 

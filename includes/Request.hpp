@@ -28,7 +28,7 @@ private:
 	size_t								_contentLength;
 	std::string							_method;
 	std::string							_target;
-	std::string							_message;
+	std::string							_httpVersion;
 	std::string							_body;
 	std::string							_urlTargetPath;
 	std::string							_absoluteTargetPath;

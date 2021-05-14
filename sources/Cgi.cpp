@@ -182,6 +182,9 @@ void		Cgi::parseResponse(void)
     std::string				value;
 	while (std::getline(streamHeader, line))
     {
+		if(line.find(":") == std::string::npos)
+			continue ;
+			
 		key = line.substr(0, line.find(":"));
 		value = line.substr(line.find(":") + 2, line.size());
 		this->_headers[key] = value;
