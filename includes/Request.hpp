@@ -67,6 +67,7 @@ public:
 	Location							getSelectedLocation(void);
 	size_t								getContentLength(void);
 	bool								getBadRequest(void);
+	std::string							getHttpVersion(void);
 
 	void								logRequest(int serverNb);
 };

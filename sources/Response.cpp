@@ -77,6 +77,8 @@ void	Response::buildResponse(void)
 	// METHODS
 	if (this->_req->getBadRequest())
 		this->setToErrorPage(400);
+	else if (this->_req->getHttpVersion() != "HTTP/1.1")
+		this->setToErrorPage(505);
 	else if (!this->isValidAuthorization())
 		this->setToErrorPage(401);
 	else if (!this->isValidMethod(requestMethod))
@@ -308,17 +310,19 @@ bool		Response::autoIndexResponse(void)
 ////////////////////
 void		Response::initResponseMessageMap(void)
 {
-	this->_responseMessages[200] = "OK";					// OKKKKK
-	this->_responseMessages[201] = "CREATED";				// Created
-	this->_responseMessages[202] = "ACCEPTED";				// Accepted
-	this->_responseMessages[204] = "NO_CONTENT";			// No content
-	this->_responseMessages[400] = "BAD_REQUEST";			// Unauthorized
-	this->_responseMessages[401] = "UNAUTHORIZED";			// Unauthorized
-	this->_responseMessages[403] = "FORBIDDEN";				// you dont have rights to access file
-	this->_responseMessages[404] = "FILE_NOT_FOUND";		// target doesnt exist
-	this->_responseMessages[405] = "METHOD_NOT_ALLOWED";	// method not supported
-	this->_responseMessages[413] = "PAYLOAD_TOO_LARGE";		// client_max_bodysize < requestbody
-	this->_responseMessages[500] = "INTERNAL_ERROR";		// smthg had gone wrong internaly, mostly part of cgi
+	this->_responseMessages[200] = "OK";							// OKKKKK
+	this->_responseMessages[201] = "CREATED";						// Created
+	this->_responseMessages[202] = "ACCEPTED";						// Accepted
+	this->_responseMessages[204] = "NO_CONTENT";					// No content
+	this->_responseMessages[400] = "BAD_REQUEST";					// Request parsing find an error in request
+	this->_responseMessages[401] = "UNAUTHORIZED";					// Unauthorized
+	this->_responseMessages[403] = "FORBIDDEN";						// you dont have rights to access file
+	this->_responseMessages[404] = "FILE_NOT_FOUND";				// target doesnt exist
+	this->_responseMessages[405] = "METHOD_NOT_ALLOWED";			// method not supported
+	this->_responseMessages[413] = "PAYLOAD_TOO_LARGE";				// client_max_bodysize < requestbody
+	this->_responseMessages[500] = "INTERNAL_ERROR";				// smthg had gone wrong internaly, mostly part of cgi
+	this->_responseMessages[505] = "HTTP_VERSION_NOT_SUPPORTED";	// httpVersion != HTTP/1.1
+
 
 	return ;
 }

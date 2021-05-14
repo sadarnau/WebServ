@@ -80,7 +80,7 @@ void	Request::_parseRequest(std::string req)
 	std::stringstream	ss(line);
 
 	ss >> key >> value >> httpVersion;;
-	if (ss.fail() || httpVersion != "HTTP/1.1")
+	if (ss.fail())
 	{
 		this->_badRequest = true;
 		Logger::Write(Logger::ERROR, RED, "request : bad request : request line : " + line);
@@ -346,6 +346,12 @@ bool			Request::getBadRequest(void)
 {
 	return(this->_badRequest);
 }
+
+std::string			Request::getHttpVersion(void)
+{
+	return(this->_httpVersion);
+}
+
 
 ////////////////////
 // LOG
