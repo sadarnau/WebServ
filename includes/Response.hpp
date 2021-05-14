@@ -58,6 +58,7 @@ private:
 	std::string		getContentType(std::string target);
 	bool			isValidMethod(std::string key);
 	bool			isValidHttpMethod(std::string key);
+	bool			isValidAuthorization(void);
 
 	void			setResponseCode(int responseCode);
 	void			setBody(std::string body);

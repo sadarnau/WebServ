@@ -11,6 +11,7 @@ Request::Request(vlocation *locationVector, vlocation *locationExtVector, int in
 	this->_locationExtVector = locationExtVector;
 	this->_buff = buff;
 	this->_contentLength = 0;
+	this->_authorization = "";
 
 	this->_parseRequest(this->_buff);
 
@@ -97,6 +98,8 @@ void	Request::_parseRequest(std::string req)
 			this->_headers[key] = value;
 			if (!key.compare("Content-Length"))
 				this->_contentLength = std::stoul(value);
+			if (!key.compare("Authorization"))
+				this->_authorization = value;
 		}
 		else
 			this->_skippedHeaders.push_back(key);
@@ -106,7 +109,6 @@ void	Request::_parseRequest(std::string req)
 		this->_body = this->_unchunkBody(body);
 	else
 		this->_body = body;
-
 	return ;
 }
 
@@ -333,6 +335,12 @@ size_t			Request::getContentLength(void)
 {
 	return (this->_contentLength);
 }
+
+std::string		Request::getAuthorization(void)
+{
+	return (this->_authorization);
+}
+
 
 ////////////////////
 // LOG

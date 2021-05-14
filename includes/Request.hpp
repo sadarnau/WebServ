@@ -32,6 +32,7 @@ private:
 	std::string							_body;
 	std::string							_urlTargetPath;
 	std::string							_absoluteTargetPath;
+	std::string							_authorization;
 	std::map<std::string, std::string>	_headers;
 	std::vector<std::string>			_skippedHeaders;
 	std::string							_queryString;
@@ -61,6 +62,7 @@ public:
 	std::string							getUrlTargetPath(void);
 	std::string							getAbsoluteTargetPath(void);
 	std::string							getQueryString(void);
+	std::string							getAuthorization(void);
 	std::map<std::string, std::string>	getHeaders(void);
 	Location							getSelectedLocation(void);
 	size_t								getContentLength(void);

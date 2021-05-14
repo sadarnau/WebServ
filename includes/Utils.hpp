@@ -26,6 +26,8 @@ bool						isPathAFile(std::string path);
 size_t						convertClientSizeFromStr(std::string str);
 size_t						hexStrtoInt(std::string hex);
 std::string					getExtension(std::string target);
+std::string 				decode64(std::string &str);
+
 
 
 #endif

@@ -43,6 +43,7 @@ void	Config::initConfigMap(void)
 	this->_configMap["index"] = "";
 	this->_configMap["cgi_path"] = "";
 	this->_configMap["cgi_ext"] = "";
+	this->_configMap["authentication"] = "";
 
 	return ;
 }
@@ -132,6 +133,8 @@ void	Config::createServerMap( void )		// commentaire a enlever ?
 			this->_configMap["root"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("autoindex") && split.size() == 2 && this->checkSemiColon(split.back()))
 			this->_configMap["autoindex"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("authentication") && split.size() == 2 && this->checkSemiColon(split.back()))
+			this->_configMap["authentication"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("index") && split.size() == 2 && this->checkSemiColon(split.back()))
 			this->_configMap["index"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("cgi_path") && split.size() == 2 && this->checkSemiColon(split.back()))
@@ -242,6 +245,8 @@ void	Config::newLocationConfig(std::string path)
 			newLoc["root"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("autoindex") && split.size() == 2 && this->checkSemiColon(split.back()))
 			newLoc["autoindex"] = split[1].substr(0, split[1].size() - 1);
+		else if (!split[0].compare("authentication") && split.size() == 2 && this->checkSemiColon(split.back()))
+			this->_configMap["authentication"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("index") && split.size() == 2 && this->checkSemiColon(split.back()))
 			newLoc["index"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("cgi_path") && split.size() == 2 && this->checkSemiColon(split.back()))

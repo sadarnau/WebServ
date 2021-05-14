@@ -71,6 +71,8 @@ void	Response::buildResponse(void)
 	errno = 0;
 
 	// METHODS
+	//if (!this->isValidAuthorization())
+		//this->setToErrorPage(401);
 	if (!this->isValidMethod(requestMethod))
 		this->setToErrorPage(405);
 	else if (this->_req->getContentLength() > this->_location.getClientMaxBodySize())
@@ -304,6 +306,7 @@ void		Response::initResponseMessageMap(void)
 	this->_responseMessages[201] = "CREATED";				// Created
 	this->_responseMessages[202] = "ACCEPTED";				// Accepted
 	this->_responseMessages[204] = "NO_CONTENT";			// No content
+	this->_responseMessages[401] = "UNAUTHORIZED";			// Unauthorized
 	this->_responseMessages[403] = "FORBIDDEN";				// you dont have rights to access file
 	this->_responseMessages[404] = "FILE_NOT_FOUND";		// target doesnt exist
 	this->_responseMessages[405] = "METHOD_NOT_ALLOWED";	// method not supported
@@ -374,6 +377,27 @@ std::string		Response::generateDefaultErrorPage(std::string errorNbr, std::strin
 ////////////////////
 // UTILS
 ////////////////////
+
+bool	Response::isValidAuthorization(void)
+{
+	std::string					authentication(this->_location.getAuthentication());
+	std::string					authorization(this->_req->getAuthorization());
+	std::vector<std::string>	split;
+
+	Logger::Write(Logger::INFO, YEL, authentication);
+	Logger::Write(Logger::INFO, YEL, authorization);
+	if (authentication.empty())
+		return (true);
+	if (authorization.empty())
+		return (false);
+	splitStringToVector(authorization, split);
+	if (split[0].compare("Basic"))
+		return (false);
+	authorization = decode64(split[1]);
+	if (authentication.compare(authorization))
+		return (false);
+	return (true);
+}
 
 bool	Response::isValidMethod(std::string key)
 {
