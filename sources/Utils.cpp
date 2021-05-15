@@ -230,6 +230,17 @@ long						strToLong(std::string str)
   return (res);  
 }
 
+int						strToInt(std::string str)
+{
+  std::stringstream ss; 
+  int res;
+
+  ss << str;  
+  ss >> res;
+
+  return (res);  
+}
+
 std::string					longToStr(long i)
 {
 	std::stringstream convert;

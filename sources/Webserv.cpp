@@ -84,7 +84,7 @@ void	Webserv::fillAddress( void )
 
 	this->address.sin_family = AF_INET;
 	this->address.sin_addr.s_addr = inet_addr(this->_IPaddr.c_str());	//htonl ??
-	this->address.sin_port = htons(std::stoi(this->_port));
+	this->address.sin_port = htons(strToInt(this->_port));
 
 	memset(this->address.sin_zero, 0, sizeof(this->address.sin_zero));
 
