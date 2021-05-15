@@ -43,7 +43,7 @@ std::string 	getDate(void)
 
 	if (gettimeofday(&tv, &tz) < 0)
 		return (NULL);	// maybe throw error ?
-	strptime(std::to_string(tv.tv_sec).c_str(), "%s", &time);
+	strptime(longToStr(tv.tv_sec).c_str(), "%s", &time);
 	strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S CEST", &time);
 	date = buffer;
 
