@@ -119,6 +119,8 @@ void	Response::buildHeader(void)
 	this->_headers["Content-Length"] = std::to_string(this->_body.size());
 	this->_headers["Server"] = std::string("Webserv");
 	this->_headers["Date"] = getDate();
+	if (this->_responseCode == 401)
+		this->_headers["WWW-Authenticate"] = "Basic realm=\"acces to webserv\"";
 
 	std::map<std::string, std::string> tmpHeaders = this->_headers;
 	std::map<std::string, std::string> tmpCgiHeaders = this->_cgiheaders;
