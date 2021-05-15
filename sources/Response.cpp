@@ -116,7 +116,7 @@ void	Response::buildHeader(void)
 	header << this->_httpVersion << " " << this->_responseCode << " " << this->_responseMessages[this->_responseCode] << "\r\n";
 
 	this->_headers["Content-Type"] = this->_contentType;
-	this->_headers["Content-Length"] = std::to_string(this->_body.size());
+	this->_headers["Content-Length"] = longToStr(this->_body.size());
 	this->_headers["Server"] = std::string("Webserv");
 	this->_headers["Date"] = getDate();
 	if (this->_responseCode == 401)
@@ -196,7 +196,7 @@ void	Response::processPut(void)
 
 	if (isPathAFile(path))
 	{
-		file.open(path);
+		file.open(path.c_str());
 		if (!file.is_open())
 			this->checkErrors();
 		else
@@ -253,7 +253,7 @@ void	Response::processTrace(void)
 
 void	Response::processDelete(void)
 {
-	std::ifstream	f(this->_req->getAbsoluteTargetPath());
+	std::ifstream	f(this->_req->getAbsoluteTargetPath().c_str());
 
 	if (f.good())
 	{
@@ -358,7 +358,7 @@ void		Response::setToErrorPage(int errorNumber)
 	this->setContentType("text/html");
 	if(!this->_location.getErrorPage()[errorNbrString].empty())
 	{
-		error_page.open(this->_location.getErrorPage()[errorNbrString]);
+		error_page.open(this->_location.getErrorPage()[errorNbrString].c_str());
 		std::string str((std::istreambuf_iterator<char>(error_page)), std::istreambuf_iterator<char>());
 		this->setBody(str);
 	}

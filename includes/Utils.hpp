@@ -28,6 +28,7 @@ std::string 				decode64(std::string &str);
 int							cutLine(unsigned long *it, std::string *line, std::string *src, std::string sep);
 
 std::string					intToStr(int i);
+std::string					longToStr(long i);
 long						strToLong(std::string str);
 size_t						hexStrtoInt(std::string hex);
 
