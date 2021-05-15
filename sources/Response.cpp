@@ -208,7 +208,7 @@ void	Response::processPut(void)
 	}
 	else
 	{
-		file.open(path, std::ofstream::out | std::ofstream::trunc);
+		file.open(path.c_str(), std::ofstream::out | std::ofstream::trunc);
 		if (!file.is_open())
 			this->checkErrors();
 		else
