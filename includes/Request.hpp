@@ -25,7 +25,7 @@ private:
 	int									_inSocket;
 	std::string							_buff;
 
-	size_t								_contentLength;
+	long								_contentLength;
 	std::string							_method;
 	std::string							_target;
 	std::string							_httpVersion;

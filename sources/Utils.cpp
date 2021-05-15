@@ -151,14 +151,6 @@ std::vector<std::string>	concatToVector(std::string toParse)
 	return (result);
 }
 
-std::string					intToStr(int i)
-{
-	std::ostringstream convert;
-	convert << i;
-
-	return (convert.str());
-}
-
 bool						isStrNumber(std::string s)
 {
 	std::string::const_iterator it = s.begin();
@@ -201,16 +193,7 @@ size_t						convertClientSizeFromStr(std::string str)
 	return (res);
 }
 
-size_t						hexStrtoInt(std::string hex)
-{
-	size_t 				length;   
-	std::stringstream 	ss;
 
-	ss << std::hex << hex;
-	ss >> length;
-
-	return (length);
-}
 
 std::string					getExtension(std::string target)
 {
@@ -234,4 +217,34 @@ int							cutLine(unsigned long *it, std::string *line, std::string *src, std::s
 	*line = src->substr(0, *it);
 	*src = src->substr(*it + sep.size(), src->size());
 	return(1);
+}
+
+long						strToLong(std::string str)
+{
+  std::stringstream ss; 
+  long res;
+
+  ss << str;  
+  ss >> res;
+
+  return (res);  
+}
+
+std::string					intToStr(int i)
+{
+	std::stringstream convert;
+	convert << i;
+
+	return (convert.str());
+}
+
+size_t						hexStrtoInt(std::string hex)
+{
+	size_t 				length;   
+	std::stringstream 	ss;
+
+	ss << std::hex << hex;
+	ss >> length;
+
+	return (length);
 }

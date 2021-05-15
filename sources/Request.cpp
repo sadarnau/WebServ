@@ -105,7 +105,7 @@ void	Request::_parseRequest(std::string req)
 		if (this->_isValidHeader(key))
 			this->_headers[key] = value;
 			if (!key.compare("Content-Length"))
-				this->_contentLength = std::stoul(value);
+				this->_contentLength = strToLong(value);
 		else
 			this->_skippedHeaders.push_back(key);
 
@@ -358,7 +358,7 @@ std::string			Request::getHttpVersion(void)
 ////////////////////
 void	Request::logRequest(int serverNbr)
 {
-	Logger::Write(Logger::INFO, BLU, "server[" + std::to_string(serverNbr) +
+	Logger::Write(Logger::INFO, BLU, "server[" + intToStr(serverNbr) +
 		"] : request received [method: " + this->getMethod() + "] [location: " +
 		this->getSelectedLocation().getPath() + "] [target: " + this->getTarget() + "]");
 	
