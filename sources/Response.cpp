@@ -81,7 +81,7 @@ void	Response::buildResponse(void)
 		this->setToErrorPage(505);
 	else if (!this->isValidAuthorization())
 		this->setToErrorPage(401);
-	else if (!this->isValidMethod(requestMethod))
+	else if (!this->isValidMethod())
 		this->setToErrorPage(405);
 	else if (this->_req->getContentLength() > this->_location.getClientMaxBodySize())
 		this->setToErrorPage(413);
@@ -410,36 +410,35 @@ bool	Response::isValidAuthorization(void)
 	return (true);
 }
 
-bool	Response::isValidMethod(std::string key)
+bool	Response::isValidMethod(void)
 {
 	std::vector<std::string>	acceptedMethods = this->_location.getAcceptedMethod();
 	std::ostringstream			oss;
+
+	// check if method is include in http 1.1
+	if (!isValidHttpMethod())
+		return (false);
 
 	// if empty = accept all methods
 	if (acceptedMethods.empty())
 		return (true);
 	
-	// check if method is include in http 1.1
-	if (!isValidHttpMethod(key))
-		return (false);
-
 	for (std::vector<std::string>::iterator it = acceptedMethods.begin(); it != acceptedMethods.end(); ++it)
-		if (key == *it)
+		if (this->_req->getMethod() == *it)
 			return (true);
 
 	return (false);
 }
 
-bool	Response::isValidHttpMethod(std::string key)
+bool	Response::isValidHttpMethod(void)
 {
 	std::string listOfvalidHttpMethods[7] = {"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "TRACE"}; // see https://tools.ietf.org/html/rfc7231 - RFC 7231
-	std::vector<std::string> validHttpMethods;
-	validHttpMethods.assign(listOfvalidHttpMethods, listOfvalidHttpMethods + 7);
 
-	for (std::vector<std::string>::iterator it = validHttpMethods.begin(); it != validHttpMethods.end(); ++it)
-		if (key == *it)
+	for (int i = 0; i < 7; i++)
+	{
+		if (listOfvalidHttpMethods[i] == this->_req->getMethod())
 			return (true);
-
+	}
 	return (false);
 }
 

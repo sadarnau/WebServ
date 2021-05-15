@@ -56,8 +56,8 @@ private:
 
 	bool			isDirectory(void);
 	std::string		getContentType(std::string target);
-	bool			isValidMethod(std::string key);
-	bool			isValidHttpMethod(std::string key);
+	bool			isValidMethod(void);
+	bool			isValidHttpMethod(void);
 	bool			isValidAuthorization(void);
 
 	void			setResponseCode(int responseCode);

@@ -281,11 +281,9 @@ bool	Request::_isValidHeader(std::string header)
 												"Content-Length", "Content-Location", "Content-Type", "Date", "Host", "Last-Modified",
 												"Location", "Referer", "Retry-After", "Server", "Transfer-Encoding", "User-Agent",
 												"WWW-Authenticate"};
-	std::vector<std::string> acceptedHeaders;
-	acceptedHeaders.assign(listOfAcceptedHeaders, listOfAcceptedHeaders + 18);
 
-	for (std::vector<std::string>::iterator it = acceptedHeaders.begin(); it != acceptedHeaders.end(); ++it)
-		if (header == *it)
+	for (int i = 0; i < 18; i++)
+		if (header == listOfAcceptedHeaders[i])
 			return (true);
 
 	return (false);
