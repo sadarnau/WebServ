@@ -141,7 +141,7 @@ int		Webserv::handleRequest( int socket )
 			usleep(100000);		// if nothing is received we wait 0.1 second before trying again
 		else if (ret == 0)
 		{
-			Logger::Write(Logger::INFO, RED, "server[" + std::to_string(this->_serverNb) + "] : client have closed his connection...");
+			Logger::Write(Logger::INFO, RED, "server[" + intToStr(this->_serverNb) + "] : client have closed his connection...");
 			return (0);
 		}
 		else
