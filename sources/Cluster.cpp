@@ -42,7 +42,7 @@ int								Cluster::initialization( std::string fileName)
 
 	for (int i = 0; i < this->_nbServ; i++)
 	{
-		Logger::Write(Logger::INFO, GRN, "server[" + intToStr(i) + "] : creation");
+		Logger::Write(Logger::INFO, GRN, "server[" + Utils::intToStr(i) + "] : creation");
 		if (this->_serverList[i].initialization(i))
 			return (1);
 		FD_SET(this->_serverList[i].getFd(), &this->_master_fd);	// adding our first fd socket, the server one.
@@ -80,7 +80,7 @@ int								Cluster::lanchServices( void )
 			if (FD_ISSET(this->_serverList[i].getFd(), &copyMasterSet))	// if serv fd changed -> new connection
 			{
 				int	sock;
-				Logger::Write(Logger::INFO, GRN, "server[" + intToStr(i) + "] : new connection");
+				Logger::Write(Logger::INFO, GRN, "server[" + Utils::intToStr(i) + "] : new connection");
 				if ((sock = this->_serverList[i].acceptConexion()) < 0)
 					return (1); // test ???
 				addSocketToMaster(sock);
@@ -109,7 +109,7 @@ int								Cluster::lanchServices( void )
 							this->_serverList[i].sendResponse( *it );
 						else
 						{
-							Logger::Write(Logger::ERROR, RED, "server[" + intToStr(i) + "] : error with reading fd[" + intToStr(*it) + "]");
+							Logger::Write(Logger::ERROR, RED, "server[" + Utils::intToStr(i) + "] : error with reading fd[" + Utils::intToStr(*it) + "]");
 							if (close(*it) < 0)
 								return (1);
 							FD_CLR(*it, &copyMasterSet);

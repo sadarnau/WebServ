@@ -84,7 +84,7 @@ void	Webserv::fillAddress( void )
 
 	this->address.sin_family = AF_INET;
 	this->address.sin_addr.s_addr = inet_addr(this->_IPaddr.c_str());	//htonl ??
-	this->address.sin_port = htons(strToInt(this->_port));
+	this->address.sin_port = htons(Utils::strToInt(this->_port));
 
 	memset(this->address.sin_zero, 0, sizeof(this->address.sin_zero));
 
@@ -141,7 +141,7 @@ int		Webserv::handleRequest( int socket )
 			usleep(100000);		// if nothing is received we wait 0.1 second before trying again
 		else if (ret == 0)
 		{
-			Logger::Write(Logger::INFO, RED, "server[" + intToStr(this->_serverNb) + "] : client have closed his connection...");
+			Logger::Write(Logger::INFO, RED, "server[" + Utils::intToStr(this->_serverNb) + "] : client have closed his connection...");
 			return (0);
 		}
 		else

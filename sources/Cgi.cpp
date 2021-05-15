@@ -178,7 +178,7 @@ void		Cgi::parseResponse(void)
 	std::string				line;
  	std::string				key;
     std::string				value;
-	while (cutLine(&it, &line, &header, "\r\n"))
+	while (Utils::cutLine(&it, &line, &header, "\r\n"))
     {
 		if(line.find(":") == std::string::npos)
 			continue ;
@@ -219,7 +219,7 @@ char		**Cgi::_envToCArray(void)
 
 void		Cgi::logCgi(void)
 {
-	printMap(this->_env, "cgi::_env\n");
+	Utils::printMap(this->_env, "cgi::_env\n");
 }
 
 ////////////////////

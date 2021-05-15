@@ -39,7 +39,7 @@ void Logger::Write(Priority priority, std::string color, const std::string &mess
 			oss << YEL;
 		else if (priority == ERROR)
 			oss << RED;
-		oss << _priorityNames[priority] << "[" << getTimeHMS() << "]: " << col << message << RESET ;
+		oss << _priorityNames[priority] << "[" << Utils::getTimeHMS() << "]: " << col << message << RESET ;
 		oss << std::endl;
 
 		std::ostream& stream1 = Log._fileStream;

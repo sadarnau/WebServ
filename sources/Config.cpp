@@ -106,7 +106,7 @@ void	Config::createServerMap( void )		// commentaire a enlever ?
 	this->initLocationMap(newLoc, "/");
 	while (std::getline(this->f, line))
 	{
-		splitStringToVector(line, split);
+		Utils::splitStringToVector(line, split);
 		if (split.empty() || split[0][0] == '#')
 			;
 		else if (!split[0].compare("server") && split.size() == 2 && !split[1].compare("{") && !inServerConfig)
@@ -234,7 +234,7 @@ void	Config::newLocationConfig(std::string path)
 
 	while (std::getline(this->f, line))
 	{
-		splitStringToVector(line, split);
+		Utils::splitStringToVector(line, split);
 		std::ostringstream ss;
 		ss << split.size();
 		if (split.empty() || split[0][0] == '#')

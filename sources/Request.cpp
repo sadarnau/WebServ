@@ -75,7 +75,7 @@ void	Request::_parseRequest(std::string req)
     std::string			httpVersion;;
 
 	unsigned long it;
-	cutLine(&it, &line, &header, "\r\n");
+	Utils::cutLine(&it, &line, &header, "\r\n");
 	// handle request line
 	std::stringstream	ss(line);
 
@@ -91,7 +91,7 @@ void	Request::_parseRequest(std::string req)
 	this->_httpVersion = httpVersion;
 
 	// handle request header
-	while (cutLine(&it, &line, &header, "\r\n"))
+	while (Utils::cutLine(&it, &line, &header, "\r\n"))
     {
 		if (line.find(":") == std::string::npos)
 		{
@@ -105,7 +105,7 @@ void	Request::_parseRequest(std::string req)
 		if (this->_isValidHeader(key))
 			this->_headers[key] = value;
 			if (!key.compare("Content-Length"))
-				this->_contentLength = strToLong(value);
+				this->_contentLength = Utils::strToLong(value);
 		else
 			this->_skippedHeaders.push_back(key);
 
@@ -128,7 +128,7 @@ std::string		Request::_unchunkBody(std::string body)
 
 	// Logger::Write(Logger::DEBUG, WHT, "request : unchunkBody()");
 	it = body.find("\r\n");
-	chunkLength = hexStrtoInt(body.substr(0, it));
+	chunkLength = Utils::hexStrtoInt(body.substr(0, it));
 
 	if (!chunkLength)
 		return (tmpBody);
@@ -139,7 +139,7 @@ std::string		Request::_unchunkBody(std::string body)
 		body = body.substr(chunkLength + it + 4, body.size());
 
 		it = body.find("\r\n");
-		chunkLength = hexStrtoInt(body.substr(0, it));
+		chunkLength = Utils::hexStrtoInt(body.substr(0, it));
 	}
 
 	return (tmpBody);
@@ -186,7 +186,7 @@ void	Request::_selectLocation(void)
 
 bool	Request::_selectLocationExt()
 {
-	std::string targetExt = getExtension(this->_target);
+	std::string targetExt = Utils::getExtension(this->_target);
 
 	for (vlocation::iterator it = this->_locationExtVector->begin(); it != this->_locationExtVector->end(); ++it)
 	{
@@ -261,15 +261,15 @@ void	Request::_createPath(void)
 {
 	//Create absolute path
 	if (this->_selectedLocation.getRoot()[0] == '/')
-		this->_absoluteTargetPath = safeUrlJoin(this->_selectedLocation.getRoot(), this->_target);
+		this->_absoluteTargetPath = Utils::safeUrlJoin(this->_selectedLocation.getRoot(), this->_target);
 	else
 	{
 		char cwd[1000];
 		if(getcwd(cwd, sizeof(cwd)) == NULL)
 			Logger::Write(Logger::ERROR, RED, "error : getcwd");
 		std::string currentdir = cwd;
-		this->_absoluteTargetPath = safeUrlJoin(currentdir, this->_selectedLocation.getRoot());
-		this->_absoluteTargetPath = safeUrlJoin(this->_absoluteTargetPath, this->_target);
+		this->_absoluteTargetPath = Utils::safeUrlJoin(currentdir, this->_selectedLocation.getRoot());
+		this->_absoluteTargetPath = Utils::safeUrlJoin(this->_absoluteTargetPath, this->_target);
 	}
 
 	return ;
@@ -358,7 +358,7 @@ std::string			Request::getHttpVersion(void)
 ////////////////////
 void	Request::logRequest(int serverNbr)
 {
-	Logger::Write(Logger::INFO, BLU, "server[" + intToStr(serverNbr) +
+	Logger::Write(Logger::INFO, BLU, "server[" + Utils::intToStr(serverNbr) +
 		"] : request received [method: " + this->getMethod() + "] [location: " +
 		this->getSelectedLocation().getPath() + "] [target: " + this->getTarget() + "]");
 	

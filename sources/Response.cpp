@@ -62,7 +62,7 @@ void	Response::sendResponse(void)
 			continue ;
 
 
-		Logger::Write(Logger::DEBUG, WHT, std::string(strerror(errno)) + " sent : " + intToStr(bytesSent) + " rest : " + intToStr(bytesToSend));
+		Logger::Write(Logger::DEBUG, WHT, std::string(strerror(errno)) + " sent : " + Utils::intToStr(bytesSent) + " rest : " + Utils::intToStr(bytesToSend));
 	}
 
 	return ;
@@ -116,9 +116,9 @@ void	Response::buildHeader(void)
 	header << this->_httpVersion << " " << this->_responseCode << " " << this->_responseMessages[this->_responseCode] << "\r\n";
 
 	this->_headers["Content-Type"] = this->_contentType;
-	this->_headers["Content-Length"] = longToStr(this->_body.size());
+	this->_headers["Content-Length"] = Utils::longToStr(this->_body.size());
 	this->_headers["Server"] = std::string("Webserv");
-	this->_headers["Date"] = getDate();
+	this->_headers["Date"] = Utils::getDate();
 	if (this->_responseCode == 401)
 		this->_headers["WWW-Authenticate"] = "Basic realm=\"acces to webserv\"";
 
@@ -157,7 +157,7 @@ void	Response::processGetPostHead(void)
 	std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
 
 	// CGI
-	if (!this->_location.getCgiPath().empty() && (this->_location.getCgiExt() == getExtension(this->_req->getTarget())))
+	if (!this->_location.getCgiPath().empty() && (this->_location.getCgiExt() == Utils::getExtension(this->_req->getTarget())))
 	{
 
 		Cgi		cgi(this->_req);
@@ -194,7 +194,7 @@ void	Response::processPut(void)
 	std::string		path(this->_req->getAbsoluteTargetPath());
 	std::ofstream	file;
 
-	if (isPathAFile(path))
+	if (Utils::isPathAFile(path))
 	{
 		file.open(path.c_str());
 		if (!file.is_open())
@@ -293,7 +293,7 @@ bool		Response::autoIndexResponse(void)
 
 		while((dircontent = readdir(directory)))
 		{
-			content << "<li>" << "<a href='" << safeUrlJoin(this->_req->getUrlTargetPath(), dircontent->d_name) <<
+			content << "<li>" << "<a href='" << Utils::safeUrlJoin(this->_req->getUrlTargetPath(), dircontent->d_name) <<
 			"'>" << dircontent->d_name << "</a>" << "</li>" << std::endl;
 		}
 		content << "</ul>" << std::endl;
@@ -338,7 +338,7 @@ void		Response::checkErrors(void)
 
 	if (errno != 0 && !this->_isSetToError) // if _isSetToError is true we dont want to print other errno
 	{
-		Logger::Write(Logger::DEBUG, RED, "strerror(errno) : " + intToStr(errno) + " " + errorMessage);
+		Logger::Write(Logger::DEBUG, RED, "strerror(errno) : " + Utils::intToStr(errno) + " " + errorMessage);
 		if (errorMessage == "Permission denied")
 			this->setToErrorPage(403);
 		if (errorMessage == "No such file or directory")
@@ -352,7 +352,7 @@ void		Response::checkErrors(void)
 void		Response::setToErrorPage(int errorNumber)
 {
 	std::ifstream	error_page;
-	std::string		errorNbrString = intToStr(errorNumber);
+	std::string		errorNbrString = Utils::intToStr(errorNumber);
 
 	this->setResponseCode(errorNumber);
 	this->setContentType("text/html");
@@ -401,10 +401,10 @@ bool	Response::isValidAuthorization(void)
 		return (true);
 	if (authorization.empty())
 		return (false);
-	splitStringToVector(authorization, split);
+	Utils::splitStringToVector(authorization, split);
 	if (split[0].compare("Basic"))
 		return (false);
-	authorization = decode64(split[1]);
+	authorization = Utils::decode64(split[1]);
 	if (authentication.compare(authorization))
 		return (false);
 	Logger::Write(Logger::INFO, GRN, "Authenticaton Sucessfull !");
@@ -453,12 +453,12 @@ std::string	Response::getIndexTarget(void) // commentaire a supprimer ?
 	for(std::vector<std::string>::iterator it = vIndex.begin(); it != vIndex.end(); ++it)
 	{
 
-		std::string target(safeUrlJoin(this->_req->getAbsoluteTargetPath(), *it));
+		std::string target(Utils::safeUrlJoin(this->_req->getAbsoluteTargetPath(), *it));
 		std::ifstream 	f(target.c_str());
 		if (f.good())
 		{
 			f.close();
-			return (safeUrlJoin(this->_req->getTarget(), *it));
+			return (Utils::safeUrlJoin(this->_req->getTarget(), *it));
 		}
 		f.close();
 	}
@@ -475,7 +475,7 @@ bool		Response::isIndexPagePresent(void)
 	{
 		if (*it == "")
 			return (false);
-		std::string target(safeUrlJoin(this->_req->getAbsoluteTargetPath(), *it));
+		std::string target(Utils::safeUrlJoin(this->_req->getAbsoluteTargetPath(), *it));
 
 		std::ifstream 	f(target.c_str());
 		if (f.good())
@@ -612,10 +612,10 @@ long			Response::getResponseLength(void)
 ////////////////////
 void Response::logResponse(int serverNbr)
 {
-	Logger::Write(Logger::INFO, BLU, "server[" + intToStr(serverNbr) + "] : response sent [code: " +
+	Logger::Write(Logger::INFO, BLU, "server[" + Utils::intToStr(serverNbr) + "] : response sent [code: " +
 		this->getResponseCodeStr() + "] [message: " + this->getResponseCodeMessage() 
-		+ "] [length: " + intToStr(this->getHeaderLength()) + " + " + intToStr(this->getBodyLength()) + 
-		+ " = " + intToStr(this->getResponseLength()) +"]");
+		+ "] [length: " + Utils::intToStr(this->getHeaderLength()) + " + " + Utils::intToStr(this->getBodyLength()) + 
+		+ " = " + Utils::intToStr(this->getResponseLength()) +"]");
 	Logger::Write(Logger::DEBUG, WHT, " response : header\n" + this->getHeader());
 	Logger::Write(Logger::MORE, BLU, " full response :\n" + this->getResponse());
 
