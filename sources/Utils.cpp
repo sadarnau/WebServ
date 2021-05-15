@@ -84,14 +84,13 @@ std::string decode64(std::string &str)
 	int val = 0;
 	int valb = -8;
 	unsigned char c;
-	std::string out;
+	std::string res;
 	std::vector<int> tab(256, -1);
-	std::string::iterator it = str.begin();
-	std::string::iterator itend = str.end();
+	std::string::iterator it2 = str.end();
 
 	for (int i = 0; i < 64; i++)
 		tab["ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"[i]] = i; 
-	for (; it != itend; it++)
+	for (std::string::iterator it = str.begin(); it != it2; it++)
 	{
 		c = *it;
 		if (tab[c] == -1) break;
@@ -99,12 +98,12 @@ std::string decode64(std::string &str)
 		valb += 6;
 		if (valb >= 0)
 		{
-			out.push_back(char((val >> valb) & 0xFF));
+			res.push_back(char((val >> valb) & 0xFF));
 			valb -= 8;
 		}
 	}
 
-	return (out);
+	return (res);
 }
 
 void			printMap(std::map<std::string, std::string> m, std::string type)

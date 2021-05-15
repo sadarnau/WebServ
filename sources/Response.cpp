@@ -119,6 +119,8 @@ void	Response::buildHeader(void)
 	this->_headers["Content-Length"] = std::to_string(this->_body.size());
 	this->_headers["Server"] = std::string("Webserv");
 	this->_headers["Date"] = getDate();
+	if (this->_responseCode == 401)
+		this->_headers["WWW-Authenticate"] = "Basic realm=\"acces to webserv\"";
 
 	std::map<std::string, std::string> tmpHeaders = this->_headers;
 	std::map<std::string, std::string> tmpCgiHeaders = this->_cgiheaders;
@@ -395,8 +397,6 @@ bool	Response::isValidAuthorization(void)
 	std::string					authorization(this->_req->getHeaders()["Authorization"]);
 	std::vector<std::string>	split;
 
-	Logger::Write(Logger::DEBUG, YEL, "authentication " + authentication);
-	Logger::Write(Logger::DEBUG, YEL, "authorization " + authorization);
 	if (authentication.empty())
 		return (true);
 	if (authorization.empty())
@@ -407,6 +407,7 @@ bool	Response::isValidAuthorization(void)
 	authorization = decode64(split[1]);
 	if (authentication.compare(authorization))
 		return (false);
+	Logger::Write(Logger::INFO, GRN, "Authenticaton Sucessfull !");
 	return (true);
 }
 
