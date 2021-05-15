@@ -123,10 +123,10 @@ void			printMap(std::map<std::string, std::string> m, std::string type)
 
 std::string	safeUrlJoin(std::string url1, std::string url2)
 {
-	if(url1.back() == '/' )
+	if(url1[url1.size() - 1] == '/' )
 		url1 = url1.substr(0, url1.size() - 1);
 
-	if(url2.front() == '/')
+	if(url2[0] == '/')
 		url2 = url2.substr(1, url2.size());
 
 	return (std::string(url1 + "/" + url2));

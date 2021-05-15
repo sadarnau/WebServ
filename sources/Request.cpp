@@ -178,7 +178,7 @@ void	Request::_selectLocation(void)
 		this->_target = this->_target.substr(this->_selectedLocation.getPath().size(), this->_target.size());
 
 	// format target
-	if(this->_target.front() != '/')
+	if(this->_target[0] != '/')
 		this->_target.insert(0, "/");
 
 	return ;
@@ -260,7 +260,7 @@ void			Request::updateTarget(std::string target)
 void	Request::_createPath(void)
 {
 	//Create absolute path
-	if (this->_selectedLocation.getRoot().front() == '/')
+	if (this->_selectedLocation.getRoot()[0] == '/')
 		this->_absoluteTargetPath = safeUrlJoin(this->_selectedLocation.getRoot(), this->_target);
 	else
 	{
