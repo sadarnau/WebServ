@@ -1,0 +1,32 @@
+--------LOG----------
+[0;33mINFO [18:34:54]: [0;32mLogger in < info > mode[0m
+[0;33mINFO [18:34:54]: [0;33mconfiguration file : files/default.conf[0m
+[0;33mINFO [18:34:54]: [0;32mserver[0] : creation[0m
+[0;33mINFO [18:34:54]: [0;32mSocket created[0m
+[0;33mINFO [18:34:54]: [0;32mSocket : binded on 127.0.0.1:8080[0m
+[0;33mINFO [18:34:54]: [0;32mSocket is listening...[0m
+[0;33mINFO [18:34:54]: [0;32mserver[1] : creation[0m
+[0;33mINFO [18:34:54]: [0;32mSocket created[0m
+[0;33mINFO [18:34:54]: [0;32mSocket : binded on 127.0.0.1:8888[0m
+[0;33mINFO [18:34:54]: [0;32mSocket is listening...[0m
+[0;33mINFO [18:34:59]: [0;32mserver[0] : new connection[0m
+[0;33mINFO [18:34:59]: [0;34mserver[0] : request received [method: GET] [location: /] [target: /][0m
+[0;33mINFO [18:34:59]: [0;34mserver[0] : response sent [code: 200] [message: OK] [length: 147 + 1271 = 1418][0m
+[0;33mINFO [18:34:59]: [0;34mserver[0] : request received [method: GET] [location: /] [target: /style.css][0m
+[0;33mINFO [18:34:59]: [0;34mserver[0] : response sent [code: 200] [message: OK] [length: 145 + 257 = 402][0m
+[0;33mINFO [18:35:01]: [0;34mserver[0] : request received [method: GET] [location: /] [target: /][0m
+[0;33mINFO [18:35:01]: [0;34mserver[0] : response sent [code: 200] [message: OK] [length: 147 + 1271 = 1418][0m
+[0;33mINFO [18:35:01]: [0;34mserver[0] : request received [method: GET] [location: /] [target: /style.css][0m
+[0;33mINFO [18:35:01]: [0;34mserver[0] : response sent [code: 200] [message: OK] [length: 145 + 257 = 402][0m
+[0;33mINFO [18:35:02]: [0;34mserver[0] : request received [method: GET] [location: /test] [target: /][0m
+[0;33mINFO [18:35:02]: [0;34mserver[0] : response sent [code: 200] [message: OK] [length: 146 + 947 = 1093][0m
+[0;33mINFO [18:35:04]: [0;34mserver[0] : request received [method: GET] [location: /test] [target: /sub/][0m
+[0;33mINFO [18:35:04]: [0;34mserver[0] : response sent [code: 200] [message: OK] [length: 144 + 4 = 148][0m
+[0;33mINFO [18:35:06]: [0;34mserver[0] : request received [method: GET] [location: /php] [target: /index.php][0m
+[0;33mINFO [18:35:06]: [0;34mserver[0] : response sent [code: 200] [message: OK] [length: 211 + 679 = 890][0m
+[0;33mINFO [18:35:06]: [0;34mserver[0] : request received [method: GET] [location: /php] [target: /style.css][0m
+[0;33mINFO [18:35:06]: [0;34mserver[0] : response sent [code: 200] [message: OK] [length: 145 + 257 = 402][0m
+[0;33mINFO [18:35:07]: [0;34mserver[0] : request received [method: GET] [location: /php] [target: /index.php][0m
+[0;33mINFO [18:35:07]: [0;34mserver[0] : response sent [code: 200] [message: OK] [length: 211 + 734 = 945][0m
+[0;33mINFO [18:35:07]: [0;34mserver[0] : request received [method: GET] [location: /php] [target: /style.css][0m
+[0;33mINFO [18:35:07]: [0;34mserver[0] : response sent [code: 200] [message: OK] [length: 145 + 257 = 402][0m

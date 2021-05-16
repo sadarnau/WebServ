@@ -1,6 +1,7 @@
 #ifndef CLUSTER_HPP
 # define CLUSTER_HPP
 
+# include "Client.hpp"
 # include "Config.hpp"
 # include "Webserv.hpp"
 # include <map>
@@ -14,7 +15,8 @@ private:
 	fd_set					_master_fd;
 	std::vector<Webserv>	_serverList;
 	std::vector<int>		_fdList;
-	std::vector<int>		_fdReady;	//test
+	std::vector<Client>		_clients;	//test
+	std::vector<Client>		_readyClients;	//test
 	Config					_config;
 	int						_nbServ;
 
@@ -28,8 +30,10 @@ public:
 
 	int									initialization( std::string fileName );
 	int									lanchServices( void );
+
 	void								addSocketToMaster( int socket );
-	void								deleteInFdList( int socket );
+	void								deleteInReadyClients( int socket );
+	void								deleteInClients( int socket );
 	void								setWritingSet( fd_set *writefds );
 
 	std::map<std::string, std::string>	getMap( void );

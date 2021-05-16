@@ -5,7 +5,7 @@ Webserv::Webserv( void )
 	return ;
 }
 
-Webserv::Webserv( std::string listen, std::vector<Location > locationVector, std::vector<Location > locationExtVector ) : _listen(listen), _locationVector(locationVector),
+Webserv::Webserv( std::string listen, std::vector<Location > locationVector, std::vector<Location> locationExtVector ) : _listen(listen), _locationVector(locationVector),
 																															_locationExtVector(locationExtVector)
 {
 	return ;
@@ -105,67 +105,43 @@ int		Webserv::acceptConexion( void )
 	
 	fcntl(socket, F_SETFL, O_NONBLOCK);
 
-    // if(this->_clientMap.insert(std::make_pair(socket, address)).second == false)
-    //     std::cout<<"\n\n element not insered, already in map...\n\n";
-
-	// Logger::Write(Logger::INFO, RED, "client[" + std::to_string(socket) + "] ip = " + );
-
-	this->_fdList.push_back(socket);
-
 	return (socket);
 }
 
-int		Webserv::handleRequest( int socket )
-{
-	int				BUFF_SIZE = 10000;
-	int				ret;
-	struct timeval	now , beginning;
-	char			chunk_data[BUFF_SIZE];
-	double			timediff;
-
-	if (gettimeofday(&beginning , NULL) < 0)
-		return (0);
-	this->_buff.clear();
+// int		Webserv::handleRequest( int socket )
+// {
+// 	int				BUFF_SIZE = 10000;
+// 	int				ret;
+// 	struct timeval	now , beginning;
+// 	char			chunk_data[BUFF_SIZE];
+// 	double			timediff;
 	 
-	while(1)
-	{
-		if (gettimeofday(&now , NULL) < 0)
-			return (0);
-		timediff = (now.tv_sec - beginning.tv_sec) + 1e-6 * (now.tv_usec - beginning.tv_usec);
+// 	memset(chunk_data , 0, BUFF_SIZE);
+// 	ret = recv(socket, chunk_data, BUFF_SIZE - 1, 0);
+	
+// 	if (ret == 0)
+// 	{
+// 		Logger::Write(Logger::INFO, RED, "server[" + std::to_string(this->_serverNb) + "] : client have closed his connection...");
+// 		return (0);
+// 	}
+// 	else
+// 		this->_buff.append(chunk_data);
 
-		if(timediff > 0.2 )		// (0.2 is timeout)
-			break ;
+// 	return (1);
+// }
 
-		memset(chunk_data , 0, BUFF_SIZE);
-		if((ret = recv(socket, chunk_data, BUFF_SIZE - 1, 0) ) < 0)
-			usleep(100000);		// if nothing is received we wait 0.1 second before trying again
-		else if (ret == 0)
-		{
-			Logger::Write(Logger::INFO, RED, "server[" + Utils::intToStr(this->_serverNb) + "] : client have closed his connection...");
-			return (0);
-		}
-		else
-		{
-			this->_buff.append(chunk_data);
- 			gettimeofday(&beginning , NULL);
-		}
-	}
-
-	return (1);
-}
-
-void	Webserv::sendResponse( int socket )
+void	Webserv::sendResponse( int socket, Client client )
 {
-	char		 		myIP[16];
-	struct sockaddr_in	my_addr;
+	// char		 		myIP[16];
+	// struct sockaddr_in	my_addr;
 
-	bzero(&my_addr, sizeof(my_addr));
-	socklen_t len = sizeof(my_addr);
-	getsockname(socket, (struct sockaddr *) &my_addr, &len);
-	inet_ntop(AF_INET, &my_addr.sin_addr, myIP, sizeof(myIP));
+	// bzero(&my_addr, sizeof(my_addr));
+	// socklen_t len = sizeof(my_addr);
+	// getsockname(socket, (struct sockaddr *) &my_addr, &len);
+	// inet_ntop(AF_INET, &my_addr.sin_addr, myIP, sizeof(myIP));
 	// printf("Local ip address: %s\n", myIP);
 
-	Request		request(&this->_locationVector, &this->_locationExtVector, socket, this->_buff);
+	Request		request(&this->_locationVector, &this->_locationExtVector, socket, client.getBuffer());
 	request.logRequest(this->_serverNb);
 
 	Response	response(&request, socket);
@@ -174,19 +150,19 @@ void	Webserv::sendResponse( int socket )
 	return ;
 }
 
-void	Webserv::deleteSocket( int socket )
-{
-	for (std::vector<int>::iterator it = this->_fdList.begin() ; it != this->_fdList.end() ; it++)
-	{
-		if(*it == socket)
-		{
-			this->_fdList.erase(it);
-			break ;
-		}
-	}
+// void	Webserv::deleteSocket( int socket )
+// {
+// 	for (std::vector<int>::iterator it = this->_fdList.begin() ; it != this->_fdList.end() ; it++)
+// 	{
+// 		if(*it == socket)
+// 		{
+// 			this->_fdList.erase(it);
+// 			break ;
+// 		}
+// 	}
 
-	return ;
-}
+// 	return ;
+// }
 
 int		Webserv::getFd( void )
 {

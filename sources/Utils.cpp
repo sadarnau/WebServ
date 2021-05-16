@@ -243,24 +243,24 @@ namespace Utils {
 
 	long						strToLong(std::string str)
 	{
-	std::stringstream ss; 
-	long res;
+		std::stringstream ss; 
+		long res;
 
-	ss << str;  
-	ss >> res;
+		ss << str;  
+		ss >> res;
 
-	return (res);  
+		return (res);  
 	}
 
 	int						strToInt(std::string str)
 	{
-	std::stringstream ss; 
-	int res;
+		std::stringstream ss; 
+		int res;
 
-	ss << str;  
-	ss >> res;
+		ss << str;  
+		ss >> res;
 
-	return (res);  
+		return (res);  
 	}
 
 	std::string					longToStr(long i)
@@ -288,5 +288,20 @@ namespace Utils {
 		ss >> length;
 
 		return (length);
+	}
+
+	int							checkLastChar(std::string string, std::string needle)
+	{
+		unsigned long	i = string.size();
+		int				j = needle.size();
+
+		while (j > 0)
+		{
+			i--;
+			j--;
+			if (i < 0 || string[i] != needle[j])
+				return (1);
+		}
+		return (0);
 	}
 }

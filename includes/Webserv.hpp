@@ -6,6 +6,7 @@
 # include "Logger.hpp"
 # include "Config.hpp"
 # include "Location.hpp"
+# include "Client.hpp"
 # include <unistd.h>		//read function
 # include <fcntl.h>
 # include <arpa/inet.h>		//inet_addr function
@@ -48,7 +49,7 @@ public:
 	void								fillAddress( void );
 	int									acceptConexion( void );
 	int									handleRequest( int socket );
-	void								sendResponse( int socket );
+	void								sendResponse( int socket, Client client );
 	void								deleteSocket( int socket );
 
 	int									getFd( void );
