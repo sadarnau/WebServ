@@ -230,7 +230,7 @@ namespace Utils {
 
     std::string                 getFileContent(std::string pathToFile)
 	{
-		std::ifstream 	f(pathToFile.c_str()); // open file
+		std::ifstream 	f(pathToFile.c_str());
 		std::stringstream buff;
 
 		if (f.is_open())
