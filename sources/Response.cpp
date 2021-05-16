@@ -160,7 +160,6 @@ void	Response::processGetPostHead(void)
 	}
 	this->checkErrors();
 
-	std::ifstream 	f(this->_req->getAbsoluteTargetPath().c_str()); // open file
 
 	// CGI
 	if (!this->_location.getCgiPath().empty() && (this->_location.getCgiExt() == Utils::getExtension(this->_req->getTarget())))
@@ -179,15 +178,10 @@ void	Response::processGetPostHead(void)
 	}
 	else
 	{
-		if (f.good())
-		{
-			std::stringstream buff;
-			buff << f.rdbuf();
-			this->setResponseCode(200);
-			this->setBody(buff.str());
-		}
+
+		this->setResponseCode(200);
+		this->setBody(Utils::getFileContent(this->_req->getAbsoluteTargetPath().c_str()));
 		this->checkErrors();
-		f.close();
 	}
 	this->setContentType(this->getContentType(this->_req->getTarget()));
 
@@ -288,12 +282,11 @@ bool		Response::autoIndexResponse(void)
 		this->setResponseCode(200);
 		this->setContentType("text/html");
 
-		std::ifstream content_start("files/default_pages/auto_index_start.html");
+		std::string content_start = Utils::getFileContent("files/default_pages/auto_index_start.html");
 		std::ostringstream content;
-		std::ifstream content_end("files/default_pages/auto_index_end.html");
+		std::string content_end = Utils::getFileContent("files/default_pages/auto_index_end.html");
 
-		content << std::string((std::istreambuf_iterator<char>(content_start)), std::istreambuf_iterator<char>());
-
+		content << content_start;
 		content << "<h1>Directory : " << this->_req->getUrlTargetPath() << "</h1>";
 		content << "<ul>" << std::endl;
 
@@ -304,8 +297,9 @@ bool		Response::autoIndexResponse(void)
 		}
 		content << "</ul>" << std::endl;
 		
-		content << std::string((std::istreambuf_iterator<char>(content_end)), std::istreambuf_iterator<char>());
+		content << content_end;
 		this->setBody(content.str());
+		closedir(directory);
 		return (true);
 	}
 
@@ -357,17 +351,12 @@ void		Response::checkErrors(void)
 
 void		Response::setToErrorPage(int errorNumber)
 {
-	std::ifstream	error_page;
 	std::string		errorNbrString = Utils::intToStr(errorNumber);
 
 	this->setResponseCode(errorNumber);
 	this->setContentType("text/html");
 	if(!this->_location.getErrorPage()[errorNbrString].empty())
-	{
-		error_page.open(this->_location.getErrorPage()[errorNbrString].c_str());
-		std::string str((std::istreambuf_iterator<char>(error_page)), std::istreambuf_iterator<char>());
-		this->setBody(str);
-	}
+		this->setBody(Utils::getFileContent(this->_location.getErrorPage()[errorNbrString]));
 	else
 		this->setBody(this->generateDefaultErrorPage(errorNbrString, this->_responseMessages[errorNumber]));
 
@@ -378,17 +367,17 @@ void		Response::setToErrorPage(int errorNumber)
 
 std::string		Response::generateDefaultErrorPage(std::string errorNbr, std::string message)
 {
-	std::ifstream		content_1("files/default_pages/default_error_1.html");
-	std::ifstream		content_2("files/default_pages/default_error_2.html");
-	std::ifstream		content_3("files/default_pages/default_error_3.html");
+	std::string		content_1 = Utils::getFileContent("files/default_pages/default_error_1.html");
+	std::string		content_2 = Utils::getFileContent("files/default_pages/default_error_2.html");
+	std::string		content_3 = Utils::getFileContent("files/default_pages/default_error_3.html");
 	std::ostringstream	body;
 
-	body << std::string((std::istreambuf_iterator<char>(content_1)), std::istreambuf_iterator<char>());
+	body << content_1;
 	body << "error " << errorNbr;
-	body << std::string((std::istreambuf_iterator<char>(content_2)), std::istreambuf_iterator<char>());
+	body << content_2;
 	body << "<h1>" << errorNbr << "</h1>";
 	body << "<p>" << message << "</p>";
-	body << std::string((std::istreambuf_iterator<char>(content_3)), std::istreambuf_iterator<char>());
+	body << content_3;
 
 	return (body.str());
 }
@@ -500,7 +489,10 @@ bool		Response::isDirectory(void)
 	DIR *directory;
 
 	if ((directory = opendir(this->_req->getAbsoluteTargetPath().c_str())))
+	{
+		closedir(directory);
 		return (true);
+	}
 
 	return (false);
 }

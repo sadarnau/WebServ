@@ -228,6 +228,19 @@ namespace Utils {
 		return (toFormat);
 	}
 
+    std::string                 getFileContent(std::string pathToFile)
+	{
+		std::ifstream 	f(pathToFile.c_str()); // open file
+		std::stringstream buff;
+
+		if (f.is_open())
+		{
+			buff << f.rdbuf();
+			f.close();
+		}
+		return (buff.str());
+	}
+
 	long						strToLong(std::string str)
 	{
 	std::stringstream ss; 

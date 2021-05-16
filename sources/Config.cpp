@@ -29,7 +29,7 @@ Config & Config::operator=( Config const & rhs)
 	this->_locationExtVector = rhs._locationExtVector;
 	this->_serverVector = rhs._serverVector;
 
-	return ( *this );
+	return (*this);
 }
 
 void	Config::initConfigMap(void)
