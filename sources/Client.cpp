@@ -7,8 +7,9 @@ Client::Client( void )
 
 Client::Client( int socket, int servNb ) : _socket(socket), _servNb(servNb)
 {
-	this->_finishRead = true;
-	this->_finishWrite = true;
+	this->_finishRead = false;
+	this->_finishWrite = false;
+	this->_buff.clear();
 
 	return ;
 }
@@ -31,6 +32,7 @@ Client & Client::operator=( Client const & rhs)
     this->_finishWrite = rhs._finishWrite;
     this->_servNb = rhs._servNb;
     this->_socket = rhs._socket;
+
 	return ( *this );
 }
 
@@ -42,14 +44,18 @@ int		Client::myRecv( void )
 
 	memset(chunk_data , 0, BUFF_SIZE);
 	if ((ret = recv(this->_socket, chunk_data, BUFF_SIZE - 1, 0)) < 0)
+	{
+		Logger::Write(Logger::INFO, RED, "server[" + std::to_string(this->_servNb) + "] : read have gros problem");	
 		return 0;	// read error, close connection
+	}
 	else if (ret == 0)
 	{
 		Logger::Write(Logger::INFO, RED, "server[" + std::to_string(this->_servNb) + "] : client have closed his connection...");
 		return (0);
 	}
 	else
-		this->_buff.append(chunk_data);
+		this->_buff += std::string(chunk_data);
+		// this->_buff.append(chunk_data);
 
 	this->_finishRead = checkReadState();
 
@@ -58,24 +64,27 @@ int		Client::myRecv( void )
 
 bool	Client::checkReadState( void )
 {
-	// check if the request is full
-	// set the flag this->finishRead to true or false
-	return (true);
+	unsigned long	i = this->_buff.find("\r\n\r\n");
+
+	if (i != std::string::npos)
+	{
+		if (this->_buff.find("Transfer-Encoding: chunked") != std::string::npos)
+		{
+			if (checkLastChar(this->_buff, "0\r\n\r\n") == 0)
+				return (true);
+			else
+				return (false);
+		}
+		else
+			return (true);
+	}
+
+	return (false);
 }
 
-int								checkEnd(const std::string& str, const std::string& end)
+void	Client::deleteBuff( void )
 {
-	size_t	i = str.size();
-	size_t	j = end.size();
-
-	while (j > 0)
-	{
-		i--;
-		j--;
-		if (i < 0 || str[i] != end[j])
-			return (1);
-	}
-	return (0);
+	this->_buff.clear();	
 }
 
 int		Client::getServerNb( void )
@@ -106,6 +115,12 @@ std::string	Client::getBuffer( void )
 void		Client::setFinishWrite( bool finishWrite )
 {
 	this->_finishWrite = finishWrite;
+	return ;
+}
+
+void		Client::setFinishRead( bool finishRead )
+{
+	this->_finishRead = finishRead;
 	return ;
 }
 

@@ -19,24 +19,25 @@ private:
 public:
 
 	Client( void );									//default constructor
-	Client( int socket, int servNb );					//constructor
-	Client( Client const & src);  				//copy
+	Client( int socket, int servNb );				//constructor
+	Client( Client const & src);  					//copy
 	~Client( void );								//destructor
 	Client & operator=( Client const & rhs );		//overload operator =
 
-	int		myRecv( void );
-	bool	checkReadState( void );
-	int		getSocket( void );
-	int		getServerNb( void );
-	bool	getFinishRead( void );
-	bool	getFinishWrite( void );
+	int			myRecv( void );
+	bool		checkReadState( void );
+	void		deleteBuff( void );
+	int			getSocket( void );
+	int			getServerNb( void );
+	bool		getFinishRead( void );
+	bool		getFinishWrite( void );
 	std::string	getBuffer( void );
 	void		setFinishWrite( bool finishWrite );
+	void		setFinishRead( bool finishRead );
 
 
 };
 
 std::ostream &	operator<<(std::ostream & o, Client & rhs);
-int								checkEnd(const std::string& str, const std::string& end);
 
 #endif

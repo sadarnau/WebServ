@@ -76,18 +76,14 @@ int								Cluster::lanchServices( void )
 			return (1); // test ???
 		}
 		
-		std::vector<Client> listR = this->_readyClients;
-		for (std::vector<Client>::iterator it = listR.begin(); it != listR.end(); it++)
+		for (std::vector<Client>::iterator it = this->_readyClients.begin(); it != this->_readyClients.end(); it++)
 		{
 			if (FD_ISSET(it->getSocket(), &writingSet))
 			{
 				this->_serverList[it->getServerNb()].sendResponse( it->getSocket(), *it );
-				it->setFinishWrite(true);
+				it->setFinishWrite(true);	// test
 				if (it->getFinishWrite())
-				{
-					deleteInReadyClients(it->getSocket());
-					break;
-				}
+					this->_readyClients.erase(it);
 			}
 			else
 			{
@@ -98,6 +94,7 @@ int								Cluster::lanchServices( void )
 				FD_CLR(it->getSocket(), &writingSet);
 				this->_readyClients.erase(it);
 			}
+			break;
 		}
 
 		for(int i = 0; i < this->_nbServ; i++)							// We go throught every server fds to see if we have a new connection
@@ -113,11 +110,11 @@ int								Cluster::lanchServices( void )
 					this->_maxFd = sock;
 
 				this->_clients.push_back(Client(sock, i));
-				break ;													// no need to check any more serv
+				break ;								// no need to check any more serv
 			}
 
-		std::vector<Client> list = this->_clients;
-		for (std::vector<Client>::iterator it = list.begin() ; it != list.end() ; it++)
+		// std::vector<Client> list = this->_clients;
+		for (std::vector<Client>::iterator it = this->_clients.begin() ; it != this->_clients.end() ; it++)
 		{
 			if (FD_ISSET(it->getSocket(), &copyMasterSet))
 			{
@@ -126,12 +123,18 @@ int								Cluster::lanchServices( void )
 					if (close(it->getSocket()) < 0)
 						return (1);
 					FD_CLR(it->getSocket(), &this->_master_fd);
-					deleteInClients(it->getSocket());
+					this->_clients.erase(it);
 				}
 				else
 					if (it->getFinishRead())
+					{
+						// Logger::Write(Logger::INFO, GRN, "Read is finished, preparing to send " + std::to_string(it->getBuffer().size()) + " bits :\n" + it->getBuffer());
 						this->_readyClients.push_back(*it);
+						it->setFinishRead(false);
+						it->deleteBuff();
+					}
 			}
+			break;
 		}
 	}
 

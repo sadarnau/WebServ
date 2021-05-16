@@ -26,6 +26,7 @@ bool						isPathAFile(std::string path);
 size_t						convertClientSizeFromStr(std::string str);
 size_t						hexStrtoInt(std::string hex);
 std::string					getExtension(std::string target);
+int							checkLastChar(std::string string, std::string needle);
 
 
 #endif

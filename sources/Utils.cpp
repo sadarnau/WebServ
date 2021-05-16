@@ -194,3 +194,18 @@ std::string					getExtension(std::string target)
 
 	return (ext);
 }
+
+int							checkLastChar(std::string string, std::string needle)
+{
+	unsigned long	i = string.size();
+	int				j = needle.size();
+
+	while (j > 0)
+	{
+		i--;
+		j--;
+		if (i < 0 || string[i] != needle[j])
+			return (1);
+	}
+	return (0);
+}
