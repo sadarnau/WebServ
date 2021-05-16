@@ -221,6 +221,13 @@ namespace Utils {
 		return(1);
 	}
 
+	std::string					formatToCgiEnv(std::string toFormat)
+	{
+		std::transform(toFormat.begin(), toFormat.end(), toFormat.begin(), ::toupper);
+		std::replace(toFormat.begin(), toFormat.end(), '-', '_');
+		return (toFormat);
+	}
+
 	long						strToLong(std::string str)
 	{
 	std::stringstream ss; 

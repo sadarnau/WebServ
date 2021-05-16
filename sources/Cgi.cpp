@@ -6,6 +6,10 @@ Cgi::Cgi(Request *req)
 	this->_initEnv();
 	this->_envC = this->_envToCArray();
 	this->_initArgC();
+	for (int i = 0; this->_envC[i]; i++)
+	{
+		std::cout << this->_envC[i] << std::endl;
+	}
 }
 
 Cgi::Cgi(Cgi const &src)
@@ -141,6 +145,12 @@ void    	Cgi::_initEnv(void)
 	this->_env["SERVER_PROTOCOL"] = "HTTP/1.1";
 	this->_env["SERVER_SOFTWARE"] = "webserv";
 	this->_env["REDIRECT_STATUS"] = "200";
+
+	for (std::map<std::string, std::string>::iterator it = reqHeaders.begin(); it != reqHeaders.end(); ++it)
+	{
+		if (it->second != "")
+			this->_env["HTTP_" + Utils::formatToCgiEnv(it->first)] = it->second;
+	}
 }
 
 void		Cgi::_initArgC(void)
