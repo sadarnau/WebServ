@@ -133,8 +133,8 @@ int								Cluster::lanchServices( void )
 						it->setFinishRead(false);
 						it->deleteBuff();
 					}
-			}
-			break;
+				break;
+				}
 		}
 	}
 
