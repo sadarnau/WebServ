@@ -4,6 +4,7 @@
 # include <time.h>
 # include <sys/time.h>
 # include <string>
+# include <algorithm>
 # include <map>
 # include <vector>
 # include <iterator>
@@ -28,6 +29,7 @@ namespace   Utils
     std::string					getExtension(std::string target);
     std::string 				decode64(std::string &str);
     int							cutLine(unsigned long *it, std::string *line, std::string *src, std::string sep);
+	std::string					formatToCgiEnv(std::string toFormat);
 
     std::string					intToStr(int i);
     std::string					longToStr(long i);
