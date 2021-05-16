@@ -117,10 +117,16 @@ void	Response::buildHeader(void)
 
 	this->_headers["Content-Type"] = this->_contentType;
 	this->_headers["Content-Length"] = Utils::longToStr(this->_body.size());
-	this->_headers["Server"] = std::string("Webserv");
 	this->_headers["Date"] = Utils::getDate();
+	this->_headers["Host"] = this->_req->getSelectedLocation().getListen();
+	if (!this->_req->getSelectedLocation().getServerName().empty())
+		this->_headers["Server"] = this->_req->getSelectedLocation().getServerName();
+	else
+		this->_headers["Server"] = std::string("Webserv");
 	if (this->_responseCode == 401)
 		this->_headers["WWW-Authenticate"] = "Basic realm=\"acces to webserv\"";
+	if (this->_responseCode == 201)
+		this->_headers["Location"] = this->_req->getUrlTargetPath();
 
 	std::map<std::string, std::string> tmpHeaders = this->_headers;
 	std::map<std::string, std::string> tmpCgiHeaders = this->_cgiheaders;
