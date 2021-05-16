@@ -6,10 +6,6 @@ Cgi::Cgi(Request *req)
 	this->_initEnv();
 	this->_envC = this->_envToCArray();
 	this->_initArgC();
-	for (int i = 0; this->_envC[i]; i++)
-	{
-		std::cout << this->_envC[i] << std::endl;
-	}
 }
 
 Cgi::Cgi(Cgi const &src)
