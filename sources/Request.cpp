@@ -70,26 +70,24 @@ void	Request::_parseRequest(std::string req)
 	}
 
 	// parse header
-	std::string			line;
-    std::string			key;
-    std::string			value;
-    std::string			httpVersion;;
+	std::string					line;
+    std::string					key;
+    std::string					value;
+    std::string					httpVersion;
+	std::vector<std::string>	tmpVector;
 
 	unsigned long it;
 	Utils::cutLine(&it, &line, &header, "\r\n");
-	// handle request line
-	std::stringstream	ss(line);
-
-	ss >> key >> value >> httpVersion;;
-	if (ss.fail())
+	tmpVector = Utils::concatToVector(line, " ");
+	if (tmpVector.size() != 3)
 	{
 		this->_badRequest = true;
 		Logger::Write(Logger::ERROR, RED, "request : bad request : request line : " + line);
 	}
 
-	this->_method = key;
-	this->_target = value;
-	this->_httpVersion = httpVersion;
+	this->_method = tmpVector[0];
+	this->_target = tmpVector[1];
+	this->_httpVersion = tmpVector[2];
 
 	// handle request header
 	while (Utils::cutLine(&it, &line, &header, "\r\n"))
@@ -102,16 +100,16 @@ void	Request::_parseRequest(std::string req)
 		}
 		key = line.substr(0, line.find(":"));
 		value = line.substr(line.find(":") + 2, line.size());
-
-		if (this->_isValidHeader(key))
-			this->_headers[key] = value;
-			if (!key.compare("Content-Length"))
-				this->_contentLength = Utils::strToLong(value);
-		else
-			this->_skippedHeaders.push_back(key);
-
+		if (this->_headers.count(key))
+		{
+			this->_badRequest = true;
+			break ;
+		}
+		this->_headers[key] = value;
+		if (!key.compare("Content-Length"))
+			this->_contentLength = Utils::strToLong(value);
 		if (it == std::string::npos)
-			break;
+			break ;
 	}
 
 	if (this->_headers["Transfer-Encoding"] == "chunked")
@@ -276,20 +274,6 @@ void	Request::_createPath(void)
 	return ;
 }
 
-bool	Request::_isValidHeader(std::string header)
-{
-	std::string listOfAcceptedHeaders[18] = {"Accept-Charsets", "Accept-Language", "Allow", "Authorization", "Content-Language",
-												"Content-Length", "Content-Location", "Content-Type", "Date", "Host", "Last-Modified",
-												"Location", "Referer", "Retry-After", "Server", "Transfer-Encoding", "User-Agent",
-												"WWW-Authenticate"};
-
-	for (int i = 0; i < 18; i++)
-		if (header == listOfAcceptedHeaders[i])
-			return (true);
-
-	return (false);
-}
-
 ////////////////////
 // GETTERS / SETTERS
 ////////////////////
@@ -386,12 +370,6 @@ void	Request::logRequest(int serverNbr)
 
 	std::ostringstream oss2;
 
-	//SKIPPED HEADERS
-	oss2 << std::endl << "Skipped headers : ";
-	for (std::vector<std::string>::iterator it = this->_skippedHeaders.begin(); it != this->_skippedHeaders.end(); ++it)
-		oss2 << " " << *it;
-	oss2 << std::endl << std::endl;
-	
 	// RAW REQUEST
 	oss2 << "Raw request (MAX_LOG " + Utils::intToStr(MAX_LOG) + "):" << std::endl << std::endl;
 	oss2 << this->_buff.substr(0, MAX_LOG);

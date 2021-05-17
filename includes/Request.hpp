@@ -34,7 +34,6 @@ private:
 	std::string							_urlTargetPath;
 	std::string							_absoluteTargetPath;
 	std::map<std::string, std::string>	_headers;
-	std::vector<std::string>			_skippedHeaders;
 	std::string							_queryString;
 	Location							_selectedLocation;
 	Location							_selectedLocationExt;
@@ -47,7 +46,6 @@ private:
 	bool								_selectLocationExt(void);
 	void								_mergeLocation(void);
 	void								_createPath(void);
-	bool								_isValidHeader(std::string header);
 
 public:
 	Request(vlocation *_locationVector, vlocation *_locationExtVector, int inSock, std::string buff, std::string ip);

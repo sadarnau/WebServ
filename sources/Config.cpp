@@ -1,30 +1,25 @@
 #include "Config.hpp"
 
-Config::Config( void )
+Config::Config(void)
 {
 	return ;
 }
 
-// Config::Config( std::string name )
-// {
-// 	return ;
-// }
-
-Config::Config( Config const & src )
+Config::Config(Config const & src)
 {
 	*this = src;
 	return ;
 }
 
-Config::~Config( void )
+Config::~Config(void)
 {
 	return ;
 }
 
-Config & Config::operator=( Config const & rhs)
+Config & Config::operator=(Config const & rhs)
 {
-	// this->f = rhs.f;
 	this->_configMap = rhs._configMap;
+	this->_listen = rhs._listen;
 	this->_locationVector = rhs._locationVector;
 	this->_locationExtVector = rhs._locationExtVector;
 	this->_serverVector = rhs._serverVector;
@@ -48,7 +43,7 @@ void	Config::initConfigMap(void)
 	return ;
 }
 
-void	Config::parseFile( std::string fileName )
+void	Config::parseFile(std::string fileName)
 {
 	std::map<std::string, std::string> newLoc;
 
@@ -59,7 +54,7 @@ void	Config::parseFile( std::string fileName )
 	return ;
 }
 
-void	Config::checkFile( std::string fileName )
+void	Config::checkFile(std::string fileName)
 {
 	std::string::size_type	n;
 	std::string				line;
@@ -68,17 +63,15 @@ void	Config::checkFile( std::string fileName )
 	if (n == std::string::npos)
 	{
 		Logger::Error("Config file must be filename.conf\n");
-		throw (std::exception());	//exeption a faire, conf non valide
-	}	//exeption a faire, pas de .conf
-
-	this->f.open(fileName.c_str());	// open conf file
+		throw (std::exception());
+	}
+	this->f.open(fileName.c_str());
 
 	if (!f.good())
 	{
 		Logger::Error("Fail opening conf file\n");
-		throw (std::exception());	//exeption a faire, conf non valide
-	}	//exeption a faire, probleme a l'ouverture
-
+		throw (std::exception());
+	}
 	std::getline(this->f, line);
 
 	return ;
@@ -92,7 +85,7 @@ bool	Config::checkSemiColon(std::string str)
 	return (false);
 }
 
-void	Config::createServerMap( void )		// commentaire a enlever ?
+void	Config::createServerMap(void)
 {
 	std::string 						line;
 	std::vector<std::string>			split;
@@ -293,7 +286,7 @@ void	Config::newLocationConfig(std::string path)
 	return ;
 }
 
-std::map<std::string, std::string>	Config::getConfigMap( void )
+std::map<std::string, std::string>	Config::getConfigMap(void)
 {
 	return (this->_configMap);
 }
@@ -303,7 +296,7 @@ std::vector<Webserv> 				Config::getServerVector(void)
 	return (this->_serverVector);
 }
 
-std::vector<Location>				Config::getLocationVector( void )
+std::vector<Location>				Config::getLocationVector(void)
 {
 	return (this->_locationVector);
 }
