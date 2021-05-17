@@ -24,6 +24,7 @@ private:
 	vlocation							*_locationExtVector;
 	int									_inSocket;
 	std::string							_buff;
+	std::string							_ip;
 
 	long								_contentLength;
 	std::string							_method;
@@ -49,7 +50,7 @@ private:
 	bool								_isValidHeader(std::string header);
 
 public:
-	Request(vlocation *_locationVector, vlocation *_locationExtVector, int inSock, std::string buff);
+	Request(vlocation *_locationVector, vlocation *_locationExtVector, int inSock, std::string buff, std::string ip);
 	Request(Request const & src);
 	~Request(void);
 	Request & operator=(Request const & rhs);

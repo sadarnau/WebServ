@@ -3,9 +3,10 @@
 ////////////////////
 // COPLIEN'S
 ////////////////////
-Request::Request(vlocation *locationVector, vlocation *locationExtVector, int inSock, std::string buff) // commentaire a enlever ?
+Request::Request(vlocation *locationVector, vlocation *locationExtVector, int inSock, std::string buff, std::string ip) // commentaire a enlever ?
 {
 	// Logger::Write(Logger::DEBUG, WHT, "request : creation");											//ici
+	this->_ip = ip;
 	this->_inSocket = inSock;
 	this->_locationVector = locationVector;
 	this->_locationExtVector = locationExtVector;

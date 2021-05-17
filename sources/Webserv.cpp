@@ -109,15 +109,15 @@ int		Webserv::acceptConexion( void )
 
 std::string	Webserv::getResponse( long socket, Client client )
 {
-	// char		 			socketIP[16];
-	// struct sockaddr_in	addr;
+	char		 		socketIP[16];
+	struct sockaddr_in	addr;
 
-	// bzero(&addr, sizeof(addr));
-	// socklen_t len = sizeof(addr);
-	// getsockname(socket, (struct sockaddr *) &addr, &len);
-	// inet_ntop(AF_INET, &addr.sin_addr, socketIP, sizeof(socketIP));
+	bzero(&addr, sizeof(addr));
+	socklen_t len = sizeof(addr);
+	getsockname(socket, (struct sockaddr *) &addr, &len);
+	inet_ntop(AF_INET, &addr.sin_addr, socketIP, sizeof(socketIP));
 
-	Request		request(&this->_locationVector, &this->_locationExtVector, socket, client.getBuffer());
+	Request		request(&this->_locationVector, &this->_locationExtVector, socket, client.getBuffer(), socketIP);
 	request.logRequest(this->_serverNb);
 
 	Response	response(&request, socket);

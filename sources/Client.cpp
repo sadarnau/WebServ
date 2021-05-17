@@ -70,12 +70,11 @@ int		Client::myRecv( void )
 
 int		Client::mySend( void )
 {
-	char	*toSend = strdup(this->_response.c_str());
 	int		BUFF_SIZE = this->_response.length();
 	int		ret;
 	errno = 0;
 
-	if ((ret = send(this->_socket, toSend, BUFF_SIZE, 0)) < 0)
+	if ((ret = send(this->_socket, this->_response.c_str(), BUFF_SIZE, 0)) < 0)
 	{
 		Logger::Write(Logger::ERROR, RED, "server[" + Utils::intToStr(this->_servNb) + "] : send is not possible, closing the client...");	
 		return (0);
@@ -89,7 +88,6 @@ int		Client::mySend( void )
 	this->_response.erase(0, ret);
 
 	this->_finishWrite = checkWriteState();
-	delete(toSend);
 
 	return (1);
 }
