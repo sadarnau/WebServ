@@ -98,6 +98,7 @@ void	Config::createServerMap( void )		// commentaire a enlever ?
 	std::vector<std::string>			split;
 	std::map<std::string, std::string>	newLoc;
 	bool								locationFound = false;
+	bool								serverNameFound = false;
 	bool								listenFound = false;
 	bool								endOfSectionFound = false;
 	bool								inServerConfig = false;
@@ -114,6 +115,7 @@ void	Config::createServerMap( void )		// commentaire a enlever ?
 			inServerConfig = true;
 			endOfSectionFound = false;
 			listenFound = false;
+			serverNameFound = false;
 		}
   		else if (!split[0].compare("listen") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 		{
@@ -122,7 +124,11 @@ void	Config::createServerMap( void )		// commentaire a enlever ?
 			this->_listen = this->_configMap["listen"];
 		}
 		else if (!split[0].compare("server_name") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
+		{
 			this->_configMap["server_name"] = split[1].substr(0, split[1].size() - 1);
+			serverNameFound = true;
+
+		}
   		else if (!split[0].compare("accepted_method") && split.size() == 2 && this->checkSemiColon(split.back()))
 			this->_configMap["accepted_method"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("client_max_body_size") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
@@ -182,11 +188,16 @@ void	Config::createServerMap( void )		// commentaire a enlever ?
 		throw (std::exception());
 	}
 
-	/*if (!locationFound)							//ici
+	if (!locationFound)
 	{
 		Logger::Error("No location definition\n");
 		throw (std::exception());
-	}*/
+	}
+	if (!serverNameFound)
+	{
+		Logger::Error("No server name definition\n");
+		throw (std::exception());
+	}
 
 	return ;
 }
