@@ -150,6 +150,11 @@ std::string	Client::getBuffer( void )
 	return (this->_buff);
 }
 
+std::string	Client::getResponse( void )
+{
+	return (this->_response);
+}
+
 void		Client::setFinishWrite( bool finishWrite )
 {
 	this->_finishWrite = finishWrite;

@@ -38,6 +38,7 @@ public:
 	bool		getFinishRead( void );
 	bool		getFinishWrite( void );
 	std::string	getBuffer( void );
+	std::string	getResponse( void );
 	
 	void		setFinishWrite( bool finishWrite );
 	void		setFinishRead( bool finishRead );
