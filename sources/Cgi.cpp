@@ -76,7 +76,6 @@ bool		Cgi::processCgi(void)
 
 			this->_closeFd(fIn, fOut, fdIn, fdOut);
 			Logger::Write(Logger::ERROR, RED, "cgi : in child : execve failed : " + std::string(strerror(errno)));
-			return false;
 		}
 	}
 	else

@@ -49,7 +49,7 @@ private:
 	std::string		getIndexTarget(void);
 	bool			isIndexPagePresent(void);
 
-	void			checkErrors(void);
+	void			checkPermissions(void);
 	void			initResponseMessageMap(void);
 	void			setToErrorPage(int errorNumber);
 	std::string		generateDefaultErrorPage(std::string errorNbr, std::string message);

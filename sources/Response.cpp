@@ -106,8 +106,7 @@ void	Response::buildHeader(void)
 	std::map<std::string, std::string> tmpCgiHeaders = this->_cgiheaders;
 
 	for (std::map<std::string, std::string>::const_iterator it = tmpCgiHeaders.begin(); it != tmpCgiHeaders.end(); it++)
-		if (it->first != "Status")
-			tmpHeaders[it->first] = it->second;
+		tmpHeaders[it->first] = it->second;
 
 	for (std::map<std::string, std::string>::const_iterator it = tmpHeaders.begin(); it != tmpHeaders.end(); it++)
 		if (!it->second.empty())
@@ -131,8 +130,9 @@ void	Response::processGetPostHead(void)
 			this->_req->updateTarget(this->getIndexTarget());
 		else if(this->_location.getAutoindex() == "on" && this->autoIndexResponse())  //autoIndexResponse return (true) on success
 				return ;
+
+		this->checkPermissions();
 	}
-	this->checkErrors();
 
 
 	// CGI
@@ -145,7 +145,13 @@ void	Response::processGetPostHead(void)
 		{
 			this->setBody(cgi.getResult());
 			this->_cgiheaders = cgi.getCgiHeaders();
-			this->setResponseCode(200);
+			if (this->_cgiheaders["Status"] != "")
+			{
+				std::string statusCode = this->_cgiheaders["Status"].substr(0, this->_cgiheaders["Status"].find(" "));
+				this->setResponseCode(Utils::strToInt(statusCode));
+			}
+			else
+				this->setResponseCode(200);
 		}
 		else
 			this->setToErrorPage(500);
@@ -170,7 +176,7 @@ void	Response::processPut(void)
 	{
 		file.open(path.c_str());
 		if (!file.is_open())
-			this->checkErrors();
+			this->checkPermissions();
 		else
 		{
 			file << toWrite;
@@ -182,7 +188,7 @@ void	Response::processPut(void)
 	{
 		file.open(path.c_str(), std::ofstream::out | std::ofstream::trunc);
 		if (!file.is_open())
-			this->checkErrors();
+			this->checkPermissions();
 		else
 		{
 			file << toWrite;
@@ -235,7 +241,7 @@ void	Response::processDelete(void)
 			this->setResponseCode(202);
 	}
 	else
-		this->checkErrors();
+		this->checkPermissions();
 
 	return ;
 }
@@ -338,20 +344,15 @@ void		Response::initResponseMessageMap(void)
 	return ;
 }
 
-void		Response::checkErrors(void)
+void		Response::checkPermissions(void)
 {
 	std::string errorMessage = strerror(errno);
 
-	if (errorMessage == "Not a directory")
-		return ;
 
 	if (errno != 0 && !this->_isSetToError) // if _isSetToError is true we dont want to print other errno
 	{
-		Logger::Write(Logger::DEBUG, RED, "strerror(errno) : " + Utils::intToStr(errno) + " " + errorMessage);
 		if (errorMessage == "Permission denied")
 			this->setToErrorPage(403);
-		if (errorMessage == "No such file or directory")
-			this->setToErrorPage(404);
 		errno = 0;
 	}
 
