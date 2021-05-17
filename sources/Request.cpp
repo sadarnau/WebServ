@@ -106,8 +106,7 @@ void	Request::_parseRequest(std::string req)
 			break ;
 		}
 		this->_headers[key] = value;
-		if (!key.compare("Content-Length"))
-			this->_contentLength = Utils::strToLong(value);
+
 		if (it == std::string::npos)
 			break ;
 	}
@@ -116,6 +115,12 @@ void	Request::_parseRequest(std::string req)
 		this->_body = this->_unchunkBody(body);
 	else
 		this->_body = body;
+
+	// std::cout << body.size() << " " << body.length()<<std::endl;
+	unsigned long  i;
+	for (i = 0; i < this->_body.size(); i++);
+
+	this->_contentLength = i;
 	return ;
 }
 
@@ -125,13 +130,18 @@ std::string		Request::_unchunkBody(std::string body)
 	int			chunkLength;
 	int			it;
 
+	// char *cbody = strdup(body.c_str());
+	// char result[body.size()];
+	// memset(result, 0, body.size());
+
+	// char *bodyptr = cbody;
+	// char *resultptr = result;
+
 	// Logger::Write(Logger::DEBUG, WHT, "request : unchunkBody()");
 	it = body.find("\r\n");
 	chunkLength = Utils::hexStrtoInt(body.substr(0, it));
-
-	if (!chunkLength)
-		return (tmpBody);
-
+	// if (!chunkLength)
+	// 	return (tmpBody);
 	while (chunkLength && chunkLength > 0)
 	{
 		tmpBody.append(body.substr(it + 2, chunkLength));
@@ -140,7 +150,6 @@ std::string		Request::_unchunkBody(std::string body)
 		it = body.find("\r\n");
 		chunkLength = Utils::hexStrtoInt(body.substr(0, it));
 	}
-
 	return (tmpBody);
 }
 

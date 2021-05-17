@@ -7,6 +7,7 @@ Cgi::Cgi(Request *req, Response *res)
 	this->_initEnv();
 	this->_envC = this->_envToCArray();
 	this->_initArgC();
+	this->logCgi();
 }
 
 Cgi::Cgi(Cgi const &src)
@@ -36,7 +37,6 @@ Cgi::~Cgi(void)
 Cgi & Cgi::operator=(Cgi const &rhs)
 {
 	(void)rhs;
-	// this->??? = rhs.???;
 	return ( *this );
 }
 
@@ -114,7 +114,6 @@ void    	Cgi::_initEnv(void)
 	std::string port = listen.substr(listen.find(":") + 1 , listen.size());
 	std::string ip = listen.substr(0, listen.find(":"));
 
-	// https://fr.wikipedia.org/wiki/Variables_d%27environnement_CGI
 	std::map<std::string, std::string>	reqHeaders = this->_req->getHeaders();
 	this->_env["AUTH_TYPE"] = reqHeaders["WWW-Authenticate"];
 	this->_env["CONTENT_LENGTH"] = reqHeaders["Content-Length"];

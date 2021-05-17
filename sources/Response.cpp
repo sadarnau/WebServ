@@ -44,7 +44,6 @@ Response & Response::operator=(Response const & rhs)
 void	Response::buildResponse(void)
 {
 	std::string	requestMethod = this->_req->getMethod();
-	
 	errno = 0;
 
 	// METHODS
@@ -136,11 +135,9 @@ void	Response::processGetPostHead(void)
 		this->checkPermissions();
 	}
 
-
 	// CGI
 	if (!this->_location.getCgiPath().empty() && (this->_location.getCgiExt() == Utils::getExtension(this->_req->getTarget())))
 	{
-
 		Cgi		cgi(this->_req, this);
 
 		if(cgi.processCgi())
@@ -229,6 +226,8 @@ void	Response::processTrace(void)
 {
 	this->setResponseCode(200);
 	this->setContentType("message/html");
+
+	return ;
 }
 
 void	Response::processDelete(void)
@@ -342,7 +341,6 @@ void		Response::initResponseMessageMap(void)
 	this->_responseMessages[500] = "INTERNAL_ERROR";				// smthg had gone wrong internaly, mostly part of cgi
 	this->_responseMessages[505] = "HTTP_VERSION_NOT_SUPPORTED";	// httpVersion != HTTP/1.1
 
-
 	return ;
 }
 
@@ -409,14 +407,20 @@ bool	Response::isValidAuthorization(void)
 		return (true);
 	if (authorization.empty())
 		return (false);
+
 	Utils::splitStringToVector(authorization, split);
+
 	if (split[0].compare("Basic"))
 		return (false);
+
 	this->_authorization = Utils::decode64(split[1]);
+
 	if (authentication.compare(authorization))
 		return (false);
+
 	this->_isAuthenticationSucessfull = true;
-	Logger::Write(Logger::INFO, GRN, "Authenticaton Sucessfull !");
+	Logger::Write(Logger::INFO, GRN, "authenticaton sucessfull");
+
 	return (true);
 }
 
@@ -471,7 +475,6 @@ std::string	Response::getIndexTarget(void) // commentaire a supprimer ?
 		}
 		f.close();
 	}
-	// std::ifstream indexTry;				//ici
 
 	return (this->_req->getTarget());
 }
@@ -524,18 +527,15 @@ std::string	Response::getContentType(std::string target)
 	"application/x-rar-compressed", "application/rtf", "application/x-sh", "image/svg+xml", "application/x-shockwave-flash", "application/x-tar", "image/tiff", "image/tiff", "application/typescript", "font/ttf", "application/vnd.visio", "audio/x-wav", "audio/webm", "video/webm", "image/webp", "font/woff", "font/woff2", "application/xhtml+xml", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 	"application/xml", "application/vnd.mozilla.xul+xml", "application/zip", "video/3gpp", "video/3gpp2", "application/x-7z-compressed"};
 
-	int i = target.size() - 1;
-	while (i >= 0 && target[i] != '.')
-		i--;
+	std::string ext = Utils::getExtension(target);
 
-	std::string ext = target.substr(i + 1, target.size() - 1);
-
-	int j = 0;
-	while (j < 67)
+	if (ext != "")
 	{
-		if (extension[j] == ext)
-			return (content_type[j]);
-		j++;
+		ext = ext.substr(1, ext.length());
+
+		for (int j = 0; j < 67; j++)
+			if (extension[j] == ext)
+				return (content_type[j]);
 	}
 
 	return ("text/plain");
