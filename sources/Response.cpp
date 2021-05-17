@@ -8,6 +8,7 @@ Response::Response(Request *req, long socket)
 	this->initResponseMessageMap();
 
 	this->_isSetToError = false;
+	this->_isAuthenticationSucessfull = false;
 	this->_location = req->getSelectedLocation();
 	this->_req = req;
 	this->_socket = socket;
@@ -410,9 +411,10 @@ bool	Response::isValidAuthorization(void)
 	Utils::splitStringToVector(authorization, split);
 	if (split[0].compare("Basic"))
 		return (false);
-	authorization = Utils::decode64(split[1]);
+	this->_authorization = Utils::decode64(split[1]);
 	if (authentication.compare(authorization))
 		return (false);
+	this->_isAuthenticationSucessfull = true;
 	Logger::Write(Logger::INFO, GRN, "Authenticaton Sucessfull !");
 	return (true);
 }
@@ -599,6 +601,16 @@ int				Response::getResponseCode(void)
 std::string		Response::getResponseCodeMessage(void)
 {
 	return (this->_responseMessages[this->_responseCode]);
+}
+
+std::string		Response::getAuthorization(void)
+{
+	return (this->_authorization);
+}
+
+bool			Response::getIsAuthenticationSucessfull(void)
+{
+	return (this->_isAuthenticationSucessfull);
 }
 
 long			Response::getHeaderLength(void)

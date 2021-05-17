@@ -32,6 +32,8 @@ private:
 	std::string								_header;
 	std::string								_body;
 	std::string								_response;
+	std::string								_authorization;
+	bool									_isAuthenticationSucessfull;
 	std::map<int, std::string>				_responseMessages;
 	bool									_isSetToError;
 
@@ -76,10 +78,11 @@ public:
 	std::string		getResponseCodeStr(void);
 	int				getResponseCode(void);
 	std::string		getResponseCodeMessage(void);
+	std::string		getAuthorization(void);
 	long			getHeaderLength(void);
 	long			getBodyLength(void);
 	long			getResponseLength(void);
-
+	bool			getIsAuthenticationSucessfull(void);
 	void			logResponse(int serverNbr);
 };
 
