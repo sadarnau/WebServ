@@ -11,7 +11,7 @@
 # include "colors.hpp"
 
 # define DISPLAY_ERRNO 0
-
+# define MAX_LOG 1000
 
 class Logger 
 {

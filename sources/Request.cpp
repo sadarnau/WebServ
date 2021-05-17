@@ -393,8 +393,8 @@ void	Request::logRequest(int serverNbr)
 	oss2 << std::endl << std::endl;
 	
 	// RAW REQUEST
-	oss2 << "Raw request :" << std::endl << std::endl;
-	oss2 << this->_buff;
+	oss2 << "Raw request (MAX_LOG " + Utils::intToStr(MAX_LOG) + "):" << std::endl << std::endl;
+	oss2 << this->_buff.substr(0, MAX_LOG);
 	oss2 << "\n";
 	oss2 << RESET;
 	Logger::Write(Logger::MORE, BLU, oss2.str());

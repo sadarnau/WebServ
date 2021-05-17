@@ -106,7 +106,8 @@ void	Response::buildHeader(void)
 	std::map<std::string, std::string> tmpCgiHeaders = this->_cgiheaders;
 
 	for (std::map<std::string, std::string>::const_iterator it = tmpCgiHeaders.begin(); it != tmpCgiHeaders.end(); it++)
-		tmpHeaders[it->first] = it->second;
+		if (it->first != "Status")
+			tmpHeaders[it->first] = it->second;
 
 	for (std::map<std::string, std::string>::const_iterator it = tmpHeaders.begin(); it != tmpHeaders.end(); it++)
 		if (!it->second.empty())
@@ -626,7 +627,7 @@ void Response::logResponse(int serverNbr)
 		+ "] [length: " + Utils::intToStr(this->getHeaderLength()) + " + " + Utils::intToStr(this->getBodyLength()) + 
 		+ " = " + Utils::intToStr(this->getResponseLength()) +"]");
 	Logger::Write(Logger::DEBUG, WHT, " response : header\n" + this->getHeader());
-	Logger::Write(Logger::MORE, BLU, " full response :\n" + this->getResponse());
+	Logger::Write(Logger::MORE, BLU, " full response (MAX_LOG " + Utils::intToStr(MAX_LOG) + "):\n" + this->getResponse().substr(0, MAX_LOG));
 
 	return ;
 }
