@@ -43,7 +43,7 @@ Request & Request::operator=(Request const & rhs)
     this->_buff = rhs._buff;
 	this->_inSocket = rhs._inSocket;
 
-	return ( *this );
+	return (*this);
 }
 
 

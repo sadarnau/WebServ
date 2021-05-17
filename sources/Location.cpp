@@ -36,11 +36,11 @@ Location::Location(std::map<std::string, std::string> locationMap) : _listen("")
 		else if (!it->first.compare("cgi_ext"))
 			this->_cgiExt = it->second;
 		else if (!it->first.compare("index"))
-			this->_index = Utils::concatToVector(it->second);
+			this->_index = Utils::concatToVector(it->second, "/");
 		else if (!it->first.compare("accepted_method"))
 		{
 			if (it->second.size())
-				this->_acceptedMethod = Utils::concatToVector(it->second);
+				this->_acceptedMethod = Utils::concatToVector(it->second, "/");
 		}
 		else
 			this->_errorPage[it->first] = it->second;

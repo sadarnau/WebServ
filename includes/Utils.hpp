@@ -23,7 +23,7 @@ namespace   Utils
 	void 			            splitStringToVector(std::string line, std::vector<std::string> &split);
 	void			            printMap(std::map<std::string, std::string> m, std::string type);
 	std::string                 safeUrlJoin(std::string url1, std::string url2);
-	std::vector<std::string>	concatToVector(std::string toParse);
+	std::vector<std::string>	concatToVector(std::string toParse, std::string sep);
 	bool						isPathAFile(std::string path);
 	size_t						convertClientSizeFromStr(std::string str);
 	std::string					getExtension(std::string target);
