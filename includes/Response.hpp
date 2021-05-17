@@ -44,6 +44,7 @@ private:
 	void			processDelete(void);
 	void			processTrace(void);
 
+	void			contentNegaciator(void);
 	bool			autoIndexResponse(void);
 	std::string		getIndexTarget(void);
 	bool			isIndexPagePresent(void);

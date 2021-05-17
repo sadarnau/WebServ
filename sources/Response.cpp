@@ -13,7 +13,6 @@ Response::Response(Request *req, long socket)
 	this->_socket = socket;
 	this->_httpVersion = "HTTP/1.1";
 
-
 	this->buildResponse();
 }
 
@@ -100,6 +99,8 @@ void	Response::buildHeader(void)
 		this->_headers["WWW-Authenticate"] = "Basic realm=\"acces to webserv\"";
 	if (this->_responseCode == 201)
 		this->_headers["Location"] = this->_req->getUrlTargetPath();
+	else
+		this->_headers["Content-Location"] = this->_req->getUrlTargetPath();
 
 	std::map<std::string, std::string> tmpHeaders = this->_headers;
 	std::map<std::string, std::string> tmpCgiHeaders = this->_cgiheaders;
@@ -151,11 +152,9 @@ void	Response::processGetPostHead(void)
 	}
 	else
 	{
-
-		this->setResponseCode(200);
-		this->setBody(Utils::getFileContent(this->_req->getAbsoluteTargetPath().c_str()));
-		this->checkErrors();
+		this->contentNegaciator();
 	}
+
 	this->setContentType(this->getContentType(this->_req->getTarget()));
 
 	return ;
@@ -241,6 +240,43 @@ void	Response::processDelete(void)
 	return ;
 }
 
+////////////////////
+// CONTENT NEGOCIATION
+////////////////////
+void		Response::contentNegaciator()
+{
+
+	if (this->_req->getHeaders()["Accept-Language"] != "")
+	{
+		std::string target;
+		std::vector<std::string> acceptedLanguage = Utils::concatToVector(this->_req->getHeaders()["Accept-Language"], ",");
+
+		for (std::vector<std::string>::iterator it = acceptedLanguage.begin(); it != acceptedLanguage.end(); ++it)
+		{
+			std::string language = it->substr(0,2);
+			std::string	tryFile = this->_req->getAbsoluteTargetPath() + "." + language;
+
+			if (Utils::isPathAFile(tryFile))
+			{
+				Logger::Write(Logger::DEBUG, YEL, "response : content negociated ["+ language +"] : " + tryFile);
+				this->_headers["Content-Language"] = language;
+				this->setResponseCode(200);
+				this->setBody(Utils::getFileContent(tryFile));
+				return ;
+			}
+		}
+	}
+
+	if (Utils::isPathAFile(this->_req->getAbsoluteTargetPath()))
+	{
+		this->setResponseCode(200);
+		this->setBody(Utils::getFileContent(this->_req->getAbsoluteTargetPath()));
+	}
+	else
+	{
+		this->setToErrorPage(404);
+	}
+}
 
 ////////////////////
 // AUTO INDEX
@@ -333,6 +369,7 @@ void		Response::setToErrorPage(int errorNumber)
 	else
 		this->setBody(this->generateDefaultErrorPage(errorNbrString, this->_responseMessages[errorNumber]));
 
+	this->_headers["Retry-After"] = "10";
 	this->_isSetToError = true;
 
 	return ;

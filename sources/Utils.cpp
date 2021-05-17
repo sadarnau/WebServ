@@ -134,17 +134,16 @@ namespace Utils {
 		return (std::string(url1 + "/" + url2));
 	}
 
-	std::vector<std::string>	concatToVector(std::string toParse)
+	std::vector<std::string>	concatToVector(std::string toParse, std::string sep)
 	{
 		std::vector<std::string>	result;
-		std::string					separator = "/";
 		std::string					token;
 		size_t						pos;
 
-		while ((pos = toParse.find(separator)) != std::string::npos)
+		while ((pos = toParse.find(sep)) != std::string::npos)
 		{
 			token = toParse.substr(0, pos);
-			toParse = toParse.substr(pos + 1, toParse.length());
+			toParse = toParse.substr(pos + sep.size(), toParse.length());
 			result.push_back(token);
 		}
 
