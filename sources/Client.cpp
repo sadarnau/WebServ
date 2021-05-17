@@ -5,7 +5,7 @@ Client::Client( void )
 	return ;
 }
 
-Client::Client( int socket, int servNb ) : _socket(socket), _servNb(servNb)
+Client::Client( long socket, int servNb ) : _socket(socket), _servNb(servNb)
 {
 	this->_finishRead = false;
 	this->_finishWrite = false;
@@ -45,17 +45,16 @@ int		Client::myRecv( void )
 	memset(chunk_data , 0, BUFF_SIZE);
 	if ((ret = recv(this->_socket, chunk_data, BUFF_SIZE - 1, 0)) < 0)
 	{
-		Logger::Write(Logger::INFO, RED, "server[" + std::to_string(this->_servNb) + "] : read have gros problem");	
-		return 0;	// read error, close connection
+		Logger::Write(Logger::INFO, RED, "server[" + Utils::intToStr(this->_servNb) + "] : read have gros problem");	
+		return 0;
 	}
 	else if (ret == 0)
 	{
-		Logger::Write(Logger::INFO, RED, "server[" + std::to_string(this->_servNb) + "] : client have closed his connection...");
+		Logger::Write(Logger::INFO, RED, "server[" + Utils::intToStr(this->_servNb) + "] : client have closed his connection...");
 		return (0);
 	}
 	else
 		this->_buff += std::string(chunk_data);
-		// this->_buff.append(chunk_data);
 
 	this->_finishRead = checkReadState();
 

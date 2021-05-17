@@ -30,11 +30,10 @@ private:
 	std::vector<Location>				_locationVector;
 	std::vector<Location>				_locationExtVector;
 	fd_set								_master_fd;
-	int									_maxFd;
+	long								_maxFd;
 	std::string							_port;
 	std::string							_IPaddr;
 	int									_serverNb;
-	std::vector<int>					_fdList;
 	std::map<int, struct sockaddr_in>	_clientMap;
 
 public:
@@ -48,9 +47,9 @@ public:
 	int									initialization( int i );
 	void								fillAddress( void );
 	int									acceptConexion( void );
-	int									handleRequest( int socket );
-	void								sendResponse( int socket, Client client );
-	void								deleteSocket( int socket );
+	int									handleRequest( long socket );
+	void								sendResponse( long socket, Client client );
+	void								deleteSocket( long socket );
 
 	int									getFd( void );
 	int									getMaxFd( void );

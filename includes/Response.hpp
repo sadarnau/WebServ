@@ -65,7 +65,7 @@ private:
 	void			setContentType(std::string contentType);
 
 public:
-	Response(Request *req, int socket);
+	Response(Request *req, long socket);
 	Response(Response const & src);
 	~Response(void);
 	Response & operator=(Response const & rhs);

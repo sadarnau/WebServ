@@ -3,7 +3,7 @@
 ////////////////////
 // Coplien's
 ////////////////////
-Response::Response(Request *req, int socket)
+Response::Response(Request *req, long socket)
 {
 	this->initResponseMessageMap();
 
