@@ -353,6 +353,10 @@ std::string			Request::getHttpVersion(void)
 	return(this->_httpVersion);
 }
 
+std::string			Request::getIP(void)
+{
+	return (this->_ip);
+}
 
 ////////////////////
 // LOG

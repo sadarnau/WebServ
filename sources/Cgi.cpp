@@ -122,8 +122,7 @@ void    	Cgi::_initEnv(void)
 	this->_env["PATH_INFO"] =  this->_req->getUrlTargetPath();
 	this->_env["PATH_TRANSLATED"] = this->_req->getAbsoluteTargetPath();
 	this->_env["QUERY_STRING"] = this->_req->getQueryString();
-	this->_env["REMOTE_ADDR"] = "";
-	// L'adresse IP du client.
+	this->_env["REMOTE_ADDR"] = this->_req->getIP();
 
 	this->_env["REMOTE_IDENT"] = reqHeaders[""];
 	// Nom d'utilisateur (distant) du client faisant la requête. Le serveur doit supporter l'identification RFC 931. Cette variable devrait être utilisée à des fins de journaux seulement.
@@ -132,9 +131,12 @@ void    	Cgi::_initEnv(void)
 	// Le nom d'utilisateur du client, si le script est protégé et si le serveur supporte l'identification.
 
 	this->_env["REQUEST_METHOD"] = this->_req->getMethod();
-	this->_env["REQUEST_URI"] = this->_req->getUrlTargetPath() + "?" + this->_req->getQueryString();
-	this->_env["SCRIPT_NAME"] = this->_req->getUrlTargetPath();
+	if (this->_req->getQueryString() != "")
+		this->_env["REQUEST_URI"] = this->_req->getUrlTargetPath() + "?" + this->_req->getQueryString();
+	else
+		this->_env["REQUEST_URI"] = this->_req->getUrlTargetPath();
 
+	this->_env["SCRIPT_NAME"] = this->_req->getUrlTargetPath();
 	this->_env["SERVER_NAME"] = ip;
 	this->_env["SERVER_PORT"] = port;
 	this->_env["SERVER_PROTOCOL"] = "HTTP/1.1";

@@ -69,10 +69,9 @@ public:
 	size_t								getContentLength(void);
 	bool								getBadRequest(void);
 	std::string							getHttpVersion(void);
+	std::string							getIP(void);
 
 	void								logRequest(int serverNb);
 };
-
-std::ostream &	operator<<(std::ostream & o, Request & rhs);
 
 #endif
