@@ -80,7 +80,7 @@ int								Cluster::lanchServices( void )
 		{
 			if (FD_ISSET(it->getSocket(), &writingSet))
 			{
-				Logger::Write(Logger::MORE, GRN, "still have " + Utils::intToStr(it->getResponse().size()) + " bytes to send");
+				Logger::Write(Logger::DEBUG, GRN, "still have " + Utils::intToStr(it->getResponse().size()) + " bytes to send");
 				if (!it->mySend())
 				{
 					if (close(it->getSocket()) < 0)
@@ -91,7 +91,7 @@ int								Cluster::lanchServices( void )
 				}
 				else if (it->getFinishWrite())
 				{
-					Logger::Write(Logger::MORE, GRN, "send is done");
+					Logger::Write(Logger::DEBUG, GRN, "send is done");
 					setReadStatus(it->getSocket());
 					this->_readyClients.erase(it);
 				}
@@ -138,7 +138,7 @@ int								Cluster::lanchServices( void )
 				else
 					if (it->getFinishRead())
 					{
-						Logger::Write(Logger::MORE, GRN, "read is done");
+						Logger::Write(Logger::DEBUG, GRN, "read is done");
 						processClient(*it);
 						it->deleteBuff();
 					}

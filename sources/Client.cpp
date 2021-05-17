@@ -45,7 +45,7 @@ Client & Client::operator=( Client const & rhs)
 
 int		Client::myRecv( void )
 {
-	int				BUFF_SIZE = 100000;
+	int				BUFF_SIZE = 1000000;
 	int				ret;
 	char			chunk_data[BUFF_SIZE];
 
