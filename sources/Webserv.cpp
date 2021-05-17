@@ -107,7 +107,7 @@ int		Webserv::acceptConexion( void )
 	return (socket);
 }
 
-void	Webserv::sendResponse( long socket, Client client )
+std::string	Webserv::getResponse( long socket, Client client )
 {
 	// char		 			socketIP[16];
 	// struct sockaddr_in	addr;
@@ -123,7 +123,7 @@ void	Webserv::sendResponse( long socket, Client client )
 	Response	response(&request, socket);
 	response.logResponse(this->_serverNb);
 
-	return ;
+	return (response.getResponse());
 }
 
 int		Webserv::getFd( void )

@@ -32,8 +32,8 @@ public:
 	int									lanchServices( void );
 
 	void								addSocketToMaster( long socket );
-	void								deleteInReadyClients( long socket );
-	void								deleteInClients( long socket );
+	void								processClient( Client client );
+	void								setReadStatus( long socket );
 	void								setWritingSet( fd_set *writefds );
 
 	std::map<std::string, std::string>	getMap( void );

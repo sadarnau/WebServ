@@ -48,7 +48,7 @@ public:
 	void								fillAddress( void );
 	int									acceptConexion( void );
 	int									handleRequest( long socket );
-	void								sendResponse( long socket, Client client );
+	std::string							getResponse( long socket, Client client );
 	void								deleteSocket( long socket );
 
 	int									getFd( void );

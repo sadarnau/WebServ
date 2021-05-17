@@ -35,7 +35,6 @@ private:
 	std::map<int, std::string>				_responseMessages;
 	bool									_isSetToError;
 
-	void			sendResponse(void);
 	void			buildHeader(void);
 	void			buildResponse(void);
 

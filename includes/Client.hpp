@@ -11,8 +11,11 @@ class Client
 private:
 
 	long		_socket;
+	long		_bytesSent;
+	long		_bytesToSend;
 	int			_servNb;
 	std::string	_buff;
+	std::string	_response;
 	bool		_finishRead;
 	bool		_finishWrite;
 
@@ -25,16 +28,21 @@ public:
 	Client & operator=( Client const & rhs );		//overload operator =
 
 	int			myRecv( void );
+	int			mySend( void );
+	bool		checkWriteState( void );
 	bool		checkReadState( void );
 	void		deleteBuff( void );
+	
 	int			getSocket( void );
 	int			getServerNb( void );
 	bool		getFinishRead( void );
 	bool		getFinishWrite( void );
 	std::string	getBuffer( void );
+	
 	void		setFinishWrite( bool finishWrite );
 	void		setFinishRead( bool finishRead );
-
+	void		setBytesToSend( long bytes );
+	void		setResponse( std::string response );
 
 };
 

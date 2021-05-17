@@ -15,7 +15,6 @@ Response::Response(Request *req, long socket)
 
 
 	this->buildResponse();
-	this->sendResponse();
 }
 
 Response::Response(Response const & src)
@@ -41,32 +40,6 @@ Response & Response::operator=(Response const & rhs)
 ////////////////////
 // METHODS
 ////////////////////
-void	Response::sendResponse(void)
-{
-	errno = 0;
-	char *toSend = strdup(this->_response.c_str());
-
-	long ret = 0;
-	long bytesSent = 0;
-	long bytesToSend = this->_response.length();
-
-	while (bytesToSend > 0)
-	{
-		ret = send(this->_socket, toSend, bytesToSend, 0);
-		if (ret != -1)
-		{
-			bytesSent += ret;
-			bytesToSend -= ret;
-		}
-		else if (ret == 0)
-			continue ;
-
-
-		Logger::Write(Logger::DEBUG, WHT, std::string(strerror(errno)) + " sent : " + Utils::intToStr(bytesSent) + " rest : " + Utils::intToStr(bytesToSend));
-	}
-
-	return ;
-}
 
 void	Response::buildResponse(void)
 {

@@ -80,10 +80,19 @@ int								Cluster::lanchServices( void )
 		{
 			if (FD_ISSET(it->getSocket(), &writingSet))
 			{
-				this->_serverList[it->getServerNb()].sendResponse( it->getSocket(), *it );
-				it->setFinishWrite(true);	// test
-				if (it->getFinishWrite())
+				if (!it->mySend())
+				{
+					if (close(it->getSocket()) < 0)
+						return (1);
+					FD_CLR(it->getSocket(), &this->_master_fd);
+					setReadStatus(it->getSocket());
 					this->_readyClients.erase(it);
+				}
+				else if (it->getFinishWrite())
+				{
+					setReadStatus(it->getSocket());
+					this->_readyClients.erase(it);
+				}
 			}
 			else
 			{
@@ -91,7 +100,7 @@ int								Cluster::lanchServices( void )
 				if (close(it->getSocket()) < 0)
 					return (1);
 				FD_CLR(it->getSocket(), &this->_master_fd);
-				FD_CLR(it->getSocket(), &writingSet);
+				setReadStatus(it->getSocket());
 				this->_readyClients.erase(it);
 			}
 			break;
@@ -113,7 +122,6 @@ int								Cluster::lanchServices( void )
 				break ;								// no need to check any more serv
 			}
 
-		// std::vector<Client> list = this->_clients;
 		for (std::vector<Client>::iterator it = this->_clients.begin() ; it != this->_clients.end() ; it++)
 		{
 			if (FD_ISSET(it->getSocket(), &copyMasterSet))
@@ -128,9 +136,7 @@ int								Cluster::lanchServices( void )
 				else
 					if (it->getFinishRead())
 					{
-						// Logger::Write(Logger::INFO, GRN, "Read is finished, preparing to send " + Utils::intToStr(it->getBuffer().size()) + " bits :\n" + it->getBuffer());
-						this->_readyClients.push_back(*it);
-						it->setFinishRead(false);
+						processClient(*it);
 						it->deleteBuff();
 					}
 				break;
@@ -141,27 +147,27 @@ int								Cluster::lanchServices( void )
 	return (0);
 }
 
-void								Cluster::deleteInReadyClients( long socket )
+void							Cluster::processClient( Client client )
 {
-	for (std::vector<Client>::iterator it = this->_readyClients.begin() ; it != this->_readyClients.end() ; it++)
-		if (socket == it->getSocket())
-		{
-			this->_readyClients.erase(it);
-			break ;
-		}
-	
+	std::string response = this->_serverList[client.getServerNb()].getResponse( client.getSocket(), client );
+	Client readyClient = client;
+	readyClient.setBytesToSend(response.length());
+	readyClient.setResponse(response);
+
+	this->_readyClients.push_back(readyClient);
+
 	return ;
 }
 
-void								Cluster::deleteInClients( long socket )
+void							Cluster::setReadStatus( long socket )
 {
 	for (std::vector<Client>::iterator it = this->_clients.begin() ; it != this->_clients.end() ; it++)
-		if (socket == it->getSocket())
+		if (it->getSocket() == socket)
 		{
-			this->_clients.erase(it);
-			break ;
+			it->setFinishRead(false);
+			break;
 		}
-	
+
 	return ;
 }
 

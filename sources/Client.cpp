@@ -10,6 +10,9 @@ Client::Client( long socket, int servNb ) : _socket(socket), _servNb(servNb)
 	this->_finishRead = false;
 	this->_finishWrite = false;
 	this->_buff.clear();
+	this->_bytesSent = 0;
+	this->_bytesToSend = 0;
+	this->_bytesSent = 0;
 
 	return ;
 }
@@ -32,6 +35,10 @@ Client & Client::operator=( Client const & rhs)
     this->_finishWrite = rhs._finishWrite;
     this->_servNb = rhs._servNb;
     this->_socket = rhs._socket;
+    this->_bytesSent = rhs._bytesSent;
+    this->_bytesToSend = rhs._bytesToSend;
+    this->_response = rhs._response;
+    this->_bytesSent = rhs._bytesSent;
 
 	return ( *this );
 }
@@ -45,12 +52,12 @@ int		Client::myRecv( void )
 	memset(chunk_data , 0, BUFF_SIZE);
 	if ((ret = recv(this->_socket, chunk_data, BUFF_SIZE - 1, 0)) < 0)
 	{
-		Logger::Write(Logger::INFO, RED, "server[" + Utils::intToStr(this->_servNb) + "] : read have gros problem");	
+		Logger::Write(Logger::ERROR, RED, "server[" + Utils::intToStr(this->_servNb) + "] : read have gros problem");	
 		return 0;
 	}
 	else if (ret == 0)
 	{
-		Logger::Write(Logger::INFO, RED, "server[" + Utils::intToStr(this->_servNb) + "] : client have closed his connection...");
+		Logger::Write(Logger::ERROR, RED, "server[" + Utils::intToStr(this->_servNb) + "] : client have closed his connection...");
 		return (0);
 	}
 	else
@@ -59,6 +66,40 @@ int		Client::myRecv( void )
 	this->_finishRead = checkReadState();
 
 	return (1);
+}
+
+int		Client::mySend( void )
+{
+	char	*toSend = strdup(this->_response.c_str());
+	int		BUFF_SIZE = this->_response.length();
+	int		ret;
+	errno = 0;
+
+	if ((ret = send(this->_socket, toSend, BUFF_SIZE, 0)) < 0)
+	{
+		Logger::Write(Logger::ERROR, RED, "server[" + Utils::intToStr(this->_servNb) + "] : send is not possible, closing the client...");	
+		return (0);
+	}
+	else
+	{
+		this->_bytesSent += ret;
+		this->_bytesToSend -= ret;
+	}
+
+	this->_response.erase(0, ret);
+
+	this->_finishWrite = checkWriteState();
+	delete(toSend);
+
+	return (1);
+}
+
+bool	Client::checkWriteState( void )
+{
+	if (this->_bytesToSend > 0)
+		return (false);
+
+	return (true);
 }
 
 bool	Client::checkReadState( void )
@@ -123,9 +164,22 @@ void		Client::setFinishRead( bool finishRead )
 	return ;
 }
 
+void		Client::setBytesToSend( long bytes )
+{
+	this->_bytesToSend = bytes;
+	return ;
+}
+
+void		Client::setResponse( std::string response )
+{
+	this->_response = response;
+	return ;
+}
+
 std::ostream &	operator<<(std::ostream & o, Client & rhs)
 {
 	o << "fd = " << rhs.getSocket() << "\n";
 	o << "serveur nb = " << rhs.getServerNb() << "\n";
+
 	return (o);
 }
