@@ -267,8 +267,9 @@ void	Response::processDelete(void)
 	return ;
 }
 
-
-
+////////////////////
+// CONTENT NEGOCIATION
+////////////////////
 void		Response::contentNegaciator()
 {
 
@@ -285,6 +286,7 @@ void		Response::contentNegaciator()
 			if (Utils::isPathAFile(tryFile))
 			{
 				Logger::Write(Logger::DEBUG, YEL, "response : content negociated ["+ language +"] : " + tryFile);
+				this->_headers["Content-Language"] = language;
 				this->setResponseCode(200);
 				this->setBody(Utils::getFileContent(tryFile));
 				return ;
