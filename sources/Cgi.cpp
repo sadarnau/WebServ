@@ -1,7 +1,8 @@
 #include "Cgi.hpp"
 
-Cgi::Cgi(Request *req)
+Cgi::Cgi(Request *req, Response *res)
 {
+	this->_res = res;
 	this->_req = req;
 	this->_initEnv();
 	this->_envC = this->_envToCArray();
@@ -124,12 +125,11 @@ void    	Cgi::_initEnv(void)
 	this->_env["QUERY_STRING"] = this->_req->getQueryString();
 	this->_env["REMOTE_ADDR"] = this->_req->getIP();
 
-	this->_env["REMOTE_IDENT"] = reqHeaders[""];
-	// Nom d'utilisateur (distant) du client faisant la requête. Le serveur doit supporter l'identification RFC 931. Cette variable devrait être utilisée à des fins de journaux seulement.
-	if (!reqHeaders["WWW-Authenticate"].empty())
-		this->_env["REMOTE_USER"] = reqHeaders["Authorization"];
-	// Le nom d'utilisateur du client, si le script est protégé et si le serveur supporte l'identification.
-
+	if (this->_res->getIsAuthenticationSucessfull())
+	{
+		this->_env["REMOTE_IDENT"] = reqHeaders["Authorization"];
+		this->_env["REMOTE_USER"] = this->_res->getAuthorization();
+	}
 	this->_env["REQUEST_METHOD"] = this->_req->getMethod();
 	if (this->_req->getQueryString() != "")
 		this->_env["REQUEST_URI"] = this->_req->getUrlTargetPath() + "?" + this->_req->getQueryString();

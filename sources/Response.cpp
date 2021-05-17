@@ -141,7 +141,7 @@ void	Response::processGetPostHead(void)
 	if (!this->_location.getCgiPath().empty() && (this->_location.getCgiExt() == Utils::getExtension(this->_req->getTarget())))
 	{
 
-		Cgi		cgi(this->_req);
+		Cgi		cgi(this->_req, this);
 
 		if(cgi.processCgi())
 		{

@@ -7,14 +7,16 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include "Request.hpp"
-
+# include "Response.hpp"
 
 class Request ;
+class Response ;
 
 class Cgi
 {
 	private:
 		Request								*_req;
+		Response							*_res;
 		std::map<std::string, std::string>	_env;
 		char								**_envC;
 		char								**_argC;
@@ -29,7 +31,7 @@ class Cgi
 
 	public:
 		// Cgi(Request *req, Location *loc);
-		Cgi(Request *req);
+		Cgi(Request *req, Response *res);
 		Cgi( Cgi const & src );  				//copy
 		~Cgi( void );							//destructor
 		Cgi & operator=( Cgi const & rhs );		//overload operator =
