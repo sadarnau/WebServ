@@ -71,7 +71,7 @@ int		Webserv::initialization( int i )
 		return (1);
 	}
 
-	Logger::Write(Logger::INFO, GRN, "server[" + Utils::intToStr(this->_serverNb) + "] : listening socket...");
+	Logger::Write(Logger::INFO, GRN, "server[" + Utils::intToStr(this->_serverNb) + "] : listening port " + this->getPort() + "...");
 
 	return (0);
 }
