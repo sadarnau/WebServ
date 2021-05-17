@@ -47,7 +47,7 @@ int		Webserv::initialization( int i )
 		return (1);
 	}
 
-	Logger::Write(Logger::INFO, GRN, "Socket created");
+	Logger::Write(Logger::INFO, GRN, "server[" + Utils::intToStr(this->_serverNb) + "] : Socket created");
 	
 	this->fillAddress();
 	
@@ -63,7 +63,7 @@ int		Webserv::initialization( int i )
 		return (1);
 	}
 
-	Logger::Write(Logger::INFO, GRN, "Socket : binded on " + this->_IPaddr + ":" + this->_port);
+	Logger::Write(Logger::INFO, GRN, "server[" + Utils::intToStr(this->_serverNb) + "] : Socket is binded");
 
 	if ((listen(this->fd, 10000)) < 0) 			// 10000 = number of max connections
 	{
@@ -71,7 +71,7 @@ int		Webserv::initialization( int i )
 		return (1);
 	}
 
-	Logger::Write(Logger::INFO, GRN, "Socket is listening...");
+	Logger::Write(Logger::INFO, GRN, "server[" + Utils::intToStr(this->_serverNb) + "] : Socket is being listened...");
 
 	return (0);
 }

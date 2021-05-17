@@ -30,7 +30,7 @@ Cluster & Cluster::operator=( Cluster const & rhs)
 	return ( *this );
 }
 
-int								Cluster::initialization( std::string fileName)
+int								Cluster::initialization( std::string fileName )
 {
 	this->_maxFd = 0;
 	this->_config.parseFile(fileName);
@@ -91,7 +91,7 @@ int								Cluster::lanchServices( void )
 				}
 				else if (it->getFinishWrite())
 				{
-					Logger::Write(Logger::DEBUG, GRN, "send is done");
+					Logger::Write(Logger::DEBUG, GRN, "send is done\n");
 					setReadStatus(it->getSocket());
 					this->_readyClients.erase(it);
 				}
