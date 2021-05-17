@@ -10,7 +10,7 @@ class Client
 {
 private:
 
-	int			_socket;
+	long		_socket;
 	int			_servNb;
 	std::string	_buff;
 	bool		_finishRead;
@@ -19,7 +19,7 @@ private:
 public:
 
 	Client( void );									//default constructor
-	Client( int socket, int servNb );				//constructor
+	Client( long socket, int servNb );				//constructor
 	Client( Client const & src);  					//copy
 	~Client( void );								//destructor
 	Client & operator=( Client const & rhs );		//overload operator =

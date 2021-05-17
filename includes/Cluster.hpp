@@ -11,7 +11,7 @@ class Cluster
 {
 private:
 
-	int						_maxFd;
+	long					_maxFd;
 	fd_set					_master_fd;
 	std::vector<Webserv>	_serverList;
 	std::vector<int>		_fdList;
@@ -31,9 +31,9 @@ public:
 	int									initialization( std::string fileName );
 	int									lanchServices( void );
 
-	void								addSocketToMaster( int socket );
-	void								deleteInReadyClients( int socket );
-	void								deleteInClients( int socket );
+	void								addSocketToMaster( long socket );
+	void								deleteInReadyClients( long socket );
+	void								deleteInClients( long socket );
 	void								setWritingSet( fd_set *writefds );
 
 	std::map<std::string, std::string>	getMap( void );

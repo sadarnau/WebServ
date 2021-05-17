@@ -25,7 +25,6 @@ Webserv::~Webserv( void )
 
 Webserv & Webserv::operator=( Webserv const & rhs)
 {
-	this->_fdList = rhs._fdList;
 	this->_IPaddr = rhs._IPaddr;
 	this->_port = rhs._port;
 	this->fd = rhs.fd;
@@ -93,9 +92,9 @@ void	Webserv::fillAddress( void )
 
 int		Webserv::acceptConexion( void )
 {
-	struct sockaddr_in		address;
-	unsigned int addrlen = sizeof(address);
-	int	socket = accept(this->fd, (struct sockaddr *)&address, (socklen_t*)&addrlen); // to protect
+	struct sockaddr_in	address;
+	unsigned int		addrlen = sizeof(address);
+	long				socket = accept(this->fd, (struct sockaddr *)&address, (socklen_t*)&addrlen); // to protect
 	
 	if (socket < 0)
 	{
@@ -108,38 +107,15 @@ int		Webserv::acceptConexion( void )
 	return (socket);
 }
 
-// int		Webserv::handleRequest( int socket )
-// {
-// 	int				BUFF_SIZE = 10000;
-// 	int				ret;
-// 	struct timeval	now , beginning;
-// 	char			chunk_data[BUFF_SIZE];
-// 	double			timediff;
-	 
-// 	memset(chunk_data , 0, BUFF_SIZE);
-// 	ret = recv(socket, chunk_data, BUFF_SIZE - 1, 0);
-	
-// 	if (ret == 0)
-// 	{
-// 		Logger::Write(Logger::INFO, RED, "server[" + std::to_string(this->_serverNb) + "] : client have closed his connection...");
-// 		return (0);
-// 	}
-// 	else
-// 		this->_buff.append(chunk_data);
-
-// 	return (1);
-// }
-
-void	Webserv::sendResponse( int socket, Client client )
+void	Webserv::sendResponse( long socket, Client client )
 {
-	// char		 		myIP[16];
-	// struct sockaddr_in	my_addr;
+	// char		 			socketIP[16];
+	// struct sockaddr_in	addr;
 
-	// bzero(&my_addr, sizeof(my_addr));
-	// socklen_t len = sizeof(my_addr);
-	// getsockname(socket, (struct sockaddr *) &my_addr, &len);
-	// inet_ntop(AF_INET, &my_addr.sin_addr, myIP, sizeof(myIP));
-	// printf("Local ip address: %s\n", myIP);
+	// bzero(&addr, sizeof(addr));
+	// socklen_t len = sizeof(addr);
+	// getsockname(socket, (struct sockaddr *) &addr, &len);
+	// inet_ntop(AF_INET, &addr.sin_addr, socketIP, sizeof(socketIP));
 
 	Request		request(&this->_locationVector, &this->_locationExtVector, socket, client.getBuffer());
 	request.logRequest(this->_serverNb);
@@ -149,20 +125,6 @@ void	Webserv::sendResponse( int socket, Client client )
 
 	return ;
 }
-
-// void	Webserv::deleteSocket( int socket )
-// {
-// 	for (std::vector<int>::iterator it = this->_fdList.begin() ; it != this->_fdList.end() ; it++)
-// 	{
-// 		if(*it == socket)
-// 		{
-// 			this->_fdList.erase(it);
-// 			break ;
-// 		}
-// 	}
-
-// 	return ;
-// }
 
 int		Webserv::getFd( void )
 {
@@ -182,11 +144,6 @@ fd_set					Webserv::getMasterSet( void )
 struct sockaddr_in		&Webserv::getAddr( void )
 {
 	return (this->address);
-}
-
-std::vector<int>		Webserv::getFdList( void )
-{
-	return (this->_fdList);
 }
 
 std::string				Webserv::getIpAddress( void )

@@ -87,7 +87,7 @@ int								Cluster::lanchServices( void )
 			}
 			else
 			{
-				Logger::Write(Logger::ERROR, RED, "server[" + std::to_string(it->getServerNb()) + "] : error with send, fd[" + std::to_string(it->getSocket()) + "]");
+				Logger::Write(Logger::ERROR, RED, "server[" + Utils::intToStr(it->getServerNb()) + "] : error with send, fd[" + Utils::intToStr(it->getSocket()) + "]");
 				if (close(it->getSocket()) < 0)
 					return (1);
 				FD_CLR(it->getSocket(), &this->_master_fd);
@@ -100,7 +100,7 @@ int								Cluster::lanchServices( void )
 		for(int i = 0; i < this->_nbServ; i++)							// We go throught every server fds to see if we have a new connection
 			if (FD_ISSET(this->_serverList[i].getFd(), &copyMasterSet))	// if serv fd changed -> new connection
 			{
-				int	sock;
+				long	sock;
 				Logger::Write(Logger::INFO, GRN, "server[" + Utils::intToStr(i) + "] : new connection");
 				if ((sock = this->_serverList[i].acceptConexion()) < 0)
 					return (1); // test ???
@@ -128,20 +128,20 @@ int								Cluster::lanchServices( void )
 				else
 					if (it->getFinishRead())
 					{
-						// Logger::Write(Logger::INFO, GRN, "Read is finished, preparing to send " + std::to_string(it->getBuffer().size()) + " bits :\n" + it->getBuffer());
+						// Logger::Write(Logger::INFO, GRN, "Read is finished, preparing to send " + Utils::intToStr(it->getBuffer().size()) + " bits :\n" + it->getBuffer());
 						this->_readyClients.push_back(*it);
 						it->setFinishRead(false);
 						it->deleteBuff();
 					}
-			}
-			break;
+				break;
+				}
 		}
 	}
 
 	return (0);
 }
 
-void								Cluster::deleteInReadyClients( int socket )
+void								Cluster::deleteInReadyClients( long socket )
 {
 	for (std::vector<Client>::iterator it = this->_readyClients.begin() ; it != this->_readyClients.end() ; it++)
 		if (socket == it->getSocket())
@@ -153,7 +153,7 @@ void								Cluster::deleteInReadyClients( int socket )
 	return ;
 }
 
-void								Cluster::deleteInClients( int socket )
+void								Cluster::deleteInClients( long socket )
 {
 	for (std::vector<Client>::iterator it = this->_clients.begin() ; it != this->_clients.end() ; it++)
 		if (socket == it->getSocket())
