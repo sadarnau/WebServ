@@ -102,7 +102,6 @@ void	Response::buildHeader(void)
 		return;
 	}
 
-	this->getLastModified();
 	this->_headers["Content-Type"] = this->_contentType;
 	this->_headers["Content-Length"] = Utils::longToStr(this->_body.size());
 	this->_headers["Date"] = Utils::getDate();
@@ -174,6 +173,7 @@ void	Response::processGetPostHead(void)
 		this->contentNegaciator();
 	}
 
+	this->getLastModified();
 	this->setContentType(this->getContentType(this->_req->getTarget()));
 
 	return ;
@@ -256,7 +256,10 @@ void	Response::processDelete(void)
 			this->setResponseCode(202);
 	}
 	else
-		this->setToErrorPage(403);
+	{
+		this->checkPermissions();
+		this->setToErrorPage(404);
+	}
 
 	return ;
 }
@@ -283,6 +286,7 @@ void		Response::contentNegaciator()
 				this->_headers["Content-Language"] = language;
 				this->setResponseCode(200);
 				this->setBody(Utils::getFileContent(tryFile));
+				this->checkPermissions();
 				return ;
 			}
 		}
@@ -292,6 +296,7 @@ void		Response::contentNegaciator()
 	{
 		this->setResponseCode(200);
 		this->setBody(Utils::getFileContent(this->_req->getAbsoluteTargetPath()));
+		this->checkPermissions();
 	}
 	else
 	{

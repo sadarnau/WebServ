@@ -1,5 +1,0 @@
-- /!\ c++98 flag in compile, remove stoi (or smthing like that)
-- check for forbidden functions
-- check execve argc with vm
-- last modified header for get and post
-- error client_max_body_size
