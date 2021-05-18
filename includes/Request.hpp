@@ -2,6 +2,7 @@
 # define REQUEST_HPP
 
 # include <unistd.h>
+# include <stddef.h>
 # include <string>
 # include <iostream>
 # include <map>
