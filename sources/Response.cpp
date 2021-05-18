@@ -73,7 +73,7 @@ void	Response::buildResponse(void)
 	// BUILD HEADER AND RESPONSE
 	this->buildHeader();
 
-	if (requestMethod == "HEAD")
+	if (requestMethod == "HEAD" || requestMethod == "TRACE")
 		this->_response = this->_header;
 	else
 		this->_response = this->_header + this->_body;
@@ -87,17 +87,31 @@ void	Response::buildHeader(void)
 
 	header << this->_httpVersion << " " << this->_responseCode << " " << this->_responseMessages[this->_responseCode] << "\r\n";
 
+	if(this->_req->getMethod() == "TRACE")
+	{
+		this->_headers = this->_req->getHeaders();
+		this->_headers["Content-Type"] = this->_contentType;
+
+		std::map<std::string, std::string> tmpHeaders = this->_headers;
+		for (std::map<std::string, std::string>::const_iterator it = tmpHeaders.begin(); it != tmpHeaders.end(); it++)
+		if (!it->second.empty())
+			header << it->first << ": " << it->second << "\r\n";
+
+		this->_header = header.str() + "\r\n";
+
+		return;
+	}
+
 	this->getLastModified();
 	this->_headers["Content-Type"] = this->_contentType;
 	this->_headers["Content-Length"] = Utils::longToStr(this->_body.size());
 	this->_headers["Date"] = Utils::getDate();
 	this->_headers["Host"] = this->_req->getSelectedLocation().getListen();
-	if (!this->_req->getSelectedLocation().getServerName().empty())
-		this->_headers["Server"] = this->_req->getSelectedLocation().getServerName();
-	else
-		this->_headers["Server"] = std::string("Webserv");
+	this->_headers["Server"] = this->_req->getSelectedLocation().getServerName();
+
 	if (this->_responseCode == 401)
 		this->_headers["WWW-Authenticate"] = "Basic realm=\"acces to webserv\"";
+
 	if (this->_responseCode == 201)
 		this->_headers["Location"] = this->_req->getUrlTargetPath();
 	else
