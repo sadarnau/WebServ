@@ -167,6 +167,8 @@ std::string		Request::_unchunkBody(std::string body)
 ////////////////////
 // UTILS
 ////////////////////
+
+
 void	Request::_selectLocation(void)
 {
 	// iter through locations
@@ -192,7 +194,7 @@ void	Request::_selectLocation(void)
 	}
 	this->_urlTargetPath = this->_target;
 
-	// delete location in target (ex: if location is /salut and target /salut/index.html, target become /index.html) - not in case of default loc /
+	// delete location in target (ex: if location is /salut and target /salut/index.html, target become /index.html) - not in case of root loc /
 	if (this->_selectedLocation.getPath() != "/")
 		this->_target = this->_target.substr(this->_selectedLocation.getPath().size(), this->_target.size());
 

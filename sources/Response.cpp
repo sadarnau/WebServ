@@ -13,7 +13,7 @@ Response::Response(Request *req, long socket)
 	this->_req = req;
 	this->_socket = socket;
 	this->_httpVersion = "HTTP/1.1";
-
+	stat(this->_req->getAbsoluteTargetPath().c_str(), &this->_targetStat);
 	this->buildResponse();
 }
 
@@ -87,6 +87,7 @@ void	Response::buildHeader(void)
 
 	header << this->_httpVersion << " " << this->_responseCode << " " << this->_responseMessages[this->_responseCode] << "\r\n";
 
+	this->getLastModified();
 	this->_headers["Content-Type"] = this->_contentType;
 	this->_headers["Content-Length"] = Utils::longToStr(this->_body.size());
 	this->_headers["Date"] = Utils::getDate();
@@ -124,6 +125,7 @@ void	Response::buildHeader(void)
 ////////////////////
 void	Response::processGetPostHead(void)
 {
+	
 	// Directory Request
 	if (this->isDirectory())
 	{
@@ -131,10 +133,8 @@ void	Response::processGetPostHead(void)
 			this->_req->updateTarget(this->getIndexTarget());
 		else if(this->_location.getAutoindex() == "on" && this->autoIndexResponse())  //autoIndexResponse return (true) on success
 				return ;
-
-		this->checkPermissions();
 	}
-
+	this->checkPermissions();
 	// CGI
 	if (!this->_location.getCgiPath().empty() && (this->_location.getCgiExt() == Utils::getExtension(this->_req->getTarget())))
 	{
@@ -175,7 +175,7 @@ void	Response::processPut(void)
 	{
 		file.open(path.c_str());
 		if (!file.is_open())
-			this->checkPermissions();
+			this->setToErrorPage(403);
 		else
 		{
 			file << toWrite;
@@ -187,7 +187,7 @@ void	Response::processPut(void)
 	{
 		file.open(path.c_str(), std::ofstream::out | std::ofstream::trunc);
 		if (!file.is_open())
-			this->checkPermissions();
+			this->setToErrorPage(403);
 		else
 		{
 			file << toWrite;
@@ -242,7 +242,7 @@ void	Response::processDelete(void)
 			this->setResponseCode(202);
 	}
 	else
-		this->checkPermissions();
+		this->setToErrorPage(403);
 
 	return ;
 }
@@ -348,7 +348,6 @@ void		Response::checkPermissions(void)
 {
 	std::string errorMessage = strerror(errno);
 
-
 	if (errno != 0 && !this->_isSetToError) // if _isSetToError is true we dont want to print other errno
 	{
 		if (errorMessage == "Permission denied")
@@ -396,8 +395,17 @@ std::string		Response::generateDefaultErrorPage(std::string errorNbr, std::strin
 ////////////////////
 // UTILS
 ////////////////////
+void				Response::getLastModified(void)
+{
+	char date[40];
+	Libft::memset(date, 0, 40);
+	strftime(date, 40, "%a, %d %b %Y %X %Z", localtime(&(this->_targetStat.st_ctime)));
+	this->_headers["Last-Modified"] = date;
 
-bool	Response::isValidAuthorization(void)
+	return ;
+}
+
+bool				Response::isValidAuthorization(void)
 {
 	std::string					authentication(this->_location.getAuthentication());
 	std::string					authorization(this->_req->getHeaders()["Authorization"]);

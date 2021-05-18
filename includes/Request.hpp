@@ -40,6 +40,7 @@ private:
 	Location							_selectedLocationExt;
 	bool								_badRequest;
 
+	
 	void								_parseRequest(std::string req);
 	std::string							_unchunkBody(std::string body);
 	void								_parseUrl(void);

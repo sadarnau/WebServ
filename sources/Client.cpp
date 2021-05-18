@@ -57,7 +57,7 @@ int		Client::myRecv( void )
 	}
 	else if (ret == 0)
 	{
-		Logger::Write(Logger::ERROR, RED, "server[" + Utils::intToStr(this->_servNb) + "] : client have closed his connection...");
+		Logger::Write(Logger::INFO, RED, "server[" + Utils::intToStr(this->_servNb) + "] : connection closed");
 		return (0);
 	}
 	else
@@ -76,7 +76,7 @@ int		Client::mySend( void )
 
 	if ((ret = send(this->_socket, this->_response.c_str(), BUFF_SIZE, 0)) < 0)
 	{
-		Logger::Write(Logger::ERROR, RED, "server[" + Utils::intToStr(this->_servNb) + "] : send is not possible, closing the client...");	
+		Logger::Write(Logger::ERROR, RED, "server[" + Utils::intToStr(this->_servNb) + "] : send failed");	
 		return (0);
 	}
 	else

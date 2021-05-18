@@ -7,6 +7,7 @@
 # include <fstream>
 # include <algorithm>
 # include <sys/types.h>
+# include <sys/stat.h>
 # include <dirent.h>
 # include <unistd.h>
 # include "Logger.hpp"
@@ -36,6 +37,7 @@ private:
 	bool									_isAuthenticationSucessfull;
 	std::map<int, std::string>				_responseMessages;
 	bool									_isSetToError;
+	struct stat								_targetStat;
 
 	void			buildHeader(void);
 	void			buildResponse(void);
@@ -56,6 +58,7 @@ private:
 	void			setToErrorPage(int errorNumber);
 	std::string		generateDefaultErrorPage(std::string errorNbr, std::string message);
 
+	void			getLastModified(void);
 	bool			isDirectory(void);
 	std::string		getContentType(std::string target);
 	bool			isValidMethod(void);
