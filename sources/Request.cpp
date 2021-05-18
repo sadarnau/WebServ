@@ -126,30 +126,41 @@ void	Request::_parseRequest(std::string req)
 
 std::string		Request::_unchunkBody(std::string body)
 {
-	std::string	tmpBody = "";
 	int			chunkLength;
-	int			it;
+	char		*cbody = (char *)body.c_str();
+	char		*bodyptr = cbody;
+	char		*result = (char *)malloc(sizeof(char) * body.size());
+	char		*saveresult = result;
+	char		hexStr[100];
+	char		*itptr;
+	ptrdiff_t	hexLen;
 
-	// char *cbody = strdup(body.c_str());
-	// char result[body.size()];
-	// memset(result, 0, body.size());
+	Libft::memset(result, 0, sizeof(char) * body.size() - 1);
+	Libft::memset(hexStr, 0, 99);
 
-	// char *bodyptr = cbody;
-	// char *resultptr = result;
+	itptr = Libft::strstr(bodyptr, "\r\n");
+	hexLen = itptr - bodyptr;
+	Libft::memcpy(hexStr, bodyptr, hexLen);
+	chunkLength = Utils::hexStrtoInt(hexStr);
 
-	// Logger::Write(Logger::DEBUG, WHT, "request : unchunkBody()");
-	it = body.find("\r\n");
-	chunkLength = Utils::hexStrtoInt(body.substr(0, it));
-	// if (!chunkLength)
-	// 	return (tmpBody);
-	while (chunkLength && chunkLength > 0)
+	while (chunkLength)
 	{
-		tmpBody.append(body.substr(it + 2, chunkLength));
-		body = body.substr(chunkLength + it + 4, body.size());
+		bodyptr += hexLen + 2;
+		Libft::memcpy(result, bodyptr, chunkLength);
 
-		it = body.find("\r\n");
-		chunkLength = Utils::hexStrtoInt(body.substr(0, it));
+		result = result + chunkLength;
+		bodyptr += chunkLength + 2;
+
+		itptr = Libft::strstr(bodyptr, "\r\n");
+		hexLen = itptr - bodyptr;
+		Libft::memset(hexStr, 0, 99);
+		Libft::memcpy(hexStr, bodyptr, hexLen);
+
+		chunkLength = Utils::hexStrtoInt(hexStr);
 	}
+
+	std::string tmpBody = saveresult;
+	free(saveresult);
 	return (tmpBody);
 }
 

@@ -304,3 +304,69 @@ namespace Utils {
 		return (0);
 	}
 }
+
+namespace	Libft
+{
+	void		*memset(void *b, int c, size_t len)
+	{
+		unsigned char *dest;
+
+		dest = (unsigned char *)b;
+		while (len > 0)
+		{
+			*dest = c;
+			dest++;
+			len--;
+		}
+		return (b);
+	}
+
+	int compare(const char *a, const char *b)
+	{
+		while (*a && *b)
+		{
+			if (*a != *b) {
+				return 0;
+			}
+	
+			a++;
+			b++;
+		}
+	
+		return (*b == '\0');
+	}
+ 
+	char* strstr(const char* haystack, const char* needle)
+	{
+		while (*haystack != '\0')
+		{
+			if ((*haystack == *needle) && compare(haystack, needle)) {
+				return (char *)haystack;
+			}
+			haystack++;
+		}
+	
+		return NULL;
+	}
+
+	size_t		strlen(const char *str)
+	{
+		size_t i;
+
+		i = 0;
+		while (str[i])
+			i++;
+		return (i);
+	}
+
+	void	*memcpy(void *dst, const void *src, size_t n)
+	{
+		char *csrc = (char *)src;
+		char *cdest = (char *)dst;
+	
+		for (size_t i = 0; i < n; i++)
+			cdest[i] = csrc[i];
+		
+		return (dst);
+	}
+}

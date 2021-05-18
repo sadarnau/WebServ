@@ -38,6 +38,15 @@ namespace   Utils
 	int						    strToInt(std::string str);
 	size_t						hexStrtoInt(std::string hex);
 	int							checkLastChar(std::string string, std::string needle);
-
 }
+
+namespace	Libft
+{
+	void						*memset(void *b, int c, size_t len);
+	int							compare(const char *X, const char *Y);
+	char						*strstr(const char *haystack, const char *needle);
+	size_t						strlen(const char *str);
+	void						*memcpy(void *dst, const void *src, size_t n);
+}
+
 #endif
