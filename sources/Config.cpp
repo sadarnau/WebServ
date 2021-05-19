@@ -73,7 +73,6 @@ void	Config::checkFile(std::string fileName)
 		Logger::Error("Fail opening conf file\n");
 		throw (std::exception());
 	}
-	//std::getline(this->f, line);
 
 	return ;
 }

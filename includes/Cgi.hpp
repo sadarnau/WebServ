@@ -30,11 +30,10 @@ class Cgi
 
 
 	public:
-		// Cgi(Request *req, Location *loc);
 		Cgi(Request *req, Response *res);
-		Cgi( Cgi const & src );  				//copy
-		~Cgi( void );							//destructor
-		Cgi & operator=( Cgi const & rhs );		//overload operator =
+		Cgi(Cgi const & src);
+		~Cgi(void);
+		Cgi & operator=(Cgi const & rhs);	
 
 		bool								processCgi(void);
 		std::string							getResult(void);

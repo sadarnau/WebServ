@@ -483,7 +483,7 @@ bool	Response::isValidHttpMethod(void)
 	return (false);
 }
 
-std::string	Response::getIndexTarget(void) // commentaire a supprimer ?
+std::string	Response::getIndexTarget(void)
 {
 	std::vector<std::string> vIndex = this->_location.getIndex();
 

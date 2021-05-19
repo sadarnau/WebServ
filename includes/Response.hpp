@@ -39,35 +39,35 @@ private:
 	bool									_isSetToError;
 	struct stat								_targetStat;
 
-	void			buildHeader(void);
-	void			buildResponse(void);
+	void									buildHeader(void);
+	void									buildResponse(void);
 
-	void			processGetPostHead(void);
-	void			processPut(void);
-	void			processOptions(void);
-	void			processDelete(void);
-	void			processTrace(void);
+	void									processGetPostHead(void);
+	void									processPut(void);
+	void									processOptions(void);
+	void									processDelete(void);
+	void									processTrace(void);
 
-	void			contentNegaciator(void);
-	bool			autoIndexResponse(void);
-	std::string		getIndexTarget(void);
-	bool			isIndexPagePresent(void);
+	void									contentNegaciator(void);
+	bool									autoIndexResponse(void);
+	std::string								getIndexTarget(void);
+	bool									isIndexPagePresent(void);
 
-	void			checkPermissions(void);
-	void			initResponseMessageMap(void);
-	void			setToErrorPage(int errorNumber);
-	std::string		generateDefaultErrorPage(std::string errorNbr, std::string message);
+	void									checkPermissions(void);
+	void									initResponseMessageMap(void);
+	void									setToErrorPage(int errorNumber);
+	std::string								generateDefaultErrorPage(std::string errorNbr, std::string message);
 
-	void			getLastModified(void);
-	bool			isDirectory(void);
-	std::string		getContentType(std::string target);
-	bool			isValidMethod(void);
-	bool			isValidHttpMethod(void);
-	bool			isValidAuthorization(void);
+	void									getLastModified(void);
+	bool									isDirectory(void);
+	std::string								getContentType(std::string target);
+	bool									isValidMethod(void);
+	bool									isValidHttpMethod(void);
+	bool									isValidAuthorization(void);
 
-	void			setResponseCode(int responseCode);
-	void			setBody(std::string body);
-	void			setContentType(std::string contentType);
+	void									setResponseCode(int responseCode);
+	void									setBody(std::string body);
+	void									setContentType(std::string contentType);
 
 public:
 	Response(Request *req, long socket);
@@ -75,18 +75,18 @@ public:
 	~Response(void);
 	Response & operator=(Response const & rhs);
 
-	std::string		getResponse(void);
-	std::string		getBody(void);
-	std::string		getHeader(void);
-	std::string		getResponseCodeStr(void);
-	int				getResponseCode(void);
-	std::string		getResponseCodeMessage(void);
-	std::string		getAuthorization(void);
-	long			getHeaderLength(void);
-	long			getBodyLength(void);
-	long			getResponseLength(void);
-	bool			getIsAuthenticationSucessfull(void);
-	void			logResponse(int serverNbr);
+	std::string								getResponse(void);
+	std::string								getBody(void);
+	std::string								getHeader(void);
+	std::string								getResponseCodeStr(void);
+	int										getResponseCode(void);
+	std::string								getResponseCodeMessage(void);
+	std::string								getAuthorization(void);
+	long									getHeaderLength(void);
+	long									getBodyLength(void);
+	long									getResponseLength(void);
+	bool									getIsAuthenticationSucessfull(void);
+	void									logResponse(int serverNbr);
 };
 
 #endif

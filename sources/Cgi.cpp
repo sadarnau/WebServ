@@ -13,9 +13,9 @@ Cgi::Cgi(Request *req, Response *res)
 Cgi::Cgi(Cgi const &src)
 {
 	*this = src;
+
 	return ;
 }
-
 
 Cgi::~Cgi(void)
 {
@@ -39,7 +39,6 @@ Cgi & Cgi::operator=(Cgi const &rhs)
 	(void)rhs;
 	return ( *this );
 }
-
 
 bool		Cgi::processCgi(void)
 {

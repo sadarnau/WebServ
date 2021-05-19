@@ -5,7 +5,6 @@
 ////////////////////
 Request::Request(vlocation *locationVector, vlocation *locationExtVector, int inSock, std::string buff, std::string ip) // commentaire a enlever ?
 {
-	// Logger::Write(Logger::DEBUG, WHT, "request : creation");											//ici
 	this->_ip = ip;
 	this->_inSocket = inSock;
 	this->_locationVector = locationVector;
@@ -55,8 +54,6 @@ void	Request::_parseRequest(std::string req)
 {
 	std::string			header;
 	std::string			body;
-
-	// Logger::Write(Logger::DEBUG, WHT, "request : parseRequest()");
 
 	if (req.find("\r\n\r\n") != std::string::npos)
 	{
@@ -116,7 +113,6 @@ void	Request::_parseRequest(std::string req)
 	else
 		this->_body = body;
 
-	// std::cout << body.size() << " " << body.length()<<std::endl;
 	unsigned long  i;
 	for (i = 0; i < this->_body.size(); i++);
 
@@ -124,12 +120,17 @@ void	Request::_parseRequest(std::string req)
 	return ;
 }
 
+////////////////////
+// UTILS
+////////////////////
 std::string		Request::_unchunkBody(std::string body)
 {
 	int			chunkLength;
 	char		*cbody = (char *)body.c_str();
 	char		*bodyptr = cbody;
-	char		*result = (char *)malloc(sizeof(char) * body.size());
+	char		*result;
+	if(!(result = (char *)malloc(sizeof(char) * body.size())))
+		throw (std::exception());
 	char		*saveresult = result;
 	char		hexStr[100];
 	char		*itptr;
@@ -163,11 +164,6 @@ std::string		Request::_unchunkBody(std::string body)
 	free(saveresult);
 	return (tmpBody);
 }
-
-////////////////////
-// UTILS
-////////////////////
-
 
 void	Request::_selectLocation(void)
 {
@@ -252,7 +248,6 @@ void	Request::_mergeLocation(void)
 
 	return ;
 }
-
 
 void	Request::_parseUrl(void)
 {
@@ -379,7 +374,6 @@ void	Request::logRequest(int serverNbr)
 	oss << std::setw(30) << "request->method" << " : " << this->_method << std::endl;
 	oss << std::setw(30) << "request->target" << " : " << this->_target << std::endl;
 	oss << std::setw(30) << "request->query" << " : " << this->_queryString << std::endl;
-	// oss << std::setw(30) << "request->body" << " : \n" << this->_body << std::endl;
 	oss << std::setw(30) << "request->urlTargetPath" << " : " << this->_urlTargetPath << std::endl;
 	oss << std::setw(30) << "request->absoluteTargetPath" << " : " << this->_absoluteTargetPath << std::endl;
 	oss << std::setw(30) << "selectedLocation.getPath()" << " : " << this->_selectedLocation.getPath() << std::endl << std::endl;
