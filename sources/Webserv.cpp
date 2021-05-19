@@ -52,7 +52,7 @@ int		Webserv::initialization( int i )
 	this->fillAddress();
 	
 	// Fix binding error, it was due to TIME_WAIT who deosnt allow new connection to same socket before a certain time
-	int reusePort = 1; // enum ?
+	int reusePort = 1;
 	if (setsockopt(this->fd, SOL_SOCKET, SO_REUSEPORT, &reusePort, sizeof(reusePort)) < 0)
 		return (1);
 
@@ -82,7 +82,7 @@ void	Webserv::fillAddress( void )
 	this->_IPaddr = this->_listen.substr(0, this->_listen.find(":"));
 
 	this->address.sin_family = AF_INET;
-	this->address.sin_addr.s_addr = inet_addr(this->_IPaddr.c_str());	//htonl ??
+	this->address.sin_addr.s_addr = inet_addr(this->_IPaddr.c_str());
 	this->address.sin_port = htons(Utils::strToInt(this->_port));
 
 	memset(this->address.sin_zero, 0, sizeof(this->address.sin_zero));
@@ -94,7 +94,7 @@ int		Webserv::acceptConexion( void )
 {
 	struct sockaddr_in	address;
 	unsigned int		addrlen = sizeof(address);
-	long				socket = accept(this->fd, (struct sockaddr *)&address, (socklen_t*)&addrlen); // to protect
+	long				socket = accept(this->fd, (struct sockaddr *)&address, (socklen_t*)&addrlen);
 	
 	if (socket < 0)
 	{

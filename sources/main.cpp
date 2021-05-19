@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 		set_sig();		// handle SIQUIT and SIGINT
 
 		if (cluster.lanchServices())
-			return (1); // exception ??
+			return (1);
 	}
 	catch(const std::exception& e)
 	{

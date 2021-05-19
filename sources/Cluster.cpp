@@ -19,8 +19,14 @@ Cluster::~Cluster( void )
 
 Cluster & Cluster::operator=( Cluster const & rhs)
 {
-	(void)rhs;
-    // this->??? = rhs.???;
+    this->_clients = rhs._clients;
+    this->_config = rhs._config;
+    this->_fdList = rhs._fdList;
+    this->_master_fd = rhs._master_fd;
+    this->_maxFd = rhs._maxFd;
+    this->_nbServ = rhs._nbServ;
+    this->_readyClients = rhs._readyClients;
+    this->_serverList = rhs._serverList;
 
 	return ( *this );
 }
@@ -41,7 +47,7 @@ int								Cluster::initialization( std::string fileName )
 		if (this->_serverList[i].initialization(i))
 			return (1);
 		FD_SET(this->_serverList[i].getFd(), &this->_master_fd);	// adding our first fd socket, the server one.
-		if(this->_serverList[i].getFd() > this->_maxFd)				// ternaire ?? a faire
+		if(this->_serverList[i].getFd() > this->_maxFd)
 			this->_maxFd = this->_serverList[i].getFd();
 	}
 
@@ -67,8 +73,7 @@ int								Cluster::lanchServices( void )
 		if (ret < 0)
 		{
 			Logger::Write(Logger::ERROR, RED, "Error : select have deconné");
-			throw (std::exception()); // to do : exception
-			return (1); // test ???
+			throw (std::exception());
 		}
 		
 		for (std::vector<Client>::iterator it = this->_readyClients.begin(); it != this->_readyClients.end(); it++)
@@ -109,14 +114,14 @@ int								Cluster::lanchServices( void )
 				long	sock;
 				Logger::Write(Logger::INFO, GRN, "server[" + Utils::intToStr(i) + "] : new connection");
 				if ((sock = this->_serverList[i].acceptConexion()) < 0)
-					return (1); // test ???
+					return (1);
 
-				FD_SET(sock, &this->_master_fd);	// add the new fd in the master fd set
-				if (sock > this->_maxFd)			// check until where we have to select
+				FD_SET(sock, &this->_master_fd);						// add the new fd in the master fd set
+				if (sock > this->_maxFd)								// check until where we have to select
 					this->_maxFd = sock;
 
 				this->_clients.push_back(Client(sock, i));
-				break ;								// no need to check any more serv
+				break ;													// no need to check any more serv
 			}
 
 		for (std::vector<Client>::iterator it = this->_clients.begin() ; it != this->_clients.end() ; it++)
@@ -155,7 +160,7 @@ void							Cluster::closeServices( void )
 	for (std::vector<Client>::iterator it = this->_clients.begin() ; it != this->_clients.end() ; it++)
 		close(it->getSocket());
 
-	for(int i = 0; i < this->_nbServ; i++)
+	for(unsigned long i = 0; i < this->_serverList.size(); i++)
 	{
 		Logger::Write(Logger::INFO, RED, "Closing server[" + Utils::intToStr(i) + "]...");
 		close(this->_serverList[i].getFd());

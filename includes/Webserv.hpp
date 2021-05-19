@@ -24,7 +24,7 @@ class Webserv
 private:
 
 	int									fd;
-	std::string							_buff; // test
+	std::string							_buff;
 	struct sockaddr_in					address;
 	std::string							_listen;
 	std::vector<Location>				_locationVector;
@@ -38,11 +38,11 @@ private:
 
 public:
 
-	Webserv( void );						 		//default constructor
-	Webserv( std::string listen, std::vector<Location> locationVector, std::vector<Location> locationExtVector );					//constructor
-	Webserv( Webserv const & src);  				//copy
-	~Webserv( void );								//destructor
-	Webserv & operator=( Webserv const & rhs );		//overload operator =
+	Webserv( void );						 																		//default constructor
+	Webserv( std::string listen, std::vector<Location> locationVector, std::vector<Location> locationExtVector );	//constructor
+	Webserv( Webserv const & src);  																				//copy
+	~Webserv( void );																								//destructor
+	Webserv & operator=( Webserv const & rhs );																		//overload operator =
 
 	int									initialization( int i );
 	void								fillAddress( void );
