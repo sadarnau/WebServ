@@ -25,15 +25,18 @@ private:
 	std::vector<Location> 				_locationVector;
 	std::vector<Location> 				_locationExtVector;
 	std::vector<Webserv>				_serverVector;
+	int									_lineIt;
 
 	void								initConfigMap(void);
 	void								initLocationMap(std::map<std::string, std::string> & newLoc, std::string path);
 	void								addConfigToLocation(std::map<std::string, std::string> newLoc, bool isExtension);
 	void								checkFile(std::string fileName);
-	bool								checkSemiColon(std::string str);
+	size_t								checkSemiColon(std::string str);
 	bool								checkMultipleListen(std::string listen);
 	void								createServerMap(void);
 	void								newLocationConfig(std::string path);
+	void								throwConfigError(std::string str);
+	bool								checkBadLineConf(std::string str);
 
 public:
 
