@@ -52,7 +52,7 @@ int		Client::myRecv( void )
 	memset(chunk_data , 0, BUFF_SIZE);
 	if ((ret = recv(this->_socket, chunk_data, BUFF_SIZE - 1, 0)) < 0)
 	{
-		Logger::Write(Logger::ERROR, RED, "server[" + Utils::intToStr(this->_servNb) + "] : read have gros problem");	
+		Logger::Write(Logger::ERROR, RED, "server[" + Utils::intToStr(this->_servNb) + "] : read have gros probleme");	
 		return 0;
 	}
 	else if (ret == 0)
