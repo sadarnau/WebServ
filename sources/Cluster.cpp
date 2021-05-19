@@ -164,17 +164,19 @@ int								Cluster::lanchServices( void )
 
 void							Cluster::closeServices( void )
 {
-	Logger::Write(Logger::INFO, RED, "Closing clients who were ready...");
+	if(!this->_readyClients.empty())
+		Logger::Write(Logger::INFO, RED, "closing active clients...");
 	for (std::vector<Client>::iterator it = this->_readyClients.begin() ; it != this->_readyClients.end() ; it++)
 		close(it->getSocket());
 	
-	Logger::Write(Logger::INFO, RED, "Closing all clients...");
+	if(!this->_clients.empty())
+		Logger::Write(Logger::INFO, RED, "closing all clients...");
 	for (std::vector<Client>::iterator it = this->_clients.begin() ; it != this->_clients.end() ; it++)
 		close(it->getSocket());
 
 	for(unsigned long i = 0; i < this->_serverList.size(); i++)
 	{
-		Logger::Write(Logger::INFO, RED, "Closing server[" + Utils::intToStr(i) + "]...");
+		Logger::Write(Logger::INFO, RED, "closing server[" + Utils::intToStr(i) + "]...");
 		close(this->_serverList[i].getFd());
 	}
 

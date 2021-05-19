@@ -24,7 +24,7 @@ Cluster cluster;
 void							handle_sig(int sig_num)
 {
 	(void)sig_num;
-	Logger::Write(Logger::INFO, RED, "Stoping WebServ...");
+	Logger::Write(Logger::INFO, RED, "stoping webserv");
 
 	cluster.closeServices();
 
