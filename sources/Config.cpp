@@ -229,7 +229,11 @@ void	Config::createServerMap(void)
 			this->_configMap["cgi_ext"] = split[1].substr(0, split[1].size() - 1);
 		}
 		else if (!split[0].compare("error_page") && split.size() == 3 && this->checkSemiColon(split.back()) == 1 && inServerConfig)
+		{
+			if (this->_configMap.count(split[1]))
+				this->throwConfigError("Multiple " + split[1] + " definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
 			this->_configMap[split[1]] = split[2].substr(0, split[2].size() - 1);
+		}
 		else if (!split[0].compare("location") && split.size() == 3 && !split[2].compare("{") && inServerConfig)
 		{
 			if (!split[1].compare("/"))
@@ -399,7 +403,12 @@ void	Config::newLocationConfig(std::string path)
 			newLoc["client_max_body_size"] = split[1].substr(0, split[1].size() - 1);
 		}
 		else if (!split[0].compare("error_page") && split.size() == 3 && this->checkSemiColon(split.back()) == 1)
+		{
+
+			if (newLoc.count(split[1]))
+				this->throwConfigError("Multiple " + split[1] + " definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
 			newLoc[split[1]] = split[2].substr(0, split[2].size() - 1);
+		}
 		else if (!split[0].compare("}") && split.size() == 1)
 		{
 			addConfigToLocation(newLoc, isExtension);
