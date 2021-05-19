@@ -4,6 +4,7 @@
 # include "Client.hpp"
 # include "Config.hpp"
 # include "Webserv.hpp"
+# include <signal.h>
 # include <map>
 # include <sys/select.h>
 
@@ -15,23 +16,22 @@ private:
 	fd_set					_master_fd;
 	std::vector<Webserv>	_serverList;
 	std::vector<int>		_fdList;
-	std::vector<Client>		_clients;	//test
-	std::vector<Client>		_readyClients;	//test
+	std::vector<Client>		_clients;
+	std::vector<Client>		_readyClients;
 	Config					_config;
 	int						_nbServ;
 
 public:
 
 	Cluster( void );								//default constructor
-	// Cluster( std::string name );					//constructor
 	Cluster( Cluster const & src);  				//copy
 	~Cluster( void );								//destructor
 	Cluster & operator=( Cluster const & rhs );		//overload operator =
 
 	int									initialization( std::string fileName );
 	int									lanchServices( void );
+	void								closeServices( void );
 
-	void								addSocketToMaster( long socket );
 	void								processClient( Client client );
 	void								setReadStatus( long socket );
 	void								setWritingSet( fd_set *writefds );

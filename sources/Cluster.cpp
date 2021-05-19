@@ -5,11 +5,6 @@ Cluster::Cluster( void )
 	return ;
 }
 
-// Cluster::Cluster( std::string name )
-// {
-// 	return ;
-// }
-
 Cluster::Cluster( Cluster const & src )
 {
 	*this = src;
@@ -148,6 +143,25 @@ int								Cluster::lanchServices( void )
 	}
 
 	return (0);
+}
+
+void							Cluster::closeServices( void )
+{
+	Logger::Write(Logger::INFO, RED, "Closing clients who were ready...");
+	for (std::vector<Client>::iterator it = this->_readyClients.begin() ; it != this->_readyClients.end() ; it++)
+		close(it->getSocket());
+	
+	Logger::Write(Logger::INFO, RED, "Closing all clients...");
+	for (std::vector<Client>::iterator it = this->_clients.begin() ; it != this->_clients.end() ; it++)
+		close(it->getSocket());
+
+	for(int i = 0; i < this->_nbServ; i++)
+	{
+		Logger::Write(Logger::INFO, RED, "Closing server[" + Utils::intToStr(i) + "]...");
+		close(this->_serverList[i].getFd());
+	}
+
+	return ;
 }
 
 void							Cluster::processClient( Client client )

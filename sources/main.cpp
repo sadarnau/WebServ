@@ -7,6 +7,24 @@
 #include <list>
 #include <csignal>
 
+Cluster cluster;
+
+void							handle_sig(int sig_num)
+{
+	(void)sig_num;
+	Logger::Write(Logger::INFO, RED, "Stoping WebServ...");
+
+	cluster.closeServices();
+
+	exit(1);
+}
+
+void							set_sig(void)
+{
+	signal(SIGINT, handle_sig);
+	signal(SIGQUIT, handle_sig);
+}
+
 bool	setLoggerMode(std::string mode)
 {
 	if (mode == "more")
@@ -78,12 +96,13 @@ int main(int argc, char *argv[])
 		return (1);
 
 	Logger::Write(Logger::INFO, YEL, "configuration file : " + conf);
-	Cluster cluster;
 
 	try
 	{
 		if (cluster.initialization(conf))
 			return (1);
+
+		set_sig();		// handle SIQUIT and SIGINT
 
 		if (cluster.lanchServices())
 			return (1); // exception ??
