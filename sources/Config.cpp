@@ -349,56 +349,56 @@ void	Config::newLocationConfig(std::string path)
   		else if (!split[0].compare("accepted_method") && split.size() == 2 && this->checkSemiColon(split.back()) == 1)
 		{
 			if (acceptedMethodFound)
-			this->throwConfigError("Multiple accpeted_method definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
+				this->throwConfigError("Multiple accpeted_method definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
 			acceptedMethodFound = true;
 			newLoc["accepted_method"] = split[1].substr(0, split[1].size() - 1);
 		}
 		else if (!split[0].compare("root") && split.size() == 2 && this->checkSemiColon(split.back()) == 1)
 		{
 			if (rootFound)
-			this->throwConfigError("Multiple root definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
+				this->throwConfigError("Multiple root definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
 			rootFound = true;
 			newLoc["root"] = split[1].substr(0, split[1].size() - 1);
 		}
 		else if (!split[0].compare("autoindex") && split.size() == 2 && this->checkSemiColon(split.back()) == 1)
 		{
 			if (autoindexFound)
-			this->throwConfigError("Multiple autoindex definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
+				this->throwConfigError("Multiple autoindex definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
 			autoindexFound = true;
 			newLoc["autoindex"] = split[1].substr(0, split[1].size() - 1);
 		}
 		else if (!split[0].compare("authentication") && split.size() == 2 && this->checkSemiColon(split.back()) == 1)
 		{
 			if (authenticationFound)
-			this->throwConfigError("Multiple authentication definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
+				this->throwConfigError("Multiple authentication definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
 			authenticationFound = true;
 			newLoc["authentication"] = split[1].substr(0, split[1].size() - 1);
 		}
 		else if (!split[0].compare("index") && split.size() == 2 && this->checkSemiColon(split.back()) == 1)
 		{
 			if (indexFound)
-			this->throwConfigError("Multiple index definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
+				this->throwConfigError("Multiple index definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
 			indexFound = true;
 			newLoc["index"] = split[1].substr(0, split[1].size() - 1);
 		}
 		else if (!split[0].compare("cgi_path") && split.size() == 2 && this->checkSemiColon(split.back()) == 1)
 		{
 			if (cgiPathFound)
-			this->throwConfigError("Multiple cgi_path definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
+				this->throwConfigError("Multiple cgi_path definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
 			cgiPathFound = true;
 			newLoc["cgi_path"] = split[1].substr(0, split[1].size() - 1);
 		}
 		else if (!split[0].compare("cgi_ext") && split.size() == 2 && this->checkSemiColon(split.back()) == 1)
 		{
 			if (cgiExtFound)
-			this->throwConfigError("Multiple cgi_ext definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
+				this->throwConfigError("Multiple cgi_ext definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
 			cgiExtFound = true;
 			newLoc["cgi_ext"] = split[1].substr(0, split[1].size() - 1);
 		}
 		else if (!split[0].compare("client_max_body_size") && split.size() == 2 && this->checkSemiColon(split.back()) == 1)
 		{
 			if (clientMaxBodySizeFound)
-			this->throwConfigError("Multiple client_max_body_size definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
+				this->throwConfigError("Multiple client_max_body_size definition | line : " + Utils::intToStr(this->_lineIt) + "\n");
 			clientMaxBodySizeFound = true;
 			newLoc["client_max_body_size"] = split[1].substr(0, split[1].size() - 1);
 		}
