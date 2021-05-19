@@ -20,6 +20,7 @@ private:
 
 	std::ifstream						f;
 	std::string							_listen;
+	std::vector<std::string>			_allListen;
 	std::map<std::string, std::string>	_configMap;
 	std::vector<Location> 				_locationVector;
 	std::vector<Location> 				_locationExtVector;
@@ -30,6 +31,7 @@ private:
 	void								addConfigToLocation(std::map<std::string, std::string> newLoc, bool isExtension);
 	void								checkFile(std::string fileName);
 	bool								checkSemiColon(std::string str);
+	bool								checkMultipleListen(std::string listen);
 	void								createServerMap(void);
 	void								newLocationConfig(std::string path);
 

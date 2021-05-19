@@ -20,6 +20,7 @@ Config & Config::operator=(Config const & rhs)
 {
 	this->_configMap = rhs._configMap;
 	this->_listen = rhs._listen;
+	this->_allListen = rhs._allListen;
 	this->_locationVector = rhs._locationVector;
 	this->_locationExtVector = rhs._locationExtVector;
 	this->_serverVector = rhs._serverVector;
@@ -85,6 +86,18 @@ bool	Config::checkSemiColon(std::string str)
 	return (false);
 }
 
+bool	Config::checkMultipleListen(std::string listen)
+{
+	std::vector<std::string>::const_iterator it(this->_allListen.begin());
+	std::vector<std::string>::const_iterator it2(this->_allListen.end());
+	for( ; it != it2; it++)
+	{
+		if (!listen.compare(*it))
+			return (true);
+	}
+	return (false);		
+}
+
 void	Config::createServerMap(void)
 {
 	std::string 						line;
@@ -115,6 +128,12 @@ void	Config::createServerMap(void)
 			listenFound = true;
 			this->_configMap["listen"] = split[1].substr(0, split[1].size() - 1);
 			this->_listen = this->_configMap["listen"];
+			if (!this->_allListen.empty() && this->checkMultipleListen(this->_listen))
+			{
+				Logger::Error("Multiple listen definition\n");
+				throw (std::exception());
+			}
+			this->_allListen.push_back(this->_listen);
 		}
 		else if (!split[0].compare("server_name") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 		{
@@ -122,23 +141,23 @@ void	Config::createServerMap(void)
 			serverNameFound = true;
 
 		}
-  		else if (!split[0].compare("accepted_method") && split.size() == 2 && this->checkSemiColon(split.back()))
+  		else if (!split[0].compare("accepted_method") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 			this->_configMap["accepted_method"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("client_max_body_size") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 			this->_configMap["client_max_body_size"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("error_page") && split.size() == 3 && this->checkSemiColon(split.back()) && inServerConfig)
 			this->_configMap[split[1]] = split[2].substr(0, split[2].size() - 1);
-		else if (!split[0].compare("root") && split.size() == 2 && this->checkSemiColon(split.back()))
+		else if (!split[0].compare("root") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 			this->_configMap["root"] = split[1].substr(0, split[1].size() - 1);
-		else if (!split[0].compare("autoindex") && split.size() == 2 && this->checkSemiColon(split.back()))
+		else if (!split[0].compare("autoindex") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 			this->_configMap["autoindex"] = split[1].substr(0, split[1].size() - 1);
-		else if (!split[0].compare("authentication") && split.size() == 2 && this->checkSemiColon(split.back()))
+		else if (!split[0].compare("authentication") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 			this->_configMap["authentication"] = split[1].substr(0, split[1].size() - 1);
-		else if (!split[0].compare("index") && split.size() == 2 && this->checkSemiColon(split.back()))
+		else if (!split[0].compare("index") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 			this->_configMap["index"] = split[1].substr(0, split[1].size() - 1);
-		else if (!split[0].compare("cgi_path") && split.size() == 2 && this->checkSemiColon(split.back()))
+		else if (!split[0].compare("cgi_path") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 			this->_configMap["cgi_path"] = split[1].substr(0, split[1].size() - 1);
-		else if (!split[0].compare("cgi_ext") && split.size() == 2 && this->checkSemiColon(split.back()))
+		else if (!split[0].compare("cgi_ext") && split.size() == 2 && this->checkSemiColon(split.back()) && inServerConfig)
 			this->_configMap["cgi_ext"] = split[1].substr(0, split[1].size() - 1);
 		else if (!split[0].compare("location") && split.size() == 3 && !split[2].compare("{") && inServerConfig)
 		{
